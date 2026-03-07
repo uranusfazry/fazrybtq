@@ -1110,8 +1110,6 @@ tbody tr:last-child td { border-bottom: none; }
   .sidebar { transform: translateX(-100%); }
   .sidebar.open { transform: none; }
   .main { margin-left: 0 !important; }
-  .topbar-search { width: 160px; }
-  .topbar-search:focus { width: 180px; }
 }
 
 /* ─── PRINT ──────────────────────────────────────── */
@@ -1201,6 +1199,7 @@ GLOBAL MOBILE FIX
 html, body {
 max-width: 100%;
 overflow-x: hidden;
+overflow-y: auto;
 }
 
 * {
@@ -1208,16 +1207,51 @@ box-sizing: border-box;
 }
 
 #app,
-.main,
 .content {
 max-width: 100%;
 overflow-x: hidden;
+}
+
+.main {
+  height: auto !important;
+  min-height: 100vh;
+  overflow-x: hidden;
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  background: var(--bg);
+  transition: all .3s cubic-bezier(.4,0,.2,1);
+  position: relative;
 }
 
 .card,
 .stat,
 .modal {
 max-width: 100%;
+}
+
+.page {
+  min-height: auto !important;
+  height: auto !important;
+  overflow-y: visible;
+  padding-bottom: 40px;
+}
+
+.page.active {
+  height: auto;
+  min-height: 0;
+}
+
+.page-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#progressCards {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+  gap: 20px !important;
+  align-content: start !important;
 }
 
 /* ===================================
@@ -1298,17 +1332,31 @@ TOPBAR MOBILE
 @media (max-width:768px){
 
 .topbar{
-flex-wrap:wrap;
-gap:10px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  padding: 12px 16px;
+}
+
+.page-title-wrap {
+  grid-column: 1;
+}
+
+.topbar-actions {
+  grid-column: 2;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.search-wrap {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-top: 8px;
 }
 
 .topbar-search{
-width:100%;
-}
-
-.topbar-actions{
-width:100%;
-justify-content:space-between;
+width:100% !important;
 }
 
 }
@@ -1339,7 +1387,7 @@ BUTTON MOBILE
 @media (max-width:768px){
 
 .btn{
-min-height:44px;
+min-height:40px;
 font-size:14px;
 justify-content:center;
 }
@@ -1898,6 +1946,9 @@ MOBILE ABSENSI FIX
   .content { 
     padding-left: 16px !important; 
     padding-right: 16px !important; 
+  }
+  .page {
+    padding: 16px !important;
   }
   .mb-4, .mb-5 { 
     margin-bottom: 12px !important; 
@@ -4249,6 +4300,41 @@ document.body.style.overflowX="hidden";
 
 window.addEventListener("load",fixMobileLayout);
 window.addEventListener("resize",fixMobileLayout);
+
+function improveMobileCalendar(){
+
+const grid = document.getElementById("calGrid");
+
+if(!grid) return;
+
+if(window.innerWidth <= 768){
+
+grid.style.minWidth = "600px";
+
+let wrapper = grid.parentElement;
+
+if(!wrapper.classList.contains("calendar-wrapper")){
+
+const w = document.createElement("div");
+
+w.className = "calendar-wrapper";
+
+w.style.overflowX = "auto";
+
+w.style.width = "100%";
+
+grid.parentElement.insertBefore(w, grid);
+
+w.appendChild(grid);
+
+}
+
+}
+
+}
+
+window.addEventListener("load", improveMobileCalendar);
+window.addEventListener("resize", improveMobileCalendar);
 </script>
 </body>
 </html>
