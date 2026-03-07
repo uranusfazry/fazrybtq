@@ -1167,373 +1167,200 @@ tbody tr:last-child td { border-bottom: none; }
 /* Numeric font for stats */
 .num { font-family: 'Space Grotesk', sans-serif; }
 
-/* ==================================================== */
-/* MOBILE RESPONSIVE FIX                                */
-/* ==================================================== */
-@media (max-width: 768px) {
-  /* Global Spacing */
-  .content { padding: 14px; }
-  .topbar { padding: 10px 14px; }
-  
-  /* Grid Overrides (Force 1 Column) */
-  .grid-2, .grid-3, .grid-4, .grid-cards, .grid-2-1 { 
-    grid-template-columns: 1fr; 
-    gap: 12px; 
-  }
-  
-  /* Stat Cards Sizing */
-  .stat { padding: 16px; }
-  .stat-icon { width: 36px; height: 36px; font-size: 16px; margin-bottom: 10px; }
-  .stat-value { font-size: 24px; }
-  .stat-label { font-size: 11px; }
-  
-  /* Charts */
-  .ch, .ch-sm { height: 180px !important; }
-  
-  /* Touch Friendly UI */
-  .btn, .inp, select, .topbar-btn { min-height: 44px; }
-  .btn { padding: 10px 20px; justify-content: center; }
-  .form2 { grid-template-columns: 1fr; gap: 12px; }
-  
-  /* Modals */
-  .modal { width: 95vw; padding: 20px; border-radius: 18px; }
-  .modal-header { margin-bottom: 16px; padding-bottom: 12px; }
-  
-  /* Smooth horizontal scroll for tables */
-  .tw { -webkit-overflow-scrolling: touch; }
-  
-  /* Topbar search adjustments */
-  .topbar-search { width: 140px; }
-  .topbar-search:focus { width: 180px; }
-  
-  /* Typography */
-  h2 { font-size: 20px !important; }
-  .section-title { font-size: 13px; }
+/* ===================================
+GLOBAL MOBILE FIX
+=================================== */
+
+html, body {
+max-width: 100%;
+overflow-x: hidden;
 }
 
-@media (max-width: 480px) {
-  /* Topbar & Header stacking */
-  .topbar { flex-direction: column; align-items: flex-start; gap: 12px; }
-  .page-title-wrap { width: 100%; justify-content: space-between; }
-  .topbar-actions { width: 100%; justify-content: space-between; }
-  .search-wrap { flex: 1; }
-  .topbar-search { width: 100% !important; }
-  
-  /* Simplify Logout Button */
-  .logout-btn { 
-    width: 44px; 
-    height: 44px; 
-    padding: 0; 
-    justify-content: center; 
-    color: transparent; 
-    position: relative; 
-    overflow: hidden;
-  }
-  .logout-btn::before { 
-    content: '🚪'; 
-    color: var(--red); 
-    font-size: 16px; 
-    position: absolute; 
-    left: 50%; 
-    top: 50%; 
-    transform: translate(-50%, -50%); 
-  }
-  
-  /* Grid Stats layout */
-  .grid-stats { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .stat { padding: 12px; }
-  .stat-icon { width: 32px; height: 32px; font-size: 14px; margin-bottom: 6px; }
-  .stat-value { font-size: 20px; }
-  
-  /* Page Header stacking */
-  .page-header { flex-direction: column; gap: 12px; }
-  .header-actions { width: 100%; display: flex; gap: 8px; flex-wrap: wrap; }
-  .header-actions .btn { flex: 1; }
-  
-  /* Filter bar stacking */
-  .filter-bar { flex-direction: column; align-items: stretch; }
-  .filter-bar .inp, .filter-bar select { max-width: 100% !important; }
+* {
+box-sizing: border-box;
 }
 
-/* ==================================================== */
-/* MOBILE ABSENSI FIX                                   */
-/* ==================================================== */
-@media (max-width: 768px) {
-  /* Container Padding Fix */
-  .content {
-    padding-left: 16px;
-    padding-right: 16px;
-  }
-
-  /* Spacing Adjustments */
-  #page-absensi-santri .mb-4,
-  #page-absensi-guru .mb-4 {
-    margin-bottom: 12px !important;
-  }
-
-  /* Header Absensi Stack */
-  #page-absensi-santri .page-header,
-  #page-absensi-guru .page-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-  
-  /* Font size refinements */
-  #page-absensi-santri .page-header h2,
-  #page-absensi-guru .page-header h2 {
-    font-size: 20px !important;
-    margin-bottom: 2px;
-  }
-  #page-absensi-santri .page-header p,
-  #page-absensi-guru .page-header p {
-    font-size: 14px;
-  }
-
-  /* Catat Absensi Button Fix */
-  #page-absensi-santri .page-header .btn,
-  #page-absensi-guru .page-header .btn {
-    display: inline-flex;
-    width: auto;
-    min-height: 44px;
-    margin-bottom: 8px;
-  }
-
-  /* Vertical Stack for Filters */
-  #page-absensi-santri .filter-bar,
-  #page-absensi-guru .filter-bar {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 16px;
-    border-radius: 12px; /* Smaller, more compact border radius */
-    gap: 12px;
-  }
-  
-  /* Full width inputs in filter */
-  #page-absensi-santri .filter-bar .inp,
-  #page-absensi-guru .filter-bar .inp,
-  #page-absensi-santri .filter-bar select,
-  #page-absensi-guru .filter-bar select {
-    max-width: 100% !important;
-    width: 100%;
-    min-height: 44px; /* Touch friendly */
-  }
-
-  /* ------------------------------------------------ */
-  /* TABLE TO CARD LAYOUT CONVERSION FOR MOBILE     */
-  /* ------------------------------------------------ */
-  
-  /* Absensi Santri Card Layout */
-  #page-absensi-santri thead { display: none; }
-  #tbAbsensiSantri { display: block; }
-  #tbAbsensiSantri tr {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 8px;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    margin-bottom: 12px;
-    padding: 14px;
-    background: var(--card2);
-  }
-  #tbAbsensiSantri td {
-    padding: 0; 
-    border: none; 
-    display: flex; 
-    align-items: center;
-  }
-  /* Empty state fallback */
-  #tbAbsensiSantri td[colspan] { display: block; grid-column: 1 / -1; text-align: center; justify-content: center; }
-
-  /* Map columns to grid areas */
-  #tbAbsensiSantri td:nth-child(1) { grid-column: 1 / -1; font-size: 11px !important; } /* Tanggal */
-  #tbAbsensiSantri td:nth-child(3) { grid-column: 1 / 2; font-size: 15px; } /* Nama Santri */
-  #tbAbsensiSantri td:nth-child(2) { grid-column: 2 / 3; justify-content: flex-end; } /* Kelas Badge */
-  #tbAbsensiSantri td:nth-child(4) { grid-column: 1 / 2; } /* Status Kehadiran */
-  #tbAbsensiSantri td:nth-child(5) { grid-column: 1 / -1; font-size: 12px !important; margin-top: 4px; } /* Keterangan */
-  #tbAbsensiSantri td:nth-child(6) { grid-column: 2 / 3; justify-content: flex-end; align-self: end; } /* Action Button */
-
-
-  /* Absensi Guru Card Layout */
-  #page-absensi-guru thead { display: none; }
-  #tbAbsensiGuru { display: block; }
-  #tbAbsensiGuru tr {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 8px;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    margin-bottom: 12px;
-    padding: 14px;
-    background: var(--card2);
-  }
-  #tbAbsensiGuru td {
-    padding: 0; 
-    border: none; 
-    display: flex; 
-    align-items: center;
-  }
-  /* Empty state fallback */
-  #tbAbsensiGuru td[colspan] { display: block; grid-column: 1 / -1; text-align: center; justify-content: center; }
-
-  /* Map columns to grid areas */
-  #tbAbsensiGuru td:nth-child(1) { grid-column: 1 / -1; font-size: 11px !important; } /* Tanggal */
-  #tbAbsensiGuru td:nth-child(2) { grid-column: 1 / -1; font-size: 15px; } /* Nama Guru */
-  #tbAbsensiGuru td:nth-child(3) { grid-column: 1 / 2; font-size: 12px !important; } /* Jam Mengajar */
-  #tbAbsensiGuru td:nth-child(4) { grid-column: 2 / 3; justify-content: flex-end; } /* Kelas */
-  #tbAbsensiGuru td:nth-child(5) { grid-column: 1 / 2; } /* Status */
-  #tbAbsensiGuru td:nth-child(6) { grid-column: 1 / -1; font-size: 12px !important; margin-top: 4px; } /* Keterangan */
-  #tbAbsensiGuru td:nth-child(7) { grid-column: 2 / 3; justify-content: flex-end; align-self: end; } /* Action Button */
-
-  /* Modal Adjustments specifically for Absensi */
-  .modal { max-height: 90vh !important; }
-  #modalAbsensiSantri .modal,
-  #modalAbsensiGuru .modal {
-    width: 95vw !important;
-    padding: 16px !important;
-  }
-  #modalAbsensiSantri .inp,
-  #modalAbsensiGuru .inp {
-    min-height: 44px; /* Ensured touch friendly inside modal */
-  }
+#app,
+.main,
+.content {
+max-width: 100%;
+overflow-x: hidden;
 }
 
-/* ==================================================== */
-/* MOBILE PAGE FIX (Santri, Hafalan, Jadwal)            */
-/* ==================================================== */
-@media (max-width: 768px) {
-  /* 1. GLOBAL MOBILE ADJUSTMENTS */
-  .content { 
-    padding-left: 16px !important; 
-    padding-right: 16px !important; 
-  }
-  .mb-4, .mb-5 { 
-    margin-bottom: 12px !important; 
-  }
-  .btn, .inp, select { 
-    min-height: 44px !important; 
-  }
-  .modal { 
-    width: 95vw !important; 
-    max-height: 90vh !important; 
-  }
+.card,
+.stat,
+.modal {
+max-width: 100%;
+}
 
-  /* 2. DATA SANTRI MOBILE FIXES */
-  #page-santri .header-actions {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: 8px;
-  }
-  #page-santri .header-actions .btn {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  #page-santri .filter-bar {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 16px;
-  }
-  #page-santri .filter-bar .inp,
-  #page-santri .filter-bar select {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
+/* ===================================
+TABLE MOBILE
+=================================== */
 
-  #page-santri .tw {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  #page-santri table td, 
-  #page-santri table th {
-    font-size: 11px !important;
-    padding: 10px 8px !important;
-    white-space: nowrap;
-  }
+.tw {
+width: 100%;
+overflow-x: auto;
+-webkit-overflow-scrolling: touch;
+}
 
-  /* 3. HAFALAN QUR'AN MOBILE FIXES */
-  #page-hafalan .page-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  #page-hafalan .page-header .btn {
-    display: inline-flex !important;
-    width: auto !important;
-    align-self: flex-start;
-    margin-top: 8px;
-  }
-  
-  #page-hafalan .filter-bar {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 16px;
-  }
-  #page-hafalan .filter-bar .inp,
-  #page-hafalan .filter-bar select {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
+table {
+width: 100%;
+min-width: 600px;
+}
 
-  #page-hafalan .tw {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  #page-hafalan table td, 
-  #page-hafalan table th {
-    font-size: 11px !important;
-    padding: 10px 8px !important;
-    white-space: nowrap;
-  }
-  #page-hafalan .badge {
-    font-size: 9px !important;
-    padding: 3px 6px !important;
-  }
+@media (max-width:768px){
 
-  /* 4. JADWAL BTQ MOBILE FIXES */
-  #page-jadwal .card.p-card:nth-of-type(1) {
-    /* Wrapper kalender */
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 16px 12px;
-  }
-  #page-jadwal .cal-grid {
-    /* Paksa grid melewati batas layar agar bisa di-scroll horizontal */
-    min-width: 500px;
-    gap: 2px;
-  }
-  #page-jadwal .cal-hdr {
-    font-size: 9px !important;
-    padding: 6px !important;
-  }
-  #page-jadwal .cal-time {
-    font-size: 9px !important;
-    padding: 6px !important;
-  }
-  #page-jadwal .cal-cell {
-    min-height: 50px;
-    padding: 2px;
-  }
-  #page-jadwal .cal-event {
-    font-size: 9px !important;
-    padding: 4px !important;
-    line-height: 1.2;
-    margin: 1px;
-  }
-  
-  #page-jadwal .tw {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  #page-jadwal table td,
-  #page-jadwal table th {
-    font-size: 11px !important;
-    padding: 10px 8px !important;
-    white-space: nowrap;
-  }
+table{
+font-size:12px;
+}
+
+th,td{
+padding:8px;
+white-space:nowrap;
+}
+
+}
+
+/* ===================================
+GRID MOBILE
+=================================== */
+
+@media (max-width:768px){
+
+.grid-2,
+.grid-3,
+.grid-4,
+.grid-cards,
+.grid-2-1{
+grid-template-columns:1fr !important;
+}
+
+}
+
+/* ===================================
+SIDEBAR MOBILE
+=================================== */
+
+@media (max-width:768px){
+
+.sidebar{
+position: fixed;
+left:0;
+top:0;
+height:100vh;
+width:260px;
+transform: translateX(-100%);
+transition: 0.3s;
+z-index:300;
+}
+
+.sidebar.open{
+transform: translateX(0);
+}
+
+.main{
+margin-left:0 !important;
+}
+
+}
+
+/* ===================================
+TOPBAR MOBILE
+=================================== */
+
+@media (max-width:768px){
+
+.topbar{
+flex-wrap:wrap;
+gap:10px;
+}
+
+.topbar-search{
+width:100%;
+}
+
+.topbar-actions{
+width:100%;
+justify-content:space-between;
+}
+
+}
+
+/* ===================================
+FILTER MOBILE
+=================================== */
+
+@media (max-width:768px){
+
+.filter-bar{
+flex-direction:column;
+gap:10px;
+}
+
+.filter-bar .inp,
+.filter-bar select{
+width:100% !important;
+max-width:100% !important;
+}
+
+}
+
+/* ===================================
+BUTTON MOBILE
+=================================== */
+
+@media (max-width:768px){
+
+.btn{
+min-height:44px;
+font-size:14px;
+justify-content:center;
+}
+
+}
+
+/* ===================================
+CHART MOBILE
+=================================== */
+
+.ch{
+width:100%;
+height:260px;
+}
+
+@media (max-width:768px){
+
+.ch{
+height:220px;
+}
+
+}
+
+/* ===================================
+CALENDAR MOBILE
+=================================== */
+
+#calGrid{
+overflow-x:auto;
+}
+
+.cal-cell{
+min-width:80px;
+}
+
+/* ===================================
+MODAL MOBILE
+=================================== */
+
+@media (max-width:768px){
+
+.modal{
+width:95vw;
+max-height:90vh;
+overflow:auto;
+border-radius:16px;
+}
+
 }
 </style>
 </head>
@@ -3603,6 +3430,20 @@ document.querySelectorAll('.modal-overlay').forEach(ov=>{
 // ====================================================
 checkMobile();
 checkAuth();
+
+// FIX MOBILE RESPONSIVE
+function fixMobileLayout(){
+
+document.querySelectorAll("table").forEach(t=>{
+t.parentElement.style.overflowX="auto";
+});
+
+document.body.style.overflowX="hidden";
+
+}
+
+window.addEventListener("load",fixMobileLayout);
+window.addEventListener("resize",fixMobileLayout);
 </script>
 </body>
 </html>
