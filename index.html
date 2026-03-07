@@ -1398,6 +1398,143 @@ tbody tr:last-child td { border-bottom: none; }
     min-height: 44px; /* Ensured touch friendly inside modal */
   }
 }
+
+/* ==================================================== */
+/* MOBILE PAGE FIX (Santri, Hafalan, Jadwal)            */
+/* ==================================================== */
+@media (max-width: 768px) {
+  /* 1. GLOBAL MOBILE ADJUSTMENTS */
+  .content { 
+    padding-left: 16px !important; 
+    padding-right: 16px !important; 
+  }
+  .mb-4, .mb-5 { 
+    margin-bottom: 12px !important; 
+  }
+  .btn, .inp, select { 
+    min-height: 44px !important; 
+  }
+  .modal { 
+    width: 95vw !important; 
+    max-height: 90vh !important; 
+  }
+
+  /* 2. DATA SANTRI MOBILE FIXES */
+  #page-santri .header-actions {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+  #page-santri .header-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  #page-santri .filter-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+  #page-santri .filter-bar .inp,
+  #page-santri .filter-bar select {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  #page-santri .tw {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #page-santri table td, 
+  #page-santri table th {
+    font-size: 11px !important;
+    padding: 10px 8px !important;
+    white-space: nowrap;
+  }
+
+  /* 3. HAFALAN QUR'AN MOBILE FIXES */
+  #page-hafalan .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  #page-hafalan .page-header .btn {
+    display: inline-flex !important;
+    width: auto !important;
+    align-self: flex-start;
+    margin-top: 8px;
+  }
+  
+  #page-hafalan .filter-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+  #page-hafalan .filter-bar .inp,
+  #page-hafalan .filter-bar select {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  #page-hafalan .tw {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #page-hafalan table td, 
+  #page-hafalan table th {
+    font-size: 11px !important;
+    padding: 10px 8px !important;
+    white-space: nowrap;
+  }
+  #page-hafalan .badge {
+    font-size: 9px !important;
+    padding: 3px 6px !important;
+  }
+
+  /* 4. JADWAL BTQ MOBILE FIXES */
+  #page-jadwal .card.p-card:nth-of-type(1) {
+    /* Wrapper kalender */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px 12px;
+  }
+  #page-jadwal .cal-grid {
+    /* Paksa grid melewati batas layar agar bisa di-scroll horizontal */
+    min-width: 500px;
+    gap: 2px;
+  }
+  #page-jadwal .cal-hdr {
+    font-size: 9px !important;
+    padding: 6px !important;
+  }
+  #page-jadwal .cal-time {
+    font-size: 9px !important;
+    padding: 6px !important;
+  }
+  #page-jadwal .cal-cell {
+    min-height: 50px;
+    padding: 2px;
+  }
+  #page-jadwal .cal-event {
+    font-size: 9px !important;
+    padding: 4px !important;
+    line-height: 1.2;
+    margin: 1px;
+  }
+  
+  #page-jadwal .tw {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #page-jadwal table td,
+  #page-jadwal table th {
+    font-size: 11px !important;
+    padding: 10px 8px !important;
+    white-space: nowrap;
+  }
+}
 </style>
 </head>
 <body>
