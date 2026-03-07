@@ -2,7 +2,7 @@
 <html lang="id" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>BTQ Pro – Manajemen BTQ Sekolah</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -1166,6 +1166,94 @@ tbody tr:last-child td { border-bottom: none; }
 
 /* Numeric font for stats */
 .num { font-family: 'Space Grotesk', sans-serif; }
+
+/* ==================================================== */
+/* MOBILE RESPONSIVE FIX                                */
+/* ==================================================== */
+@media (max-width: 768px) {
+  /* Global Spacing */
+  .content { padding: 14px; }
+  .topbar { padding: 10px 14px; }
+  
+  /* Grid Overrides (Force 1 Column) */
+  .grid-2, .grid-3, .grid-4, .grid-cards, .grid-2-1 { 
+    grid-template-columns: 1fr; 
+    gap: 12px; 
+  }
+  
+  /* Stat Cards Sizing */
+  .stat { padding: 16px; }
+  .stat-icon { width: 36px; height: 36px; font-size: 16px; margin-bottom: 10px; }
+  .stat-value { font-size: 24px; }
+  .stat-label { font-size: 11px; }
+  
+  /* Charts */
+  .ch, .ch-sm { height: 180px !important; }
+  
+  /* Touch Friendly UI */
+  .btn, .inp, select, .topbar-btn { min-height: 44px; }
+  .btn { padding: 10px 20px; justify-content: center; }
+  .form2 { grid-template-columns: 1fr; gap: 12px; }
+  
+  /* Modals */
+  .modal { width: 95vw; padding: 20px; border-radius: 18px; }
+  .modal-header { margin-bottom: 16px; padding-bottom: 12px; }
+  
+  /* Smooth horizontal scroll for tables */
+  .tw { -webkit-overflow-scrolling: touch; }
+  
+  /* Topbar search adjustments */
+  .topbar-search { width: 140px; }
+  .topbar-search:focus { width: 180px; }
+  
+  /* Typography */
+  h2 { font-size: 20px !important; }
+  .section-title { font-size: 13px; }
+}
+
+@media (max-width: 480px) {
+  /* Topbar & Header stacking */
+  .topbar { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .page-title-wrap { width: 100%; justify-content: space-between; }
+  .topbar-actions { width: 100%; justify-content: space-between; }
+  .search-wrap { flex: 1; }
+  .topbar-search { width: 100% !important; }
+  
+  /* Simplify Logout Button */
+  .logout-btn { 
+    width: 44px; 
+    height: 44px; 
+    padding: 0; 
+    justify-content: center; 
+    color: transparent; 
+    position: relative; 
+    overflow: hidden;
+  }
+  .logout-btn::before { 
+    content: '🚪'; 
+    color: var(--red); 
+    font-size: 16px; 
+    position: absolute; 
+    left: 50%; 
+    top: 50%; 
+    transform: translate(-50%, -50%); 
+  }
+  
+  /* Grid Stats layout */
+  .grid-stats { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat { padding: 12px; }
+  .stat-icon { width: 32px; height: 32px; font-size: 14px; margin-bottom: 6px; }
+  .stat-value { font-size: 20px; }
+  
+  /* Page Header stacking */
+  .page-header { flex-direction: column; gap: 12px; }
+  .header-actions { width: 100%; display: flex; gap: 8px; flex-wrap: wrap; }
+  .header-actions .btn { flex: 1; }
+  
+  /* Filter bar stacking */
+  .filter-bar { flex-direction: column; align-items: stretch; }
+  .filter-bar .inp, .filter-bar select { max-width: 100% !important; }
+}
 </style>
 </head>
 <body>
