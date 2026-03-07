@@ -212,6 +212,7 @@ body::after {
   transition: width 0.3s cubic-bezier(0.4,0,0.2,1), transform 0.3s cubic-bezier(0.4,0,0.2,1);
   overflow: hidden;
   box-shadow: 4px 0 32px rgba(0,0,0,0.4);
+  will-change: transform;
 }
 
 /* Sidebar glow accent line */
@@ -229,12 +230,6 @@ body::after {
   background: rgba(255,255,255,0.95);
   box-shadow: 4px 0 24px rgba(0,30,80,0.08);
 }
-
-.sidebar.collapsed { width: 72px; }
-.sidebar.collapsed .nlabel,
-.sidebar.collapsed .logo-text,
-.sidebar.collapsed .nbadge,
-.sidebar.collapsed .sidebar-section-label { display: none; }
 
 .sidebar-header {
   padding: 20px 16px 16px;
@@ -301,34 +296,50 @@ body::after {
   padding: 14px 8px 6px;
 }
 
+/* =========================
+SIDEBAR ACTIVE FIX
+========================= */
 .nav-item {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
-  border-radius: 10px;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  transition: all .25s ease;
   cursor: pointer;
   color: var(--t2);
   font-size: 13px;
   font-weight: 500;
-  transition: all var(--transition);
   text-decoration: none;
   white-space: nowrap;
-  position: relative;
-  margin-bottom: 1px;
-}
-
-.nav-item:hover {
-  background: var(--glass2);
-  color: var(--t1);
-  transform: translateX(2px);
+  margin-bottom: 2px;
+  will-change: transform, background;
+  backface-visibility: hidden;
+  border: 1px solid transparent;
 }
 
 .nav-item.active {
-  background: linear-gradient(135deg, rgba(56,189,248,0.14), rgba(129,140,248,0.10));
+  background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05));
+  border: 1px solid rgba(59,130,246,0.25);
+  box-shadow: 0 0 0 1px rgba(59,130,246,0.1);
   color: #fff;
-  border: 1px solid rgba(56,189,248,0.18);
-  box-shadow: 0 0 20px rgba(56,189,248,0.08), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+.nav-item:not(.active) {
+  border: 1px solid transparent;
+}
+
+.nav-item:hover:not(.active) {
+  background: rgba(255,255,255,0.04);
+  transform: translateX(2px);
+  color: var(--t1);
+}
+
+.nav-item span,
+.nav-item p,
+.nav-item div {
+  background: none !important;
 }
 
 .nav-item.active .nicon {
@@ -336,16 +347,15 @@ body::after {
 }
 
 .nav-item.active::before {
-  content: '';
+  content: "";
   position: absolute;
-  left: 0;
+  left: -6px;
   top: 50%;
   transform: translateY(-50%);
-  width: 3px;
   height: 60%;
-  background: linear-gradient(180deg, var(--acc), var(--acc2));
-  border-radius: 0 3px 3px 0;
-  box-shadow: 0 0 8px rgba(56,189,248,0.6);
+  width: 4px;
+  border-radius: 4px;
+  background: #3b82f6;
 }
 
 .nicon { font-size: 16px; min-width: 20px; text-align: center; transition: transform var(--transition); }
@@ -358,6 +368,7 @@ body::after {
   padding: 2px 7px;
   border-radius: 20px;
   margin-left: auto;
+  flex-shrink: 0;
   box-shadow: 0 0 10px rgba(56,189,248,0.4);
 }
 
@@ -384,8 +395,6 @@ body::after {
   transition: margin-left 0.3s cubic-bezier(0.4,0,0.2,1);
   position: relative;
 }
-
-.main.expanded { margin-left: 72px; }
 
 /* ─── TOPBAR ─────────────────────────────────────── */
 .topbar {
@@ -524,14 +533,32 @@ body::after {
 .content { padding: 24px; position: relative; z-index: 1; }
 
 /* ─── PAGE ANIMATIONS ────────────────────────────── */
-.page { display: none; }
-.page.active {
-  display: block;
-  animation: pageIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+/* ================================
+PAGE TRANSITION SYSTEM
+================================ */
+.page {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all .25s ease;
+  position: absolute;
+  width: 100%;
+  pointer-events: none;
+  visibility: hidden;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
-@keyframes pageIn {
-  from { opacity: 0; transform: translateY(12px); }
+.page.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  position: relative;
+  visibility: visible;
+  animation: pageFade .25s ease;
+}
+
+@keyframes pageFade {
+  from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -1362,6 +1389,643 @@ border-radius:16px;
 }
 
 }
+
+/* ===================================
+SIDEBAR COLLAPSED MODE (FIX)
+=================================== */
+.sidebar.collapsed {
+  width: 70px;
+  overflow: visible !important;
+}
+.sidebar.collapsed .sidebar-nav {
+  overflow: visible !important;
+}
+.sidebar.collapsed .nlabel,
+.sidebar.collapsed .logo-text,
+.sidebar.collapsed .sidebar-section-label,
+.sidebar.collapsed .sidebar-footer,
+.sidebar.collapsed .nbadge,
+.sidebar.collapsed .sidebar-toggle {
+  display: none;
+}
+.sidebar.collapsed .sidebar-header {
+  justify-content: center;
+  padding: 18px 0;
+}
+.sidebar.collapsed .logo-icon {
+  margin: 0;
+  cursor: pointer;
+}
+.sidebar.collapsed .nav-item {
+  justify-content: center;
+  padding: 12px 0;
+  position: relative;
+}
+.sidebar.collapsed .nav-item .nicon {
+  margin: 0;
+}
+.sidebar.collapsed .nav-item:hover::after {
+  content: attr(data-title);
+  position: absolute;
+  left: 75px;
+  background: #111827;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 9999;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.main.expanded {
+  margin-left: 70px;
+}
+.sidebar, .main {
+  transition: all .3s cubic-bezier(.4,0,.2,1);
+}
+
+/* ===============================
+PROFESSIONAL UI FIXES
+=============================== */
+
+.santri-phone {
+  display: none;
+}
+
+.santri-name {
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.2px;
+}
+
+.badge {
+  padding: 6px 10px !important;
+  border-radius: 10px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+
+.b-level {
+  background: rgba(59,130,246,0.15) !important;
+  border: 1px solid rgba(59,130,246,0.25) !important;
+  color: #60a5fa !important;
+}
+
+table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  width: 100% !important;
+}
+
+thead th {
+  font-size: 12px !important;
+  letter-spacing: 0.8px !important;
+  text-transform: uppercase !important;
+  color: #8aa4c8 !important;
+}
+
+tbody td {
+  padding: 14px 12px !important;
+  font-size: 13px !important;
+}
+
+tbody tr:hover td {
+  background: rgba(255,255,255,0.03) !important;
+}
+
+.stat {
+  padding: 18px !important;
+  border-radius: 14px !important;
+}
+
+.stat-value {
+  font-size: 28px !important;
+  font-weight: 700 !important;
+}
+
+.stat-label {
+  font-size: 12px !important;
+  color: #9fb3d1 !important;
+}
+
+.filter-bar {
+  gap: 12px !important;
+  padding: 18px !important;
+  border-radius: 14px !important;
+}
+
+.page {
+  padding: 28px;
+}
+
+/* ===============================
+REMOVE ALL GLOW EFFECT & GLASSMORPHISM
+=============================== */
+
+.nav-item,
+.card,
+.stat,
+.btn,
+.badge,
+.modal,
+.topbar,
+.sidebar,
+.cal-event,
+.guru-card-avatar,
+.juz-card {
+  box-shadow: none !important;
+}
+
+* {
+  text-shadow: none !important;
+}
+
+.nav-item.active {
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  background: rgba(255,255,255,0.04) !important;
+}
+
+.btn {
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+.badge {
+  box-shadow: none !important;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.card {
+  box-shadow: none !important;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+canvas {
+  filter: none !important;
+}
+
+.nav-item:hover {
+  box-shadow: none !important;
+  transform: translateX(2px);
+}
+
+.card,
+.modal,
+.topbar {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* ===============================
+DARK MODE SIDEBAR FIX
+=============================== */
+
+[data-theme="dark"] .nav-item {
+  color: #9fb6d8;
+}
+
+[data-theme="dark"] .nav-item:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+[data-theme="dark"] .nav-item.active {
+  background: rgba(59,130,246,0.15) !important;
+  border: 1px solid rgba(59,130,246,0.35) !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .nav-item.active span {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .badge {
+  background: rgba(59,130,246,0.25) !important;
+  color: #eaf3ff !important;
+  border: 1px solid rgba(59,130,246,0.35) !important;
+  box-shadow: none !important;
+}
+
+[data-theme="dark"] .nav-item i,
+[data-theme="dark"] .nav-item svg {
+  opacity: 0.9;
+}
+
+/* ===============================
+LIGHT MODE SIDEBAR FIX
+=============================== */
+
+[data-theme="light"] .nav-item {
+  color: #375a8c;
+}
+
+[data-theme="light"] .nav-item:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+[data-theme="light"] .nav-item.active {
+  background: #e9f2ff !important;
+  border: 1px solid #bcd4ff !important;
+  color: #1d4ed8 !important;
+}
+
+[data-theme="light"] .badge {
+  background: #f1f6ff !important;
+  border: 1px solid #cfe0ff !important;
+  color: #1d4ed8 !important;
+  box-shadow: none !important;
+}
+
+[data-theme="light"] .sidebar {
+  border-right: 1px solid #e6edf7 !important;
+}
+
+.nav-item.active::before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 60%;
+  width: 4px;
+  border-radius: 4px;
+  background: #3b82f6;
+}
+
+/* =================================
+REMOVE ALL SIDEBAR GLOW
+================================ */
+
+.sidebar *{
+box-shadow:none !important;
+text-shadow:none !important;
+filter:none !important;
+}
+
+.nav-item img,
+.nav-item i,
+.nav-item svg{
+box-shadow:none !important;
+filter:none !important;
+}
+
+.badge{
+box-shadow:none !important;
+background:rgba(255,255,255,0.08) !important;
+border:1px solid rgba(255,255,255,0.12) !important;
+color:#ffffff !important;
+}
+
+.nav-item.active{
+box-shadow:none !important;
+background:rgba(59,130,246,0.12) !important;
+border:1px solid rgba(59,130,246,0.25) !important;
+}
+
+.nav-item.active img{
+box-shadow:none !important;
+filter:none !important;
+}
+
+[data-theme="dark"] .nav-item{
+color:#c9d7f2;
+}
+
+[data-theme="dark"] .nav-item span{
+color:#c9d7f2;
+}
+
+[data-theme="dark"] .nav-item:hover{
+background:rgba(255,255,255,0.05);
+}
+
+[data-theme="dark"] .nav-item.active{
+color:#ffffff;
+}
+
+[data-theme="dark"] .badge{
+background:#0f1f3a !important;
+border:1px solid rgba(255,255,255,0.15) !important;
+color:#ffffff !important;
+}
+
+[data-theme="dark"] .sidebar{
+background:linear-gradient(
+180deg,
+#020b1c,
+#020c20,
+#010917
+);
+}
+
+/* =================================
+RADAR CHART KOMPETENSI SANTRI
+================================ */
+.kompetensi-chart {
+  padding: 24px;
+  border-radius: 16px;
+  background: var(--card); /* Match existing background var */
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.chart-container {
+  height: 320px;
+  position: relative;
+}
+
+.card-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 768px) {
+  .kompetensi-chart .chart-container {
+    height: 250px !important;
+  }
+}
+
+/* ====================================
+MOBILE ABSENSI FIX
+==================================== */
+@media (max-width: 768px) {
+  /* Container Padding Fix */
+  .content {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  /* Spacing Adjustments */
+  #page-absensi-santri .mb-4,
+  #page-absensi-guru .mb-4 {
+    margin-bottom: 12px !important;
+  }
+
+  /* Header Absensi Stack */
+  #page-absensi-santri .page-header,
+  #page-absensi-guru .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  
+  /* Font size refinements */
+  #page-absensi-santri .page-header h2,
+  #page-absensi-guru .page-header h2 {
+    font-size: 20px !important;
+    margin-bottom: 2px;
+  }
+  #page-absensi-santri .page-header p,
+  #page-absensi-guru .page-header p {
+    font-size: 14px;
+  }
+
+  /* Catat Absensi Button Fix */
+  #page-absensi-santri .page-header .btn,
+  #page-absensi-guru .page-header .btn {
+    display: inline-flex;
+    width: auto;
+    min-height: 44px;
+    margin-bottom: 8px;
+  }
+
+  /* Vertical Stack for Filters */
+  #page-absensi-santri .filter-bar,
+  #page-absensi-guru .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px;
+    border-radius: 12px; /* Smaller, more compact border radius */
+    gap: 12px;
+  }
+  
+  /* Full width inputs in filter */
+  #page-absensi-santri .filter-bar .inp,
+  #page-absensi-guru .filter-bar .inp,
+  #page-absensi-santri .filter-bar select,
+  #page-absensi-guru .filter-bar select {
+    max-width: 100% !important;
+    width: 100%;
+    min-height: 44px; /* Touch friendly */
+  }
+
+  /* ------------------------------------------------ */
+  /* TABLE TO CARD LAYOUT CONVERSION FOR MOBILE     */
+  /* ------------------------------------------------ */
+  
+  /* Absensi Santri Card Layout */
+  #page-absensi-santri thead { display: none; }
+  #tbAbsensiSantri { display: block; }
+  #tbAbsensiSantri tr {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    padding: 14px;
+    background: var(--card2);
+  }
+  #tbAbsensiSantri td {
+    padding: 0; 
+    border: none; 
+    display: flex; 
+    align-items: center;
+  }
+  /* Empty state fallback */
+  #tbAbsensiSantri td[colspan] { display: block; grid-column: 1 / -1; text-align: center; justify-content: center; }
+
+  /* Map columns to grid areas */
+  #tbAbsensiSantri td:nth-child(1) { grid-column: 1 / -1; font-size: 11px !important; } /* Tanggal */
+  #tbAbsensiSantri td:nth-child(3) { grid-column: 1 / 2; font-size: 15px; } /* Nama Santri */
+  #tbAbsensiSantri td:nth-child(2) { grid-column: 2 / 3; justify-content: flex-end; } /* Kelas Badge */
+  #tbAbsensiSantri td:nth-child(4) { grid-column: 1 / 2; } /* Status Kehadiran */
+  #tbAbsensiSantri td:nth-child(5) { grid-column: 1 / -1; font-size: 12px !important; margin-top: 4px; } /* Keterangan */
+  #tbAbsensiSantri td:nth-child(6) { grid-column: 2 / 3; justify-content: flex-end; align-self: end; } /* Action Button */
+
+
+  /* Absensi Guru Card Layout */
+  #page-absensi-guru thead { display: none; }
+  #tbAbsensiGuru { display: block; }
+  #tbAbsensiGuru tr {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    padding: 14px;
+    background: var(--card2);
+  }
+  #tbAbsensiGuru td {
+    padding: 0; 
+    border: none; 
+    display: flex; 
+    align-items: center;
+  }
+  /* Empty state fallback */
+  #tbAbsensiGuru td[colspan] { display: block; grid-column: 1 / -1; text-align: center; justify-content: center; }
+
+  /* Map columns to grid areas */
+  #tbAbsensiGuru td:nth-child(1) { grid-column: 1 / -1; font-size: 11px !important; } /* Tanggal */
+  #tbAbsensiGuru td:nth-child(2) { grid-column: 1 / -1; font-size: 15px; } /* Nama Guru */
+  #tbAbsensiGuru td:nth-child(3) { grid-column: 1 / 2; font-size: 12px !important; } /* Jam Mengajar */
+  #tbAbsensiGuru td:nth-child(4) { grid-column: 2 / 3; justify-content: flex-end; } /* Kelas */
+  #tbAbsensiGuru td:nth-child(5) { grid-column: 1 / 2; } /* Status */
+  #tbAbsensiGuru td:nth-child(6) { grid-column: 1 / -1; font-size: 12px !important; margin-top: 4px; } /* Keterangan */
+  #tbAbsensiGuru td:nth-child(7) { grid-column: 2 / 3; justify-content: flex-end; align-self: end; } /* Action Button */
+
+  /* Modal Adjustments specifically for Absensi */
+  .modal { max-height: 90vh !important; }
+  #modalAbsensiSantri .modal,
+  #modalAbsensiGuru .modal {
+    width: 95vw !important;
+    padding: 16px !important;
+  }
+  #modalAbsensiSantri .inp,
+  #modalAbsensiGuru .inp {
+    min-height: 44px; /* Ensured touch friendly inside modal */
+  }
+}
+
+/* ==================================================== */
+/* MOBILE PAGE FIX (Santri, Hafalan, Jadwal)            */
+/* ==================================================== */
+@media (max-width: 768px) {
+  /* 1. GLOBAL MOBILE ADJUSTMENTS */
+  .content { 
+    padding-left: 16px !important; 
+    padding-right: 16px !important; 
+  }
+  .mb-4, .mb-5 { 
+    margin-bottom: 12px !important; 
+  }
+  .btn, .inp, select { 
+    min-height: 44px !important; 
+  }
+  .modal { 
+    width: 95vw !important; 
+    max-height: 90vh !important; 
+  }
+
+  /* 2. DATA SANTRI MOBILE FIXES */
+  #page-santri .header-actions {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+  #page-santri .header-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  #page-santri .filter-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+  #page-santri .filter-bar .inp,
+  #page-santri .filter-bar select {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  #page-santri .tw {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #page-santri table td, 
+  #page-santri table th {
+    font-size: 11px !important;
+    padding: 10px 8px !important;
+    white-space: nowrap;
+  }
+
+  /* 3. HAFALAN QUR'AN MOBILE FIXES */
+  #page-hafalan .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  #page-hafalan .page-header .btn {
+    display: inline-flex !important;
+    width: auto !important;
+    align-self: flex-start;
+    margin-top: 8px;
+  }
+  
+  #page-hafalan .filter-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+  #page-hafalan .filter-bar .inp,
+  #page-hafalan .filter-bar select {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  #page-hafalan .tw {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #page-hafalan table td, 
+  #page-hafalan table th {
+    font-size: 11px !important;
+    padding: 10px 8px !important;
+    white-space: nowrap;
+  }
+  #page-hafalan .badge {
+    font-size: 9px !important;
+    padding: 3px 6px !important;
+  }
+
+  /* 4. JADWAL BTQ MOBILE FIXES */
+  #page-jadwal .card.p-card:nth-of-type(1) {
+    /* Wrapper kalender */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px 12px;
+  }
+  #page-jadwal .cal-grid {
+    /* Paksa grid melewati batas layar agar bisa di-scroll horizontal */
+    min-width: 500px;
+    gap: 2px;
+  }
+  #page-jadwal .cal-hdr {
+    font-size: 9px !important;
+    padding: 6px !important;
+  }
+  #page-jadwal .cal-time {
+    font-size: 9px !important;
+    padding: 6px !important;
+  }
+  #page-jadwal .cal-cell {
+    min-height: 50px;
+    padding: 2px;
+  }
+  #page-jadwal .cal-event {
+    font-size: 9px !important;
+    padding: 4px !important;
+    line-height: 1.2;
+    margin: 1px;
+  }
+  
+  #page-jadwal .tw {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #page-jadwal table td,
+  #page-jadwal table th {
+    font-size: 11px !important;
+    padding: 10px 8px !important;
+    white-space: nowrap;
+  }
+}
 </style>
 </head>
 <body>
@@ -1417,7 +2081,7 @@ border-radius:16px;
   <!-- ── SIDEBAR ── -->
   <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <div class="logo-icon">🕌</div>
+      <div class="logo-icon" onclick="toggleSidebar()" style="cursor:pointer" title="Expand/Collapse">🕌</div>
       <div class="logo-text">
         <div class="brand">BTQ Pro</div>
         <div class="version" id="roleLabel">Manajemen App</div>
@@ -1428,49 +2092,49 @@ border-radius:16px;
     <div class="sidebar-nav">
       <div class="sidebar-section-label">Utama</div>
       <nav id="nav" style="display:flex;flex-direction:column;gap:1px">
-        <div class="nav-item active" data-page="dashboard" onclick="showPage('dashboard')">
+        <div class="nav-item active" data-page="dashboard" data-title="Dashboard" onclick="showPage('dashboard')">
           <span class="nicon">📊</span><span class="nlabel">Dashboard</span>
         </div>
-        <div class="nav-item" data-page="santri" onclick="showPage('santri')">
+        <div class="nav-item" data-page="santri" data-title="Data Santri" onclick="showPage('santri')">
           <span class="nicon">👥</span><span class="nlabel">Data Santri</span>
           <span class="nbadge" id="bSantri">0</span>
         </div>
-        <div class="nav-item" data-page="guru" onclick="showPage('guru')">
+        <div class="nav-item" data-page="guru" data-title="Guru BTQ" onclick="showPage('guru')">
           <span class="nicon">👨‍🏫</span><span class="nlabel">Guru BTQ</span>
           <span class="nbadge" id="bGuru" style="background:var(--acc2);box-shadow:0 0 10px rgba(129,140,248,0.4)">0</span>
         </div>
-        <div class="nav-item" data-page="jadwal" onclick="showPage('jadwal')">
+        <div class="nav-item" data-page="jadwal" data-title="Jadwal BTQ" onclick="showPage('jadwal')">
           <span class="nicon">🗓️</span><span class="nlabel">Jadwal BTQ</span>
         </div>
 
         <div class="sidebar-section-label">Kehadiran</div>
-        <div class="nav-item" data-page="absensi-santri" onclick="showPage('absensi-santri')">
+        <div class="nav-item" data-page="absensi-santri" data-title="Absensi Santri" onclick="showPage('absensi-santri')">
           <span class="nicon">📝</span><span class="nlabel">Absensi Santri</span>
         </div>
-        <div class="nav-item" data-page="absensi-guru" onclick="showPage('absensi-guru')">
+        <div class="nav-item" data-page="absensi-guru" data-title="Absensi Guru" onclick="showPage('absensi-guru')">
           <span class="nicon">🧑‍🏫</span><span class="nlabel">Absensi Guru</span>
         </div>
 
         <div class="sidebar-section-label">Pembelajaran</div>
-        <div class="nav-item" data-page="progress" onclick="showPage('progress')">
+        <div class="nav-item" data-page="progress" data-title="Progress Membaca" onclick="showPage('progress')">
           <span class="nicon">📖</span><span class="nlabel">Progress Membaca</span>
         </div>
-        <div class="nav-item" data-page="hafalan" onclick="showPage('hafalan')">
+        <div class="nav-item" data-page="hafalan" data-title="Hafalan Qur'an" onclick="showPage('hafalan')">
           <span class="nicon">📿</span><span class="nlabel">Hafalan Qur'an</span>
         </div>
-        <div class="nav-item" data-page="juz30" onclick="showPage('juz30')">
+        <div class="nav-item" data-page="juz30" data-title="Hafalan Juz 30" onclick="showPage('juz30')">
           <span class="nicon">🌙</span><span class="nlabel">Hafalan Juz 30</span>
         </div>
 
         <div class="sidebar-section-label">Lainnya</div>
-        <div class="nav-item" data-page="alumni" onclick="showPage('alumni')">
+        <div class="nav-item" data-page="alumni" data-title="Alumni" onclick="showPage('alumni')">
           <span class="nicon">🎓</span><span class="nlabel">Alumni</span>
           <span class="nbadge" id="bAlumni" style="background:var(--gold);color:#000;box-shadow:0 0 10px rgba(251,191,36,0.35)">0</span>
         </div>
-        <div class="nav-item" data-page="riwayat" onclick="showPage('riwayat')">
+        <div class="nav-item" data-page="riwayat" data-title="Riwayat" onclick="showPage('riwayat')">
           <span class="nicon">📋</span><span class="nlabel">Riwayat</span>
         </div>
-        <div class="nav-item" data-page="pengaturan" onclick="showPage('pengaturan')">
+        <div class="nav-item" data-page="pengaturan" data-title="Pengaturan" onclick="showPage('pengaturan')">
           <span class="nicon">⚙️</span><span class="nlabel">Pengaturan</span>
         </div>
       </nav>
@@ -1551,9 +2215,25 @@ border-radius:16px;
           </div>
         </div>
 
-        <div class="card p-card">
-          <div class="section-title">⚡ Aktivitas Terbaru</div>
-          <div id="recentAct"></div>
+        <div class="grid-2 mb-5">
+          <!-- GRAFIK KOMPETENSI SANTRI -->
+          <div class="card p-card kompetensi-chart">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+              <div class="section-title" style="margin-bottom:0">📊 Kompetensi Santri</div>
+              <select class="inp" id="pilihSantriKompetensi" onchange="renderGrafikKompetensi()" style="max-width:200px">
+                <option value="">Rata-rata Semua Santri</option>
+              </select>
+            </div>
+            <div class="ch chart-container" style="height:300px;">
+              <canvas id="chartKompetensi"></canvas>
+            </div>
+          </div>
+
+          <!-- AKTIVITAS TERBARU -->
+          <div class="card p-card">
+            <div class="section-title">⚡ Aktivitas Terbaru</div>
+            <div id="recentAct"></div>
+          </div>
         </div>
       </div>
 
@@ -2198,18 +2878,79 @@ function loadSample() {
   DB.sobj('juz30',juz30data);
 }
 
-function showPage(page) {
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  const pg = document.getElementById('page-'+page);
-  if(pg) pg.classList.add('active');
+function showPage(page){
+  const currentPage = document.querySelector(".page.active");
+  const nextPage = document.getElementById("page-"+page);
+
+  if(!nextPage) return;
+  if(currentPage && currentPage.id === "page-"+page) return; // Cegah re-render & glitch jika klik menu yang sama
+
+  document.querySelectorAll(".nav-item").forEach(n=>{
+    n.classList.remove("active");
+  });
+
   const nav = document.querySelector(`[data-page="${page}"]`);
-  if(nav) nav.classList.add('active');
-  const titles = {dashboard:'Dashboard',santri:'Data Santri',guru:'Guru BTQ',jadwal:'Jadwal BTQ','absensi-santri':'Absensi Santri','absensi-guru':'Absensi Guru',progress:'Progress Membaca',hafalan:"Hafalan Qur'an",juz30:'Hafalan Juz 30',alumni:'Data Alumni',riwayat:'Riwayat Progress',pengaturan:'Pengaturan'};
-  document.getElementById('pageTitle').textContent = titles[page]||'';
+  if(nav) nav.classList.add("active");
+
   closeSidebar();
-  const renders = {dashboard:renderDashboard,santri:renderSantri,guru:renderGuru,jadwal:renderJadwal,'absensi-santri':renderAbsensiSantri,'absensi-guru':renderAbsensiGuru,progress:renderProgress,hafalan:renderHafalan,juz30:renderJuz30,alumni:renderAlumni,riwayat:renderRiwayat,pengaturan:renderPengaturan};
-  if(renders[page]) renders[page]();
+
+  const titles = {
+    dashboard:'Dashboard',
+    santri:'Data Santri',
+    guru:'Guru BTQ',
+    jadwal:'Jadwal BTQ',
+    'absensi-santri':'Absensi Santri',
+    'absensi-guru':'Absensi Guru',
+    progress:'Progress Membaca',
+    hafalan:"Hafalan Qur'an",
+    juz30:'Hafalan Juz 30',
+    alumni:'Data Alumni',
+    riwayat:'Riwayat Progress',
+    pengaturan:'Pengaturan'
+  };
+
+  document.getElementById("pageTitle").textContent = titles[page] || "";
+
+  // Memastikan data chart & tabel tetap tereksekusi
+  const renderTarget = () => {
+    const renders = {dashboard:renderDashboard,santri:renderSantri,guru:renderGuru,jadwal:renderJadwal,'absensi-santri':renderAbsensiSantri,'absensi-guru':renderAbsensiGuru,progress:renderProgress,hafalan:renderHafalan,juz30:renderJuz30,alumni:renderAlumni,riwayat:renderRiwayat,pengaturan:renderPengaturan};
+    if(renders[page]) renders[page]();
+  };
+
+  if(currentPage){
+    // Animasi keluar
+    currentPage.style.opacity="0";
+    currentPage.style.transform="translateY(10px)";
+
+    setTimeout(()=>{
+      currentPage.classList.remove("active");
+      currentPage.style.opacity="";
+      currentPage.style.transform="";
+
+      // Animasi masuk
+      nextPage.classList.add("active");
+      nextPage.style.opacity="0";
+      nextPage.style.transform="translateY(10px)";
+
+      // Render data saat halaman muncul
+      renderTarget();
+
+      setTimeout(()=>{
+        nextPage.style.opacity="1";
+        nextPage.style.transform="translateY(0)";
+        
+        setTimeout(()=>{
+          nextPage.style.opacity="";
+          nextPage.style.transform="";
+        }, 250);
+      },10);
+
+    }, 150); // Jeda transisi halaman
+
+  } else {
+    nextPage.classList.add("active");
+    renderTarget();
+  }
 }
 
 function renderAll() {
@@ -2237,11 +2978,70 @@ function populateDropdowns() {
   const hSantri = document.getElementById('hSantri'); if(hSantri) hSantri.innerHTML = santriOpts;
   const agGuru = document.getElementById('agGuru'); if(agGuru) agGuru.innerHTML = guruOpts;
   const selJuz30 = document.getElementById('selJuz30Santri'); if(selJuz30) selJuz30.innerHTML = '<option value="">-- Pilih Santri Kls 5 --</option>' + s5.map(s => `<option value="${s.id}">${s.nama}</option>`).join('');
+  
+  const selKomp = document.getElementById('pilihSantriKompetensi');
+  if(selKomp) selKomp.innerHTML = '<option value="">Rata-rata Semua Santri</option>' + santri.map(s => `<option value="${s.id}">${s.nama}</option>`).join('');
 }
 
 // ====================================================
 // DASHBOARD & CHARTS
 // ====================================================
+function renderGrafikKompetensi() {
+  const ctx = document.getElementById("chartKompetensi");
+  if(!ctx) return;
+
+  const sid = document.getElementById("pilihSantriKompetensi")?.value;
+  let dataKomp = [75, 70, 80, 65, 85]; // default rata-rata
+  let labelTitle = "Rata-rata Kompetensi";
+
+  if (sid) {
+    const s = DB.get('santri').find(x => x.id === sid);
+    if(s) {
+      labelTitle = `Kompetensi: ${s.nama}`;
+      // Logika pseudo-random berdasarkan ID agar tiap santri berbeda untuk demonstrasi
+      const hash = sid.split('').reduce((a,b)=>a+b.charCodeAt(0),0);
+      dataKomp = [
+        60 + (hash % 30),
+        65 + ((hash*2) % 30),
+        70 + ((hash*3) % 25),
+        60 + ((hash*4) % 35),
+        75 + ((hash*5) % 25)
+      ];
+    }
+  }
+
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+  const tickC = isDark ? '#6b8ab8' : '#4a6890';
+  const gridC = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,30,80,0.08)';
+
+  mkChart('chartKompetensi', 'radar', {
+    labels: ["Tajwid", "Makhraj", "Kelancaran", "Hafalan", "Adab"],
+    datasets: [{
+      label: labelTitle,
+      data: dataKomp,
+      backgroundColor: isDark ? "rgba(56,189,248,0.15)" : "rgba(14,165,233,0.15)",
+      borderColor: isDark ? "#38bdf8" : "#0ea5e9",
+      borderWidth: 2,
+      pointBackgroundColor: isDark ? "#0f172a" : "#ffffff",
+      pointBorderColor: isDark ? "#38bdf8" : "#0ea5e9",
+      pointRadius: 4,
+      pointHoverRadius: 6
+    }]
+  }, {
+    plugins: { 
+      legend: { position: 'bottom', labels: { color: tickC, font: {family: "'Plus Jakarta Sans', sans-serif"} } } 
+    },
+    scales: {
+      r: {
+        angleLines: { color: gridC },
+        grid: { color: gridC },
+        pointLabels: { color: tickC, font: { size: 11, family: "'Plus Jakarta Sans', sans-serif" } },
+        ticks: { display: false, beginAtZero: true, max: 100 }
+      }
+    }
+  });
+}
+
 function renderDashboard() {
   const santri = DB.get('santri'), alumni = DB.get('alumni'), hafalan = DB.get('hafalan'), abs = DB.get('absensi_santri'), aguru = DB.get('absensi_guru');
   const aktif = santri.filter(s=>s.status==='Aktif');
@@ -2335,6 +3135,8 @@ function renderDashboard() {
           <div style="font-size:11px;color:var(--t3);margin-top:3px">📅 ${r.tanggal}</div>
         </div>
       </div>`).join('');
+      
+  renderGrafikKompetensi();
 }
 
 function mkChart(id, type, data, options) {
@@ -2362,7 +3164,7 @@ function renderSantri() {
     ? `<tr><td colspan="8"><div style="text-align:center;padding:48px;color:var(--t2)">👥 Tidak ada data santri</div></td></tr>`
     : data.map(s=>`<tr>
         <td style="font-family:monospace;font-size:11px;color:var(--t3)">${s.id}</td>
-        <td><div style="font-weight:700;font-size:13px">${s.nama}</div>${s.hp?`<div style="font-size:11px;color:var(--t2)">${s.hp}</div>`:''}</td>
+        <td><div class="santri-name">${s.nama}</div>${s.hp?`<div class="santri-phone">${s.hp}</div>`:''}</td>
         <td><span class="badge b-level">Kelas ${s.kelas}</span></td>
         <td style="font-size:12px;color:var(--t2)">${s.tahunAjaran} · ${s.semester}</td>
         <td><span class="badge b-level">${s.level}</span></td>
@@ -3398,11 +4200,14 @@ function toggleTheme() {
   },100);
 }
 
-let sidebarCollapsed=false;
+// PERBAIKI JAVASCRIPT TOGGLE
+let sidebarCollapsed = false;
 function toggleSidebar() {
-  sidebarCollapsed=!sidebarCollapsed;
-  document.getElementById('sidebar').classList.toggle('collapsed',sidebarCollapsed);
-  document.getElementById('main').classList.toggle('expanded',sidebarCollapsed);
+  sidebarCollapsed = !sidebarCollapsed;
+  const sidebar = document.getElementById("sidebar");
+  const main = document.getElementById("main");
+  sidebar.classList.toggle("collapsed", sidebarCollapsed);
+  main.classList.toggle("expanded", sidebarCollapsed);
 }
 
 function openSidebar() {
