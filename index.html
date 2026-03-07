@@ -67,10 +67,10 @@ body {
   font-family: 'Plus Jakarta Sans', sans-serif;
   background: var(--bg);
   color: var(--t1);
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden; /* Menghindari scroll dari body */
   -webkit-font-smoothing: antialiased;
   transition: background var(--transition), color var(--transition);
-  overflow-x: hidden;
 }
 
 /* subtle noise texture overlay */
@@ -195,31 +195,53 @@ body::after {
 /* ─── APP LAYOUT ─────────────────────────────────── */
 #app { 
   display: none; /* Akan diubah menjadi flex oleh JavaScript saat login */
-  min-height: 100vh; 
+  height: 100vh; 
+  overflow: hidden;
   flex-direction: row; 
   position: relative; 
   z-index: 1; 
 }
 
-/* ─── SIDEBAR ────────────────────────────────────── */
+/* ─── SIDEBAR NORMAL ────────────────────────────────────── */
 .sidebar {
   width: var(--sidebar-w);
-  min-height: 100vh;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-shrink: 0;
   background: rgba(7, 14, 28, 0.96);
   backdrop-filter: blur(40px) saturate(200%);
   -webkit-backdrop-filter: blur(40px) saturate(200%);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
   z-index: 200;
   transition: width 0.3s cubic-bezier(0.4,0,0.2,1), transform 0.3s cubic-bezier(0.4,0,0.2,1);
-  overflow: hidden;
   box-shadow: 4px 0 32px rgba(0,0,0,0.4);
-  will-change: transform;
+  will-change: transform, width;
+}
+
+/* Custom Scrollbar Khusus Sidebar */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+[data-theme="light"] .sidebar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* MENU DI DALAM SIDEBAR */
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 20px;
 }
 
 /* Sidebar glow accent line */
@@ -290,8 +312,6 @@ body::after {
 .sidebar-nav {
   padding: 0 10px;
   flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 
 .sidebar-section-label {
@@ -367,17 +387,6 @@ SIDEBAR ACTIVE FIX
 
 .nicon { font-size: 16px; min-width: 20px; text-align: center; transition: transform var(--transition); }
 .nav-item:hover .nicon { transform: scale(1.1); }
-.nbadge {
-  background: var(--acc);
-  color: #000;
-  font-size: 10px;
-  font-weight: 800;
-  padding: 2px 7px;
-  border-radius: 20px;
-  margin-left: auto;
-  flex-shrink: 0;
-  box-shadow: 0 0 10px rgba(56,189,248,0.4);
-}
 
 .sidebar-footer {
   padding: 12px 14px 16px;
@@ -395,12 +404,11 @@ SIDEBAR ACTIVE FIX
 
 /* ─── MAIN CONTENT ───────────────────────────────── */
 .main, #main {
-  margin-left: var(--sidebar-w);
   flex: 1;
   display: flex;
   flex-direction: column;
+  overflow: hidden; /* Mengunci main area agar tidak memicu scroll luar */
   background: var(--bg);
-  transition: margin-left 0.3s cubic-bezier(0.4,0,0.2,1);
   position: relative;
 }
 
@@ -543,9 +551,8 @@ SIDEBAR ACTIVE FIX
   position: relative;
   z-index: 1;
   flex: 1;
-  height: auto;
-  min-height: auto;
-  overflow-y: auto;
+  overflow-y: auto; /* Satu-satunya area yang boleh di-scroll vertikal */
+  overflow-x: hidden;
 }
 
 /* ─── PAGE ANIMATIONS ────────────────────────────── */
@@ -1218,37 +1225,36 @@ GLOBAL MOBILE FIX
 =================================== */
 
 html, body {
-max-width: 100%;
-overflow-x: hidden;
-overflow-y: auto;
+  max-width: 100%;
+  overflow-x: hidden;
+  /* overflow-y: auto; -> Dihapus untuk mencegah double scroll */
 }
 
 * {
-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 #app,
 .content {
-max-width: 100%;
-overflow-x: hidden;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .main, #main {
-  height: auto !important;
   overflow-x: hidden;
-  margin-left: var(--sidebar-w);
   flex: 1;
   background: var(--bg);
   transition: all .3s cubic-bezier(.4,0,.2,1);
   position: relative;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .card,
 .stat,
 .modal {
-max-width: 100%;
+  max-width: 100%;
 }
 
 .page {
@@ -1339,9 +1345,7 @@ z-index:300;
 transform: translateX(0);
 }
 
-.main{
-margin-left:0 !important;
-}
+/* margin-left dihapus karena sudah tidak terpakai di flexbox desktop */
 
 }
 
@@ -1463,16 +1467,17 @@ SIDEBAR COLLAPSED MODE (FIX)
 =================================== */
 .sidebar.collapsed {
   width: 70px;
-  overflow: visible !important;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
-.sidebar.collapsed .sidebar-nav {
-  overflow: visible !important;
-}
+
+/* Remove overflow override from sidebar-nav previously here to allow scroll */
+
 .sidebar.collapsed .nlabel,
 .sidebar.collapsed .logo-text,
 .sidebar.collapsed .sidebar-section-label,
 .sidebar.collapsed .sidebar-footer,
-.sidebar.collapsed .nbadge,
+.sidebar.collapsed .badge,
 .sidebar.collapsed .sidebar-toggle {
   display: none;
 }
@@ -1506,9 +1511,7 @@ SIDEBAR COLLAPSED MODE (FIX)
   pointer-events: none;
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
-.main.expanded {
-  margin-left: 70px;
-}
+
 .sidebar, .main {
   transition: all .3s cubic-bezier(.4,0,.2,1);
 }
@@ -2162,17 +2165,17 @@ MOBILE ABSENSI FIX
 
     <div class="sidebar-nav">
       <div class="sidebar-section-label">Utama</div>
-      <nav id="nav" style="display:flex;flex-direction:column;gap:1px">
+      <nav id="nav" class="sidebar-menu">
         <div class="nav-item active" data-page="dashboard" data-title="Dashboard" onclick="showPage('dashboard')">
           <span class="nicon">📊</span><span class="nlabel">Dashboard</span>
         </div>
         <div class="nav-item" data-page="santri" data-title="Data Santri" onclick="showPage('santri')">
           <span class="nicon">👥</span><span class="nlabel">Data Santri</span>
-          <span class="nbadge" id="bSantri">0</span>
+          <span class="badge" id="bSantri">0</span>
         </div>
         <div class="nav-item" data-page="guru" data-title="Guru BTQ" onclick="showPage('guru')">
           <span class="nicon">👨‍🏫</span><span class="nlabel">Guru BTQ</span>
-          <span class="nbadge" id="bGuru" style="background:var(--acc2);box-shadow:0 0 10px rgba(129,140,248,0.4)">0</span>
+          <span class="badge" id="bGuru">0</span>
         </div>
         <div class="nav-item" data-page="jadwal" data-title="Jadwal BTQ" onclick="showPage('jadwal')">
           <span class="nicon">🗓️</span><span class="nlabel">Jadwal BTQ</span>
@@ -2200,7 +2203,7 @@ MOBILE ABSENSI FIX
         <div class="sidebar-section-label">Lainnya</div>
         <div class="nav-item" data-page="alumni" data-title="Alumni" onclick="showPage('alumni')">
           <span class="nicon">🎓</span><span class="nlabel">Alumni</span>
-          <span class="nbadge" id="bAlumni" style="background:var(--gold);color:#000;box-shadow:0 0 10px rgba(251,191,36,0.35)">0</span>
+          <span class="badge" id="bAlumni">0</span>
         </div>
         <div class="nav-item" data-page="riwayat" data-title="Riwayat" onclick="showPage('riwayat')">
           <span class="nicon">📋</span><span class="nlabel">Riwayat</span>
@@ -4276,9 +4279,7 @@ let sidebarCollapsed = false;
 function toggleSidebar() {
   sidebarCollapsed = !sidebarCollapsed;
   const sidebar = document.getElementById("sidebar");
-  const main = document.getElementById("main");
   sidebar.classList.toggle("collapsed", sidebarCollapsed);
-  main.classList.toggle("expanded", sidebarCollapsed);
 }
 
 function openSidebar() {
@@ -4364,6 +4365,15 @@ function fixPageHeight(){
 }
 window.addEventListener("load", fixPageHeight);
 window.addEventListener("resize", fixPageHeight);
+
+// FIX SIDEBAR SCROLL
+function fixSidebarScroll(){
+  const sidebar = document.querySelector(".sidebar");
+  if(!sidebar) return;
+  sidebar.style.overflowY = "auto";
+}
+window.addEventListener("load", fixSidebarScroll);
+window.addEventListener("resize", fixSidebarScroll);
 
 </script>
 </body>
