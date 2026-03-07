@@ -1254,6 +1254,150 @@ tbody tr:last-child td { border-bottom: none; }
   .filter-bar { flex-direction: column; align-items: stretch; }
   .filter-bar .inp, .filter-bar select { max-width: 100% !important; }
 }
+
+/* ==================================================== */
+/* MOBILE ABSENSI FIX                                   */
+/* ==================================================== */
+@media (max-width: 768px) {
+  /* Container Padding Fix */
+  .content {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  /* Spacing Adjustments */
+  #page-absensi-santri .mb-4,
+  #page-absensi-guru .mb-4 {
+    margin-bottom: 12px !important;
+  }
+
+  /* Header Absensi Stack */
+  #page-absensi-santri .page-header,
+  #page-absensi-guru .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  
+  /* Font size refinements */
+  #page-absensi-santri .page-header h2,
+  #page-absensi-guru .page-header h2 {
+    font-size: 20px !important;
+    margin-bottom: 2px;
+  }
+  #page-absensi-santri .page-header p,
+  #page-absensi-guru .page-header p {
+    font-size: 14px;
+  }
+
+  /* Catat Absensi Button Fix */
+  #page-absensi-santri .page-header .btn,
+  #page-absensi-guru .page-header .btn {
+    display: inline-flex;
+    width: auto;
+    min-height: 44px;
+    margin-bottom: 8px;
+  }
+
+  /* Vertical Stack for Filters */
+  #page-absensi-santri .filter-bar,
+  #page-absensi-guru .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px;
+    border-radius: 12px; /* Smaller, more compact border radius */
+    gap: 12px;
+  }
+  
+  /* Full width inputs in filter */
+  #page-absensi-santri .filter-bar .inp,
+  #page-absensi-guru .filter-bar .inp,
+  #page-absensi-santri .filter-bar select,
+  #page-absensi-guru .filter-bar select {
+    max-width: 100% !important;
+    width: 100%;
+    min-height: 44px; /* Touch friendly */
+  }
+
+  /* ------------------------------------------------ */
+  /* TABLE TO CARD LAYOUT CONVERSION FOR MOBILE     */
+  /* ------------------------------------------------ */
+  
+  /* Absensi Santri Card Layout */
+  #page-absensi-santri thead { display: none; }
+  #tbAbsensiSantri { display: block; }
+  #tbAbsensiSantri tr {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    padding: 14px;
+    background: var(--card2);
+  }
+  #tbAbsensiSantri td {
+    padding: 0; 
+    border: none; 
+    display: flex; 
+    align-items: center;
+  }
+  /* Empty state fallback */
+  #tbAbsensiSantri td[colspan] { display: block; grid-column: 1 / -1; text-align: center; justify-content: center; }
+
+  /* Map columns to grid areas */
+  #tbAbsensiSantri td:nth-child(1) { grid-column: 1 / -1; font-size: 11px !important; } /* Tanggal */
+  #tbAbsensiSantri td:nth-child(3) { grid-column: 1 / 2; font-size: 15px; } /* Nama Santri */
+  #tbAbsensiSantri td:nth-child(2) { grid-column: 2 / 3; justify-content: flex-end; } /* Kelas Badge */
+  #tbAbsensiSantri td:nth-child(4) { grid-column: 1 / 2; } /* Status Kehadiran */
+  #tbAbsensiSantri td:nth-child(5) { grid-column: 1 / -1; font-size: 12px !important; margin-top: 4px; } /* Keterangan */
+  #tbAbsensiSantri td:nth-child(6) { grid-column: 2 / 3; justify-content: flex-end; align-self: end; } /* Action Button */
+
+
+  /* Absensi Guru Card Layout */
+  #page-absensi-guru thead { display: none; }
+  #tbAbsensiGuru { display: block; }
+  #tbAbsensiGuru tr {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    padding: 14px;
+    background: var(--card2);
+  }
+  #tbAbsensiGuru td {
+    padding: 0; 
+    border: none; 
+    display: flex; 
+    align-items: center;
+  }
+  /* Empty state fallback */
+  #tbAbsensiGuru td[colspan] { display: block; grid-column: 1 / -1; text-align: center; justify-content: center; }
+
+  /* Map columns to grid areas */
+  #tbAbsensiGuru td:nth-child(1) { grid-column: 1 / -1; font-size: 11px !important; } /* Tanggal */
+  #tbAbsensiGuru td:nth-child(2) { grid-column: 1 / -1; font-size: 15px; } /* Nama Guru */
+  #tbAbsensiGuru td:nth-child(3) { grid-column: 1 / 2; font-size: 12px !important; } /* Jam Mengajar */
+  #tbAbsensiGuru td:nth-child(4) { grid-column: 2 / 3; justify-content: flex-end; } /* Kelas */
+  #tbAbsensiGuru td:nth-child(5) { grid-column: 1 / 2; } /* Status */
+  #tbAbsensiGuru td:nth-child(6) { grid-column: 1 / -1; font-size: 12px !important; margin-top: 4px; } /* Keterangan */
+  #tbAbsensiGuru td:nth-child(7) { grid-column: 2 / 3; justify-content: flex-end; align-self: end; } /* Action Button */
+
+  /* Modal Adjustments specifically for Absensi */
+  .modal { max-height: 90vh !important; }
+  #modalAbsensiSantri .modal,
+  #modalAbsensiGuru .modal {
+    width: 95vw !important;
+    padding: 16px !important;
+  }
+  #modalAbsensiSantri .inp,
+  #modalAbsensiGuru .inp {
+    min-height: 44px; /* Ensured touch friendly inside modal */
+  }
+}
 </style>
 </head>
 <body>
