@@ -6,467 +6,1666 @@
 <title>BTQ Pro – Manajemen BTQ Sekolah</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+/* ─── DESIGN TOKENS ──────────────────────────────── */
 :root {
-  --bg: #070d1a;
-  --bg2: #0c1526;
-  --card: #111d33;
-  --card2: #162238;
-  --border: #1e3354;
-  --t1: #e4eeff;
-  --t2: #7a9cc4;
-  --acc: #38bdf8;
-  --acc2: #818cf8;
-  --acc3: #34d399;
-  --acc4: #fb923c;
-  --acc5: #f472b6;
-  --gold: #fbbf24;
-  --red: #f87171;
-  --sidebar-w: 260px;
+  --bg:        #04080f;
+  --bg2:       #070e1c;
+  --bg3:       #0a1428;
+  --card:      rgba(12, 22, 45, 0.72);
+  --card2:     rgba(14, 26, 52, 0.60);
+  --glass:     rgba(255,255,255,0.035);
+  --glass2:    rgba(255,255,255,0.06);
+  --border:    rgba(255,255,255,0.07);
+  --border2:   rgba(255,255,255,0.12);
+  --t1:        #f0f6ff;
+  --t2:        #6b8ab8;
+  --t3:        #3d5a82;
+  --acc:       #38bdf8;
+  --acc2:      #818cf8;
+  --acc3:      #34d399;
+  --acc4:      #fb923c;
+  --acc5:      #f472b6;
+  --gold:      #fbbf24;
+  --red:       #f87171;
+  --glow-blue: 0 0 32px rgba(56,189,248,0.22);
+  --glow-purp: 0 0 32px rgba(129,140,248,0.22);
+  --glow-grn:  0 0 32px rgba(52,211,153,0.18);
+  --sidebar-w: 264px;
+  --radius:    14px;
+  --radius-lg: 20px;
+  --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 }
 [data-theme="light"] {
-  --bg: #f0f5ff;
-  --bg2: #e6edf8;
-  --card: #ffffff;
-  --card2: #f4f8ff;
-  --border: #c5d5ee;
-  --t1: #0c1a33;
-  --t2: #4a6890;
-  --acc: #0ea5e9;
-  --acc2: #6366f1;
-  --acc3: #10b981;
-  --acc4: #f97316;
-  --acc5: #ec4899;
+  --bg:        #f2f5fb;
+  --bg2:       #eaeff8;
+  --bg3:       #e0e8f5;
+  --card:      rgba(255,255,255,0.85);
+  --card2:     rgba(244,248,255,0.90);
+  --glass:     rgba(255,255,255,0.7);
+  --glass2:    rgba(255,255,255,0.85);
+  --border:    rgba(0,60,140,0.09);
+  --border2:   rgba(0,60,140,0.15);
+  --t1:        #0c1a33;
+  --t2:        #4a6890;
+  --t3:        #8aaace;
+  --acc:       #0ea5e9;
+  --acc2:      #6366f1;
+  --acc3:      #10b981;
+  --acc4:      #f97316;
+  --acc5:      #ec4899;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;transition:background .3s,color .3s}
-/* Login */
-.login-wrap{display:none;min-height:100vh;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse at 60% 40%,#1e1b4b 0%,#0a0f20 60%)}
-.login-card{background:rgba(15,25,50,.85);backdrop-filter:blur(24px);border:1px solid rgba(56,189,248,.18);border-radius:28px;padding:44px 40px;width:100%;max-width:420px;box-shadow:0 30px 60px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.05);animation:slideUp .55s cubic-bezier(.22,1,.36,1) both}
-[data-theme="light"] .login-card{background:rgba(255,255,255,.88);border:1px solid rgba(56,189,248,.25);box-shadow:0 20px 50px rgba(0,50,120,.12)}
-@keyframes slideUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
-/* App layout */
-#app{display:none;min-height:100vh;flex-direction:row}
-.sidebar{width:var(--sidebar-w);min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;z-index:200;transition:transform .3s,width .3s;overflow:hidden}
-.sidebar.collapsed{width:72px}
-.sidebar.collapsed .nlabel,.sidebar.collapsed .logo-text,.sidebar.collapsed .nbadge{display:none}
-.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;background:var(--bg);transition:margin-left .3s}
-.main.expanded{margin-left:72px}
-.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:13px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-/* Cards */
-.card{background:var(--card);border:1px solid var(--border);border-radius:16px;transition:transform .2s,box-shadow .2s}
-.card:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.2)}
-.stat{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;position:relative;overflow:hidden}
-.stat::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:16px 16px 0 0}
-.stat.s-blue::after{background:var(--acc)}
-.stat.s-green::after{background:var(--acc3)}
-.stat.s-purple::after{background:var(--acc2)}
-.stat.s-orange::after{background:var(--acc4)}
-.stat.s-pink::after{background:var(--acc5)}
-.stat.s-gold::after{background:var(--gold)}
-/* Nav */
-.nav-item{display:flex;align-items:center;gap:11px;padding:10px 14px;border-radius:10px;cursor:pointer;color:var(--t2);font-size:14px;font-weight:500;transition:all .18s;text-decoration:none;white-space:nowrap}
-.nav-item:hover{background:var(--card);color:var(--t1)}
-.nav-item.active{background:linear-gradient(135deg,rgba(56,189,248,.15),rgba(129,140,248,.1));color:var(--acc);border:1px solid rgba(56,189,248,.2)}
-.nicon{font-size:17px;min-width:22px;text-align:center}
-.nbadge{background:var(--acc);color:#000;font-size:10px;font-weight:800;padding:1px 7px;border-radius:10px;margin-left:auto}
-/* Buttons */
-.btn{padding:8px 16px;border-radius:9px;font-weight:600;cursor:pointer;transition:all .18s;border:none;font-family:'Outfit',sans-serif;font-size:13px;display:inline-flex;align-items:center;gap:6px}
-.btn-p{background:var(--acc);color:#05111f}
-.btn-p:hover{opacity:.88;transform:translateY(-1px)}
-.btn-s{background:transparent;border:1px solid var(--border);color:var(--t2)}
-.btn-s:hover{border-color:var(--acc);color:var(--acc)}
-.btn-d{background:var(--red);color:#fff}
-.btn-d:hover{opacity:.88}
-.btn-g{background:var(--acc3);color:#05111f}
-.btn-w{background:var(--gold);color:#05111f}
-.btn-purple{background:var(--acc2);color:#fff}
-/* Inputs */
-.inp{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:10px 14px;color:var(--t1);font-family:'Outfit',sans-serif;font-size:14px;transition:border-color .2s;outline:none}
-.inp:focus{border-color:var(--acc)}
-.inp option{background:var(--card)}
-label{font-size:12px;font-weight:600;color:var(--t2);display:block;margin-bottom:5px}
-/* Badges */
-.badge{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
-.b-aktif{background:rgba(52,211,153,.15);color:var(--acc3);border:1px solid rgba(52,211,153,.25)}
-.b-alumni{background:rgba(251,191,36,.15);color:var(--gold);border:1px solid rgba(251,191,36,.25)}
-.b-level{background:rgba(56,189,248,.15);color:var(--acc);border:1px solid rgba(56,189,248,.2)}
-.b-hadir{background:rgba(52,211,153,.15);color:var(--acc3)}
-.b-izin{background:rgba(56,189,248,.12);color:var(--acc)}
-.b-sakit{background:rgba(251,191,36,.15);color:var(--gold)}
-.b-alpha{background:rgba(248,113,113,.15);color:var(--red)}
-.b-hafal{background:rgba(52,211,153,.15);color:var(--acc3)}
-.b-proses{background:rgba(251,191,36,.15);color:var(--gold)}
-.b-belum{background:rgba(248,113,113,.15);color:var(--red)}
-/* Table */
-.tw{overflow-x:auto}
-table{width:100%;border-collapse:collapse}
-th{background:var(--card2);color:var(--t2);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:11px 15px;text-align:left}
-td{padding:11px 15px;border-bottom:1px solid var(--border);font-size:13px}
-tr:hover td{background:var(--card2)}
-/* Modal */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(5px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px}
-.modal{background:var(--card);border:1px solid var(--border);border-radius:20px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;padding:26px}
-/* Pages */
-.page{display:none}
-.page.active{display:block;animation:fadeIn .28s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-/* Progress bar */
-.pbar{height:7px;background:var(--border);border-radius:4px;overflow:hidden}
-.pfill{height:100%;border-radius:4px;transition:width .5s ease}
-/* Arabic */
-.ar{font-family:'Amiri',serif;direction:rtl}
-/* Misc */
-.form2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media(max-width:600px){.form2{grid-template-columns:1fr}}
-::-webkit-scrollbar{width:5px;height:5px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-.sidebar-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199}
-.sidebar-ov.show{display:block}
-@media(max-width:768px){
-  .sidebar{transform:translateX(-100%)}
-  .sidebar.open{transform:none}
-  .main{margin-left:0!important}
+
+/* ─── RESET & BASE ───────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg);
+  color: var(--t1);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  transition: background var(--transition), color var(--transition);
+  overflow-x: hidden;
 }
-/* Calendar / Schedule */
-.cal-grid{display:grid;grid-template-columns:80px repeat(5,1fr);gap:2px}
-.cal-hdr{font-size:11px;font-weight:700;text-transform:uppercase;color:var(--t2);padding:8px;text-align:center}
-.cal-time{font-size:11px;color:var(--t2);padding:8px;display:flex;align-items:center;justify-content:flex-end;white-space:nowrap}
-.cal-cell{min-height:60px;background:var(--card2);border-radius:6px;border:1px solid var(--border)}
-.cal-event{border-radius:6px;padding:6px 8px;font-size:11px;font-weight:600;cursor:pointer;transition:opacity .2s}
-.cal-event:hover{opacity:.8}
-/* Absensi quick */
-.abs-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
-/* Juz 30 grid */
-.juz-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
-.juz-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;transition:border-color .2s}
-.juz-card.done{border-color:var(--acc3)}
-.juz-card.inprog{border-color:var(--gold)}
-/* Toast */
-#toast{position:fixed;bottom:22px;right:22px;z-index:9999;display:none;max-width:340px}
-.toast-inner{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px 17px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,.35)}
-/* Chart container */
-.ch{position:relative;height:250px}
-.ch-sm{position:relative;height:200px}
-/* Laporan */
-@media print{
-  .no-print{display:none!important}
-  body{background:#fff;color:#000}
-  .card,.stat{border:1px solid #ccc}
+
+/* subtle noise texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 0;
 }
+
+/* ambient glow blobs */
+body::after {
+  content: '';
+  position: fixed;
+  top: -20vh;
+  left: -10vw;
+  width: 60vw;
+  height: 60vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(56,189,248,0.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── SCROLLBAR ──────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--t3); }
+
+/* ─── LOGIN PAGE ─────────────────────────────────── */
+.login-wrap {
+  display: none;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
+}
+
+.login-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(56,189,248,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 80%, rgba(129,140,248,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 50% 50%, rgba(52,211,153,0.06) 0%, transparent 70%);
+  animation: ambientPulse 8s ease-in-out infinite alternate;
+}
+
+@keyframes ambientPulse {
+  0%   { opacity: 0.6; transform: scale(1); }
+  100% { opacity: 1;   transform: scale(1.05); }
+}
+
+/* Floating grid dots */
+.login-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+}
+
+.login-card {
+  position: relative;
+  z-index: 10;
+  background: rgba(10, 20, 42, 0.80);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 28px;
+  padding: 48px 44px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow:
+    0 40px 80px rgba(0,0,0,0.6),
+    0 0 0 1px rgba(255,255,255,0.04),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+  animation: loginSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+[data-theme="light"] .login-card {
+  background: rgba(255,255,255,0.88);
+  border: 1px solid rgba(0,60,140,0.12);
+  box-shadow: 0 30px 60px rgba(0,30,90,0.14), 0 0 0 1px rgba(0,60,140,0.06);
+}
+
+@keyframes loginSlideUp {
+  from { opacity: 0; transform: translateY(32px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)   scale(1); }
+}
+
+.login-logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(56,189,248,0.2), rgba(129,140,248,0.2));
+  border: 1px solid rgba(56,189,248,0.3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 40px rgba(56,189,248,0.25), 0 8px 24px rgba(0,0,0,0.3);
+  animation: logoFloat 4s ease-in-out infinite;
+}
+
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+/* ─── APP LAYOUT ─────────────────────────────────── */
+#app { display: none; min-height: 100vh; flex-direction: row; position: relative; z-index: 1; }
+
+/* ─── SIDEBAR ────────────────────────────────────── */
+.sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: rgba(7, 14, 28, 0.96);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 200;
+  transition: width 0.3s cubic-bezier(0.4,0,0.2,1), transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  overflow: hidden;
+  box-shadow: 4px 0 32px rgba(0,0,0,0.4);
+}
+
+/* Sidebar glow accent line */
+.sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(56,189,248,0.4), transparent);
+}
+
+[data-theme="light"] .sidebar {
+  background: rgba(255,255,255,0.95);
+  box-shadow: 4px 0 24px rgba(0,30,80,0.08);
+}
+
+.sidebar.collapsed { width: 72px; }
+.sidebar.collapsed .nlabel,
+.sidebar.collapsed .logo-text,
+.sidebar.collapsed .nbadge,
+.sidebar.collapsed .sidebar-section-label { display: none; }
+
+.sidebar-header {
+  padding: 20px 16px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(56,189,248,0.2), rgba(129,140,248,0.2));
+  border: 1px solid rgba(56,189,248,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+  box-shadow: 0 0 20px rgba(56,189,248,0.15);
+  transition: box-shadow var(--transition);
+}
+
+.logo-icon:hover { box-shadow: 0 0 30px rgba(56,189,248,0.3); }
+
+.logo-text .brand { font-size: 15px; font-weight: 800; letter-spacing: -0.3px; color: var(--t1); }
+.logo-text .version { font-size: 10px; color: var(--t2); font-weight: 500; margin-top: 1px; }
+
+.sidebar-toggle {
+  margin-left: auto;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  color: var(--t2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+
+.sidebar-toggle:hover { background: var(--glass2); color: var(--t1); border-color: var(--border2); }
+
+.sidebar-nav {
+  padding: 0 10px;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sidebar-section-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--t3);
+  padding: 14px 8px 6px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--t2);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all var(--transition);
+  text-decoration: none;
+  white-space: nowrap;
+  position: relative;
+  margin-bottom: 1px;
+}
+
+.nav-item:hover {
+  background: var(--glass2);
+  color: var(--t1);
+  transform: translateX(2px);
+}
+
+.nav-item.active {
+  background: linear-gradient(135deg, rgba(56,189,248,0.14), rgba(129,140,248,0.10));
+  color: #fff;
+  border: 1px solid rgba(56,189,248,0.18);
+  box-shadow: 0 0 20px rgba(56,189,248,0.08), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+.nav-item.active .nicon {
+  filter: drop-shadow(0 0 6px rgba(56,189,248,0.7));
+}
+
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  background: linear-gradient(180deg, var(--acc), var(--acc2));
+  border-radius: 0 3px 3px 0;
+  box-shadow: 0 0 8px rgba(56,189,248,0.6);
+}
+
+.nicon { font-size: 16px; min-width: 20px; text-align: center; transition: transform var(--transition); }
+.nav-item:hover .nicon { transform: scale(1.1); }
+.nbadge {
+  background: var(--acc);
+  color: #000;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 20px;
+  margin-left: auto;
+  box-shadow: 0 0 10px rgba(56,189,248,0.4);
+}
+
+.sidebar-footer {
+  padding: 12px 14px 16px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.sidebar-arabic {
+  background: linear-gradient(135deg, rgba(251,191,36,0.08), rgba(251,191,36,0.04));
+  border: 1px solid rgba(251,191,36,0.15);
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+}
+
+/* ─── MAIN CONTENT ───────────────────────────────── */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  min-height: 100vh;
+  background: var(--bg);
+  transition: margin-left 0.3s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+}
+
+.main.expanded { margin-left: 72px; }
+
+/* ─── TOPBAR ─────────────────────────────────────── */
+.topbar {
+  background: rgba(7, 14, 28, 0.85);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  padding: 13px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 32px rgba(0,0,0,0.3);
+}
+
+[data-theme="light"] .topbar {
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 1px 16px rgba(0,30,80,0.08);
+}
+
+.topbar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(56,189,248,0.2) 50%, transparent 100%);
+}
+
+.page-title-wrap { display: flex; align-items: center; gap: 12px; }
+.page-title { font-weight: 800; font-size: 16px; letter-spacing: -0.3px; }
+
+.search-wrap {
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--t2);
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.topbar-search {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 14px 8px 36px;
+  color: var(--t1);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  outline: none;
+  transition: all var(--transition);
+  width: 220px;
+}
+
+.topbar-search:focus {
+  border-color: rgba(56,189,248,0.4);
+  background: var(--glass2);
+  box-shadow: 0 0 0 3px rgba(56,189,248,0.08), var(--glow-blue);
+  width: 260px;
+}
+
+.topbar-actions { display: flex; align-items: center; gap: 8px; }
+
+.topbar-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  color: var(--t2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 15px;
+  transition: all var(--transition);
+}
+
+.topbar-btn:hover {
+  background: var(--glass2);
+  color: var(--t1);
+  border-color: var(--border2);
+  transform: translateY(-1px);
+}
+
+.topbar-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+  margin: 0 4px;
+}
+
+.user-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--acc), var(--acc2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  box-shadow: 0 0 16px rgba(56,189,248,0.25);
+}
+
+.logout-btn {
+  padding: 7px 14px;
+  border-radius: 9px;
+  background: rgba(248,113,113,0.1);
+  border: 1px solid rgba(248,113,113,0.2);
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.logout-btn:hover {
+  background: rgba(248,113,113,0.18);
+  border-color: rgba(248,113,113,0.4);
+  transform: translateY(-1px);
+}
+
+/* ─── CONTENT AREA ───────────────────────────────── */
+.content { padding: 24px; position: relative; z-index: 1; }
+
+/* ─── PAGE ANIMATIONS ────────────────────────────── */
+.page { display: none; }
+.page.active {
+  display: block;
+  animation: pageIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── PAGE HEADER ────────────────────────────────── */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.page-header h2 {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+}
+
+.page-header p { color: var(--t2); font-size: 13px; }
+
+.header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ─── GLASS CARDS ────────────────────────────────── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.24),
+    0 2px 8px rgba(0,0,0,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 48px rgba(0,0,0,0.32),
+    0 4px 16px rgba(0,0,0,0.16),
+    inset 0 1px 0 rgba(255,255,255,0.07);
+  border-color: var(--border2);
+}
+
+[data-theme="light"] .card {
+  background: rgba(255,255,255,0.88);
+  box-shadow: 0 4px 20px rgba(0,30,80,0.08), 0 1px 4px rgba(0,30,80,0.05);
+}
+
+/* ─── STAT CARDS ─────────────────────────────────── */
+.stat {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--transition), box-shadow var(--transition);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.stat:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+/* Top accent bar */
+.stat::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+/* Background glow */
+.stat::after {
+  content: '';
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  opacity: 0.12;
+  transition: opacity var(--transition);
+}
+
+.stat:hover::after { opacity: 0.2; }
+
+.stat.s-blue::before  { background: linear-gradient(90deg, var(--acc), rgba(56,189,248,0.3)); }
+.stat.s-green::before { background: linear-gradient(90deg, var(--acc3), rgba(52,211,153,0.3)); }
+.stat.s-purple::before{ background: linear-gradient(90deg, var(--acc2), rgba(129,140,248,0.3)); }
+.stat.s-orange::before{ background: linear-gradient(90deg, var(--acc4), rgba(251,146,60,0.3)); }
+.stat.s-pink::before  { background: linear-gradient(90deg, var(--acc5), rgba(244,114,182,0.3)); }
+.stat.s-gold::before  { background: linear-gradient(90deg, var(--gold), rgba(251,191,36,0.3)); }
+
+.stat.s-blue::after   { background: var(--acc); }
+.stat.s-green::after  { background: var(--acc3); }
+.stat.s-purple::after { background: var(--acc2); }
+.stat.s-orange::after { background: var(--acc4); }
+.stat.s-pink::after   { background: var(--acc5); }
+.stat.s-gold::after   { background: var(--gold); }
+
+.stat-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 14px;
+  transition: transform var(--transition);
+}
+
+.stat:hover .stat-icon { transform: scale(1.08); }
+
+.stat.s-blue  .stat-icon { background: rgba(56,189,248,0.12);  border: 1px solid rgba(56,189,248,0.2); }
+.stat.s-green .stat-icon { background: rgba(52,211,153,0.12);  border: 1px solid rgba(52,211,153,0.2); }
+.stat.s-purple.stat-icon, .stat.s-purple .stat-icon { background: rgba(129,140,248,0.12); border: 1px solid rgba(129,140,248,0.2); }
+.stat.s-orange .stat-icon { background: rgba(251,146,60,0.12);  border: 1px solid rgba(251,146,60,0.2); }
+.stat.s-pink  .stat-icon { background: rgba(244,114,182,0.12); border: 1px solid rgba(244,114,182,0.2); }
+.stat.s-gold  .stat-icon { background: rgba(251,191,36,0.12);  border: 1px solid rgba(251,191,36,0.2); }
+
+.stat-value {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 6px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.stat-label { font-size: 12px; font-weight: 500; color: var(--t2); letter-spacing: 0.2px; }
+
+/* ─── BUTTONS ────────────────────────────────────── */
+.btn {
+  padding: 9px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  border: none;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: -0.1px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0);
+  transition: background var(--transition);
+}
+
+.btn:hover::after { background: rgba(255,255,255,0.06); }
+.btn:active { transform: scale(0.97); }
+
+.btn-p {
+  background: linear-gradient(135deg, var(--acc), rgba(56,189,248,0.8));
+  color: #02111e;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(56,189,248,0.28), 0 1px 3px rgba(0,0,0,0.2);
+}
+.btn-p:hover {
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: 0 8px 24px rgba(56,189,248,0.38), 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.btn-s {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  color: var(--t2);
+  backdrop-filter: blur(8px);
+}
+.btn-s:hover {
+  border-color: var(--acc);
+  color: var(--acc);
+  background: rgba(56,189,248,0.06);
+  transform: translateY(-1px);
+}
+
+.btn-d {
+  background: rgba(248,113,113,0.12);
+  border: 1px solid rgba(248,113,113,0.2);
+  color: var(--red);
+}
+.btn-d:hover {
+  background: rgba(248,113,113,0.2);
+  border-color: rgba(248,113,113,0.4);
+  transform: translateY(-1px);
+}
+
+.btn-g {
+  background: linear-gradient(135deg, var(--acc3), rgba(52,211,153,0.8));
+  color: #02161a;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(52,211,153,0.25);
+}
+.btn-g:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(52,211,153,0.35); }
+
+.btn-w {
+  background: linear-gradient(135deg, var(--gold), rgba(251,191,36,0.8));
+  color: #1a0f00;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(251,191,36,0.25);
+}
+.btn-w:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(251,191,36,0.35); }
+
+.btn-purple {
+  background: linear-gradient(135deg, var(--acc2), rgba(129,140,248,0.8));
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(129,140,248,0.28);
+}
+
+/* ─── FORM INPUTS ────────────────────────────────── */
+label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--t2);
+  display: block;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.inp {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: var(--t1);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  transition: all var(--transition);
+  outline: none;
+}
+
+.inp:focus {
+  border-color: rgba(56,189,248,0.5);
+  background: rgba(56,189,248,0.04);
+  box-shadow: 0 0 0 3px rgba(56,189,248,0.08);
+}
+
+.inp option { background: #0a1428; }
+
+[data-theme="light"] .inp {
+  background: rgba(0,0,0,0.03);
+}
+[data-theme="light"] .inp option { background: #fff; }
+
+/* ─── BADGES ─────────────────────────────────────── */
+.badge {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.b-aktif  { background: rgba(52,211,153,0.12);  color: var(--acc3); border: 1px solid rgba(52,211,153,0.25); }
+.b-alumni { background: rgba(251,191,36,0.12);  color: var(--gold); border: 1px solid rgba(251,191,36,0.25); }
+.b-level  { background: rgba(56,189,248,0.10);  color: var(--acc);  border: 1px solid rgba(56,189,248,0.2); }
+.b-hadir  { background: rgba(52,211,153,0.12);  color: var(--acc3); border: 1px solid rgba(52,211,153,0.2); }
+.b-izin   { background: rgba(56,189,248,0.10);  color: var(--acc);  border: 1px solid rgba(56,189,248,0.2); }
+.b-sakit  { background: rgba(251,191,36,0.12);  color: var(--gold); border: 1px solid rgba(251,191,36,0.2); }
+.b-alpha  { background: rgba(248,113,113,0.12); color: var(--red);  border: 1px solid rgba(248,113,113,0.2); }
+.b-hafal  { background: rgba(52,211,153,0.12);  color: var(--acc3); border: 1px solid rgba(52,211,153,0.2); }
+.b-proses { background: rgba(251,191,36,0.12);  color: var(--gold); border: 1px solid rgba(251,191,36,0.2); }
+.b-belum  { background: rgba(248,113,113,0.12); color: var(--red);  border: 1px solid rgba(248,113,113,0.2); }
+
+/* ─── TABLE ──────────────────────────────────────── */
+.tw { overflow-x: auto; border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
+
+table { width: 100%; border-collapse: collapse; }
+
+thead tr { border-bottom: 1px solid var(--border); }
+
+th {
+  background: rgba(0,0,0,0.15);
+  color: var(--t2);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 12px 16px;
+  text-align: left;
+}
+
+[data-theme="light"] th { background: rgba(0,30,80,0.04); }
+
+td {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 13px;
+  transition: background var(--transition);
+}
+
+[data-theme="light"] td { border-bottom: 1px solid rgba(0,30,80,0.06); }
+
+tbody tr { transition: background var(--transition); }
+tbody tr:hover td { background: rgba(56,189,248,0.04); }
+tbody tr:last-child td { border-bottom: none; }
+
+/* ─── MODAL ──────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: overlayIn 0.2s ease;
+}
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal {
+  background: rgba(10, 20, 42, 0.95);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 22px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 92vh;
+  overflow-y: auto;
+  padding: 28px;
+  box-shadow:
+    0 40px 80px rgba(0,0,0,0.6),
+    0 0 0 1px rgba(255,255,255,0.04),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  animation: modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+[data-theme="light"] .modal {
+  background: rgba(255,255,255,0.96);
+  border-color: rgba(0,60,140,0.12);
+  box-shadow: 0 24px 60px rgba(0,30,80,0.16);
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-title { font-weight: 800; font-size: 17px; letter-spacing: -0.3px; }
+
+.modal-close {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  color: var(--t2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all var(--transition);
+}
+
+.modal-close:hover { background: rgba(248,113,113,0.12); color: var(--red); border-color: rgba(248,113,113,0.2); }
+
+/* ─── FILTER BAR ─────────────────────────────────── */
+.filter-bar {
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* ─── PROGRESS BAR ───────────────────────────────── */
+.pbar {
+  height: 6px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.pfill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 8px currentColor;
+}
+
+/* ─── ARABIC TEXT ────────────────────────────────── */
+.ar {
+  font-family: 'Amiri', serif;
+  direction: rtl;
+}
+
+/* ─── FORM GRID ──────────────────────────────────── */
+.form2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 600px) { .form2 { grid-template-columns: 1fr; } }
+
+/* ─── CALENDAR ───────────────────────────────────── */
+.cal-grid { display: grid; grid-template-columns: 80px repeat(5,1fr); gap: 3px; }
+.cal-hdr {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--t2);
+  padding: 10px;
+  text-align: center;
+}
+.cal-time {
+  font-size: 10px;
+  color: var(--t3);
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  white-space: nowrap;
+  font-weight: 500;
+}
+.cal-cell {
+  min-height: 60px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  transition: background var(--transition);
+}
+.cal-cell:hover { background: var(--glass); }
+.cal-event {
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--transition), transform var(--transition);
+  margin: 2px;
+}
+.cal-event:hover { opacity: 0.8; transform: scale(1.02); }
+
+/* ─── ABSENSI ROW ────────────────────────────────── */
+.abs-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  transition: background var(--transition);
+  border-radius: 8px;
+  padding: 10px 8px;
+}
+.abs-row:hover { background: var(--glass); }
+
+/* ─── JUZ GRID ───────────────────────────────────── */
+.juz-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(195px, 1fr)); gap: 10px; }
+
+.juz-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  transition: all var(--transition);
+}
+.juz-card:hover { background: var(--glass2); transform: translateY(-1px); }
+.juz-card.done  { border-color: rgba(52,211,153,0.3);  background: rgba(52,211,153,0.05); }
+.juz-card.inprog{ border-color: rgba(251,191,36,0.3);  background: rgba(251,191,36,0.05); }
+
+/* ─── CHART CONTAINERS ───────────────────────────── */
+.ch    { position: relative; height: 250px; }
+.ch-sm { position: relative; height: 200px; }
+
+/* ─── TOAST ──────────────────────────────────────── */
+#toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: none;
+  max-width: 360px;
+}
+
+.toast-inner {
+  background: rgba(10, 20, 42, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+  animation: toastIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+[data-theme="light"] .toast-inner {
+  background: rgba(255,255,255,0.96);
+  box-shadow: 0 8px 32px rgba(0,30,80,0.16);
+}
+
+/* ─── SECTION TITLE ──────────────────────────────── */
+.section-title { font-weight: 700; font-size: 14px; margin-bottom: 16px; letter-spacing: -0.2px; }
+
+/* ─── SIDEBAR OVERLAY ────────────────────────────── */
+.sidebar-ov { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 199; backdrop-filter: blur(4px); }
+.sidebar-ov.show { display: block; }
+
+/* ─── RESPONSIVE ─────────────────────────────────── */
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: none; }
+  .main { margin-left: 0 !important; }
+  .topbar-search { width: 160px; }
+  .topbar-search:focus { width: 180px; }
+}
+
+/* ─── PRINT ──────────────────────────────────────── */
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; color: #000; }
+  .card, .stat { border: 1px solid #ccc; background: #fff; }
+}
+
+/* ─── ACTIVITY ITEM ──────────────────────────────── */
+.activity-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  transition: background var(--transition);
+  border-radius: 8px;
+  padding: 10px 8px;
+}
+.activity-item:hover { background: var(--glass); }
+.activity-item:last-child { border-bottom: none; }
+
+.activity-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+/* ─── GURU CARD ──────────────────────────────────── */
+.guru-card-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+/* ─── INFO ROW ───────────────────────────────────── */
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.info-row:last-child { border-bottom: none; }
+.info-row .label { color: var(--t2); }
+.info-row .value { font-weight: 600; }
+
+/* ─── SETTINGS CARD ──────────────────────────────── */
+.settings-card { padding: 24px; }
+
+/* ─── GRID SYSTEM ────────────────────────────────── */
+.grid-stats   { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 14px; margin-bottom: 20px; }
+.grid-2       { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3       { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.grid-4       { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.grid-cards   { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.grid-2-1     { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+
+@media (max-width: 900px) { .grid-2, .grid-2-1 { grid-template-columns: 1fr; } }
+@media (max-width: 700px) { .grid-3, .grid-4   { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .grid-3, .grid-4   { grid-template-columns: 1fr; } }
+
+/* ─── SECTION SPACING ────────────────────────────── */
+.mb-4 { margin-bottom: 16px; }
+.mb-5 { margin-bottom: 20px; }
+.p-card { padding: 20px; }
+
+/* Numeric font for stats */
+.num { font-family: 'Space Grotesk', sans-serif; }
 </style>
 </head>
 <body>
 
-<!-- ===== LOGIN ===== -->
+<!-- ═══════════════════════════════════════════════ -->
+<!--  LOGIN                                          -->
+<!-- ═══════════════════════════════════════════════ -->
 <div id="login-wrap" class="login-wrap">
   <div class="login-card">
-    <div style="text-align:center;margin-bottom:30px">
-      <div style="width:68px;height:68px;border-radius:18px;background:linear-gradient(135deg,var(--acc),var(--acc2));display:inline-flex;align-items:center;justify-content:center;font-size:34px;margin-bottom:16px;box-shadow:0 10px 30px rgba(56,189,248,.35)">🕌</div>
-      <div style="font-size:24px;font-weight:800;margin-bottom:4px">BTQ Pro</div>
-      <div style="color:var(--t2);font-size:13px">Sistem Manajemen BTQ Sekolah</div>
+    <div style="text-align:center;margin-bottom:32px">
+      <div class="login-logo">🕌</div>
+      <div style="font-size:26px;font-weight:900;letter-spacing:-0.8px;margin-bottom:5px">BTQ<span style="color:var(--acc)"> Pro</span></div>
+      <div style="color:var(--t2);font-size:13px;font-weight:500">Sistem Manajemen BTQ Sekolah</div>
     </div>
-    <form onsubmit="handleLogin(event)">
-      <div style="margin-bottom:16px">
+
+    <form onsubmit="handleLogin(event)" style="display:flex;flex-direction:column;gap:16px">
+      <div>
         <label>Username</label>
         <div style="position:relative">
-          <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--t2)">👤</span>
-          <input id="lu" type="text" class="inp" placeholder="Masukkan username" style="padding-left:38px" required>
+          <span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--t2);font-size:14px">👤</span>
+          <input id="lu" type="text" class="inp" placeholder="Masukkan username" style="padding-left:40px" required>
         </div>
       </div>
-      <div style="margin-bottom:24px">
+      <div>
         <label>Password</label>
         <div style="position:relative">
-          <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--t2)">🔒</span>
-          <input id="lp" type="password" class="inp" placeholder="Masukkan password" style="padding-left:38px" required>
+          <span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--t2);font-size:14px">🔒</span>
+          <input id="lp" type="password" class="inp" placeholder="Masukkan password" style="padding-left:40px" required>
         </div>
       </div>
-      <button type="submit" class="btn btn-p" style="width:100%;justify-content:center;padding:13px;font-size:15px;border-radius:12px;box-shadow:0 4px 16px rgba(56,189,248,.28);margin-bottom:10px">🔑 Login Admin</button>
-      <button type="button" class="btn btn-s" onclick="guestLogin()" style="width:100%;justify-content:center;padding:13px;font-size:15px;border-radius:12px">👁️ Masuk sebagai Tamu</button>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+        <button type="submit" class="btn btn-p" style="width:100%;justify-content:center;padding:13px;font-size:14px;border-radius:12px">
+          🔑 &nbsp;Login Admin
+        </button>
+        <button type="button" class="btn btn-s" onclick="guestLogin()" style="width:100%;justify-content:center;padding:13px;font-size:14px;border-radius:12px">
+          👁️ &nbsp;Masuk sebagai Tamu
+        </button>
+      </div>
     </form>
-    <p style="text-align:center;margin-top:18px;font-size:11px;color:var(--t2)">Tamu hanya dapat melihat data (read-only)</p>
+
+    <div style="text-align:center;margin-top:20px;padding-top:20px;border-top:1px solid var(--border)">
+      <span style="font-size:11px;color:var(--t3)">Tamu hanya dapat melihat data · read-only</span>
+    </div>
   </div>
 </div>
 
-<!-- ===== APP ===== -->
+<!-- ═══════════════════════════════════════════════ -->
+<!--  APP                                            -->
+<!-- ═══════════════════════════════════════════════ -->
 <div id="app" style="flex-direction:row">
   <div id="sidebarOv" class="sidebar-ov" onclick="closeSidebar()"></div>
 
-  <!-- SIDEBAR -->
+  <!-- ── SIDEBAR ── -->
   <div class="sidebar" id="sidebar">
-    <div style="padding:18px 14px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);margin-bottom:10px">
-      <div style="width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--acc),var(--acc2));display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0">🕌</div>
+    <div class="sidebar-header">
+      <div class="logo-icon">🕌</div>
       <div class="logo-text">
-        <div style="font-weight:800;font-size:14px;line-height:1.2">BTQ Pro</div>
-        <div id="roleLabel" style="font-size:10px;color:var(--t2)">Manajemen App</div>
+        <div class="brand">BTQ Pro</div>
+        <div class="version" id="roleLabel">Manajemen App</div>
       </div>
-      <button onclick="toggleSidebar()" class="btn btn-s" style="margin-left:auto;padding:4px 8px;border-radius:7px;font-size:14px">☰</button>
+      <button onclick="toggleSidebar()" class="sidebar-toggle">☰</button>
     </div>
-    <div style="padding:0 10px;flex:1;overflow-y:auto">
-      <nav id="nav" style="display:flex;flex-direction:column;gap:3px">
-        <div class="nav-item active" data-page="dashboard" onclick="showPage('dashboard')"><span class="nicon">📊</span><span class="nlabel">Dashboard</span></div>
-        <div class="nav-item" data-page="santri" onclick="showPage('santri')"><span class="nicon">👥</span><span class="nlabel">Data Santri</span><span class="nbadge" id="bSantri">0</span></div>
-        <div class="nav-item" data-page="guru" onclick="showPage('guru')"><span class="nicon">👨‍🏫</span><span class="nlabel">Guru BTQ</span><span class="nbadge" id="bGuru" style="background:var(--acc2)">0</span></div>
-        <div class="nav-item" data-page="jadwal" onclick="showPage('jadwal')"><span class="nicon">🗓️</span><span class="nlabel">Jadwal BTQ</span></div>
-        <div class="nav-item" data-page="absensi" onclick="showPage('absensi')"><span class="nicon">📝</span><span class="nlabel">Absensi Santri</span></div>
-        <div class="nav-item" data-page="absensi-guru" onclick="showPage('absensi-guru')"><span class="nicon">🧑‍🏫</span><span class="nlabel">Absensi Guru</span></div>
-        <div class="nav-item" data-page="progress" onclick="showPage('progress')"><span class="nicon">📖</span><span class="nlabel">Progress Membaca</span></div>
-        <div class="nav-item" data-page="hafalan" onclick="showPage('hafalan')"><span class="nicon">📿</span><span class="nlabel">Hafalan Qur'an</span></div>
-        <div class="nav-item" data-page="juz30" onclick="showPage('juz30')"><span class="nicon">🌙</span><span class="nlabel">Hafalan Juz 30</span></div>
-        <div class="nav-item" data-page="alumni" onclick="showPage('alumni')"><span class="nicon">🎓</span><span class="nlabel">Alumni</span><span class="nbadge" id="bAlumni" style="background:var(--gold)">0</span></div>
-        <div class="nav-item" data-page="riwayat" onclick="showPage('riwayat')"><span class="nicon">📋</span><span class="nlabel">Riwayat Progress</span></div>
-        <div class="nav-item" data-page="laporan" onclick="showPage('laporan')"><span class="nicon">📊</span><span class="nlabel">Laporan</span></div>
-        <div class="nav-item" data-page="pengaturan" onclick="showPage('pengaturan')"><span class="nicon">⚙️</span><span class="nlabel">Pengaturan</span></div>
+
+    <div class="sidebar-nav">
+      <div class="sidebar-section-label">Utama</div>
+      <nav id="nav" style="display:flex;flex-direction:column;gap:1px">
+        <div class="nav-item active" data-page="dashboard" onclick="showPage('dashboard')">
+          <span class="nicon">📊</span><span class="nlabel">Dashboard</span>
+        </div>
+        <div class="nav-item" data-page="santri" onclick="showPage('santri')">
+          <span class="nicon">👥</span><span class="nlabel">Data Santri</span>
+          <span class="nbadge" id="bSantri">0</span>
+        </div>
+        <div class="nav-item" data-page="guru" onclick="showPage('guru')">
+          <span class="nicon">👨‍🏫</span><span class="nlabel">Guru BTQ</span>
+          <span class="nbadge" id="bGuru" style="background:var(--acc2);box-shadow:0 0 10px rgba(129,140,248,0.4)">0</span>
+        </div>
+        <div class="nav-item" data-page="jadwal" onclick="showPage('jadwal')">
+          <span class="nicon">🗓️</span><span class="nlabel">Jadwal BTQ</span>
+        </div>
+
+        <div class="sidebar-section-label">Kehadiran</div>
+        <div class="nav-item" data-page="absensi-santri" onclick="showPage('absensi-santri')">
+          <span class="nicon">📝</span><span class="nlabel">Absensi Santri</span>
+        </div>
+        <div class="nav-item" data-page="absensi-guru" onclick="showPage('absensi-guru')">
+          <span class="nicon">🧑‍🏫</span><span class="nlabel">Absensi Guru</span>
+        </div>
+
+        <div class="sidebar-section-label">Pembelajaran</div>
+        <div class="nav-item" data-page="progress" onclick="showPage('progress')">
+          <span class="nicon">📖</span><span class="nlabel">Progress Membaca</span>
+        </div>
+        <div class="nav-item" data-page="hafalan" onclick="showPage('hafalan')">
+          <span class="nicon">📿</span><span class="nlabel">Hafalan Qur'an</span>
+        </div>
+        <div class="nav-item" data-page="juz30" onclick="showPage('juz30')">
+          <span class="nicon">🌙</span><span class="nlabel">Hafalan Juz 30</span>
+        </div>
+
+        <div class="sidebar-section-label">Lainnya</div>
+        <div class="nav-item" data-page="alumni" onclick="showPage('alumni')">
+          <span class="nicon">🎓</span><span class="nlabel">Alumni</span>
+          <span class="nbadge" id="bAlumni" style="background:var(--gold);color:#000;box-shadow:0 0 10px rgba(251,191,36,0.35)">0</span>
+        </div>
+        <div class="nav-item" data-page="riwayat" onclick="showPage('riwayat')">
+          <span class="nicon">📋</span><span class="nlabel">Riwayat</span>
+        </div>
+        <div class="nav-item" data-page="pengaturan" onclick="showPage('pengaturan')">
+          <span class="nicon">⚙️</span><span class="nlabel">Pengaturan</span>
+        </div>
       </nav>
     </div>
-    <div style="padding:12px 14px;border-top:1px solid var(--border)">
-      <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center">
-        <div class="ar" style="font-size:15px;color:var(--gold)">اقرأ بِسْمِ رَبِّكَ</div>
-        <div style="font-size:10px;color:var(--t2);margin-top:4px">Iqra' bismi rabbik</div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-arabic">
+        <div class="ar" style="font-size:16px;color:var(--gold)">اقرأ بِسْمِ رَبِّكَ</div>
+        <div style="font-size:10px;color:var(--t2);margin-top:5px;letter-spacing:0.3px">Iqra' bismi rabbik</div>
       </div>
     </div>
   </div>
 
-  <!-- MAIN -->
+  <!-- ── MAIN ── -->
   <div class="main" id="main">
+
     <!-- TOPBAR -->
     <div class="topbar no-print">
-      <div style="display:flex;align-items:center;gap:12px">
-        <button class="btn btn-s" id="mobileMenu" onclick="openSidebar()" style="padding:7px;display:none">☰</button>
-        <div id="pageTitle" style="font-weight:800;font-size:16px">Dashboard</div>
+      <div class="page-title-wrap">
+        <button class="topbar-btn" id="mobileMenu" onclick="openSidebar()" style="display:none">☰</button>
+        <div id="pageTitle" class="page-title">Dashboard</div>
       </div>
-      <div style="display:flex;align-items:center;gap:10px">
-        <input type="text" id="gSearch" class="inp" placeholder="🔍 Cari santri..." style="width:220px;padding:8px 13px" oninput="globalSearch()">
-        <button class="btn btn-s" onclick="toggleTheme()" style="padding:7px 10px">🌓</button>
-        <div style="display:flex;align-items:center;gap:8px;padding-left:10px;border-left:1px solid var(--border)">
-          <div id="userBadge" style="background:linear-gradient(135deg,var(--acc),var(--acc2));width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px">👑</div>
-          <button class="btn btn-d" onclick="logout()" style="padding:7px 10px;border-radius:9px">🚪</button>
+      <div class="topbar-actions">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="gSearch" class="topbar-search" placeholder="Cari santri..." oninput="globalSearch()">
         </div>
+        <button class="topbar-btn" onclick="toggleTheme()" title="Toggle theme">🌓</button>
+        <div class="topbar-divider"></div>
+        <div id="userBadge" class="user-badge">👑</div>
+        <button class="logout-btn" onclick="logout()">🚪 Keluar</button>
       </div>
     </div>
 
-    <div style="padding:22px">
+    <div class="content">
 
-      <!-- ===== DASHBOARD ===== -->
+      <!-- ═══════════════════════════════════════════ -->
+      <!--  DASHBOARD                                  -->
+      <!-- ═══════════════════════════════════════════ -->
       <div id="page-dashboard" class="page active">
-        <div style="margin-bottom:18px">
-          <h2 style="font-size:21px;font-weight:800;margin-bottom:3px">Dashboard 🕌</h2>
-          <p id="dashSub" style="color:var(--t2);font-size:13px">Ringkasan sistem BTQ</p>
+        <div style="margin-bottom:22px">
+          <h2 style="font-size:22px;font-weight:900;letter-spacing:-0.5px;margin-bottom:4px">Dashboard 🕌</h2>
+          <p id="dashSub" style="color:var(--t2);font-size:13px"></p>
         </div>
-        <!-- Stats Row 1 -->
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:18px" id="statsRow"></div>
-        <!-- Charts Row 1 -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
-          <div class="card" style="padding:18px"><h3 style="font-weight:700;font-size:14px;margin-bottom:14px">📊 Santri Per Level</h3><div class="ch"><canvas id="chLevel"></canvas></div></div>
-          <div class="card" style="padding:18px"><h3 style="font-weight:700;font-size:14px;margin-bottom:14px">📅 Absensi Santri (30 hari)</h3><div class="ch"><canvas id="chAbsensi"></canvas></div></div>
+
+        <div class="grid-stats" id="statsRow"></div>
+
+        <div class="grid-2 mb-5">
+          <div class="card p-card">
+            <div class="section-title">📊 Santri Per Level</div>
+            <div class="ch"><canvas id="chLevel"></canvas></div>
+          </div>
+          <div class="card p-card">
+            <div class="section-title">📅 Absensi Santri (30 hari)</div>
+            <div class="ch"><canvas id="chAbsensi"></canvas></div>
+          </div>
         </div>
-        <!-- Charts Row 2 -->
-        <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px">
-          <div class="card" style="padding:18px"><h3 style="font-weight:700;font-size:14px;margin-bottom:14px">🌙 Progress Juz 30 Kelas 5</h3><div class="ch"><canvas id="chJuz30"></canvas></div></div>
-          <div class="card" style="padding:18px"><h3 style="font-weight:700;font-size:14px;margin-bottom:14px">📿 Status Hafalan</h3><div class="ch-sm"><canvas id="chHafalan"></canvas></div></div>
+
+        <div class="grid-2-1 mb-5">
+          <div class="card p-card">
+            <div class="section-title">🌙 Progress Juz 30 Kelas 5</div>
+            <div class="ch"><canvas id="chJuz30"></canvas></div>
+          </div>
+          <div class="card p-card">
+            <div class="section-title">📿 Status Hafalan</div>
+            <div class="ch-sm"><canvas id="chHafalan"></canvas></div>
+          </div>
         </div>
-        <!-- Charts Row 3 -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
-          <div class="card" style="padding:18px"><h3 style="font-weight:700;font-size:14px;margin-bottom:14px">🎓 Alumni Per Tahun</h3><div class="ch-sm"><canvas id="chAlumni"></canvas></div></div>
-          <div class="card" style="padding:18px"><h3 style="font-weight:700;font-size:14px;margin-bottom:14px">🧑‍🏫 Absensi Guru</h3><div class="ch-sm"><canvas id="chGuruAbs"></canvas></div></div>
+
+        <div class="grid-2 mb-5">
+          <div class="card p-card">
+            <div class="section-title">🎓 Alumni Per Tahun</div>
+            <div class="ch-sm"><canvas id="chAlumni"></canvas></div>
+          </div>
+          <div class="card p-card">
+            <div class="section-title">🧑‍🏫 Absensi Guru</div>
+            <div class="ch-sm"><canvas id="chGuruAbs"></canvas></div>
+          </div>
         </div>
-        <!-- Activity -->
-        <div class="card" style="padding:18px"><h3 style="font-weight:700;font-size:14px;margin-bottom:14px">⚡ Aktivitas Terbaru</h3><div id="recentAct"></div></div>
+
+        <div class="card p-card">
+          <div class="section-title">⚡ Aktivitas Terbaru</div>
+          <div id="recentAct"></div>
+        </div>
       </div>
 
-      <!-- ===== DATA SANTRI ===== -->
+      <!-- ═══════════════════════════════════════════ -->
+      <!--  DATA SANTRI                                -->
+      <!-- ═══════════════════════════════════════════ -->
       <div id="page-santri" class="page">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
-          <div><h2 style="font-size:21px;font-weight:800;margin-bottom:3px">Data Santri 👥</h2><p style="color:var(--t2);font-size:13px">Kelola data seluruh santri BTQ</p></div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <div class="page-header">
+          <div>
+            <h2>Data Santri 👥</h2>
+            <p>Kelola data seluruh santri BTQ</p>
+          </div>
+          <div class="header-actions">
             <button class="btn btn-s" onclick="exportCSV()">📥 CSV</button>
             <button class="btn btn-s" onclick="exportPDF()">📄 PDF</button>
             <button class="btn btn-p" onclick="openSantriModal()">➕ Tambah Santri</button>
           </div>
         </div>
-        <div class="card" style="padding:14px;margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap">
+        <div class="card filter-bar mb-4">
           <input type="text" class="inp" id="srchSantri" placeholder="🔍 Cari nama..." oninput="renderSantri()" style="max-width:180px">
-          <select class="inp" id="fKelas" onchange="renderSantri()" style="max-width:130px"><option value="">Semua Kelas</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
-          <select class="inp" id="fLevel" onchange="renderSantri()" style="max-width:130px"><option value="">Semua Level</option><option>Iqro 1</option><option>Iqro 2</option><option>Iqro 3</option><option>Iqro 4</option><option>Iqro 5</option><option>Iqro 6</option><option>Qur'an</option></select>
-          <select class="inp" id="fStatus" onchange="renderSantri()" style="max-width:120px"><option value="">Semua Status</option><option>Aktif</option><option>Alumni</option></select>
+          <select class="inp" id="fKelas" onchange="renderSantri()" style="max-width:130px">
+            <option value="">Semua Kelas</option>
+            <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+          </select>
+          <select class="inp" id="fLevel" onchange="renderSantri()" style="max-width:130px">
+            <option value="">Semua Level</option>
+            <option>Iqro 1</option><option>Iqro 2</option><option>Iqro 3</option><option>Iqro 4</option><option>Iqro 5</option><option>Iqro 6</option><option>Qur'an</option>
+          </select>
+          <select class="inp" id="fStatus" onchange="renderSantri()" style="max-width:120px">
+            <option value="">Semua Status</option><option>Aktif</option><option>Alumni</option>
+          </select>
         </div>
-        <div class="card"><div class="tw"><table><thead><tr><th>ID</th><th>Nama</th><th>Kelas</th><th>Tahun Ajaran</th><th>Level</th><th>Hafalan</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="tbSantri"></tbody></table></div>
-        <div style="padding:13px 15px;border-top:1px solid var(--border);font-size:12px;color:var(--t2)" id="santriInfo">0 santri</div></div>
+        <div class="card">
+          <div class="tw">
+            <table><thead><tr><th>ID</th><th>Nama</th><th>Kelas</th><th>Tahun Ajaran</th><th>Level</th><th>Hafalan</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody id="tbSantri"></tbody></table>
+          </div>
+          <div style="padding:12px 16px;border-top:1px solid var(--border);font-size:12px;color:var(--t2)" id="santriInfo">0 santri</div>
+        </div>
       </div>
 
-      <!-- ===== GURU BTQ ===== -->
+      <!-- ═══════════════════════════════════════════ -->
+      <!--  GURU BTQ                                   -->
+      <!-- ═══════════════════════════════════════════ -->
       <div id="page-guru" class="page">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
-          <div><h2 style="font-size:21px;font-weight:800;margin-bottom:3px">Guru BTQ 👨‍🏫</h2><p style="color:var(--t2);font-size:13px">Data pengajar BTQ</p></div>
+        <div class="page-header">
+          <div><h2>Guru BTQ 👨‍🏫</h2><p>Data pengajar BTQ</p></div>
           <button class="btn btn-p" onclick="openGuruModal()">➕ Tambah Guru</button>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px" id="guruCards"></div>
+        <div class="grid-cards" id="guruCards"></div>
       </div>
 
-      <!-- ===== JADWAL ===== -->
+      <!-- ═══════════════════════════════════════════ -->
+      <!--  JADWAL                                     -->
+      <!-- ═══════════════════════════════════════════ -->
       <div id="page-jadwal" class="page">
-        <div style="margin-bottom:18px"><h2 style="font-size:21px;font-weight:800;margin-bottom:3px">Jadwal BTQ 🗓️</h2><p style="color:var(--t2);font-size:13px">Jadwal kegiatan BTQ mingguan</p></div>
-        <div class="card" style="padding:18px;margin-bottom:14px">
-          <h3 style="font-weight:700;font-size:14px;margin-bottom:16px">📅 Kalender Mingguan</h3>
+        <div class="page-header">
+          <div><h2>Jadwal BTQ 🗓️</h2><p>Jadwal kegiatan BTQ mingguan</p></div>
+        </div>
+        <div class="card p-card mb-4">
+          <div class="section-title">📅 Kalender Mingguan</div>
           <div class="cal-grid" id="calGrid"></div>
         </div>
-        <div class="card" style="padding:18px">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
-            <h3 style="font-weight:700;font-size:14px">📋 Daftar Jadwal</h3>
+        <div class="card p-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+            <div class="section-title" style="margin-bottom:0">📋 Daftar Jadwal</div>
             <button class="btn btn-p" onclick="openJadwalModal()">➕ Tambah Jadwal</button>
           </div>
-          <div class="tw"><table><thead><tr><th>Kelas</th><th>Hari</th><th>Jam Mulai</th><th>Jam Selesai</th><th>Guru</th><th>Lokasi</th><th>Aksi</th></tr></thead><tbody id="tbJadwal"></tbody></table></div>
+          <div class="tw">
+            <table><thead><tr><th>Kelas</th><th>Hari</th><th>Jam Mulai</th><th>Jam Selesai</th><th>Guru</th><th>Lokasi</th><th>Aksi</th></tr></thead>
+            <tbody id="tbJadwal"></tbody></table>
+          </div>
         </div>
       </div>
 
-      <!-- ===== ABSENSI SANTRI ===== -->
-      <div id="page-absensi" class="page">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
-          <div><h2 style="font-size:21px;font-weight:800;margin-bottom:3px">Absensi Santri 📝</h2><p style="color:var(--t2);font-size:13px">Rekap kehadiran santri BTQ</p></div>
-          <button class="btn btn-p" onclick="openAbsensiModal()">➕ Catat Absensi</button>
+      <!-- ═══════════════════════════════════════════ -->
+      <!--  ABSENSI SANTRI                             -->
+      <!-- ═══════════════════════════════════════════ -->
+      <div id="page-absensi-santri" class="page">
+        <div class="page-header">
+          <div><h2>Absensi Santri 📝</h2><p>Rekap kehadiran santri BTQ</p></div>
+          <button class="btn btn-p" onclick="openModalAbsensiSantri()">➕ Catat Absensi</button>
         </div>
-        <div class="card" style="padding:14px;margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap">
-          <input type="date" class="inp" id="fAbsensiTgl" onchange="renderAbsensi()" style="max-width:180px">
-          <select class="inp" id="fAbsensiKelas" onchange="renderAbsensi()" style="max-width:130px"><option value="">Semua Kelas</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
-          <select class="inp" id="fAbsensiStatus" onchange="renderAbsensi()" style="max-width:140px"><option value="">Semua Status</option><option>Hadir</option><option>Izin</option><option>Sakit</option><option>Alpha</option></select>
-          <input type="text" class="inp" id="srchAbsensi" placeholder="🔍 Cari nama..." oninput="renderAbsensi()" style="max-width:180px">
+        <div class="card filter-bar mb-4">
+          <input type="date" class="inp" id="fAbsensiTgl" onchange="renderAbsensiSantri()" style="max-width:180px">
+          <select class="inp" id="fAbsensiKelas" onchange="renderAbsensiSantri()" style="max-width:130px">
+            <option value="">Semua Kelas</option>
+            <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+          </select>
+          <select class="inp" id="fAbsensiStatus" onchange="renderAbsensiSantri()" style="max-width:140px">
+            <option value="">Semua Status</option><option>Hadir</option><option>Izin</option><option>Sakit</option><option>Alpha</option>
+          </select>
+          <input type="text" class="inp" id="srchAbsensi" placeholder="🔍 Cari nama..." oninput="renderAbsensiSantri()" style="max-width:180px">
         </div>
-        <!-- Summary Cards -->
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px" id="absensiSummary"></div>
-        <div class="card"><div class="tw"><table><thead><tr><th>Tanggal</th><th>Kelas</th><th>Santri</th><th>Status</th><th>Keterangan</th><th>Aksi</th></tr></thead><tbody id="tbAbsensi"></tbody></table></div></div>
+        <div class="grid-4 mb-4" id="absensiSummary"></div>
+        <div class="card">
+          <div class="tw">
+            <table><thead><tr><th>Tanggal</th><th>Kelas</th><th>Santri</th><th>Status</th><th>Keterangan</th><th>Aksi</th></tr></thead>
+            <tbody id="tbAbsensiSantri"></tbody></table>
+          </div>
+        </div>
       </div>
 
-      <!-- ===== ABSENSI GURU ===== -->
+      <!-- ═══════════════════════════════════════════ -->
+      <!--  ABSENSI GURU                               -->
+      <!-- ═══════════════════════════════════════════ -->
       <div id="page-absensi-guru" class="page">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
-          <div><h2 style="font-size:21px;font-weight:800;margin-bottom:3px">Absensi Guru 🧑‍🏫</h2><p style="color:var(--t2);font-size:13px">Rekap kehadiran guru BTQ</p></div>
+        <div class="page-header">
+          <div><h2>Absensi Guru 🧑‍🏫</h2><p>Rekap kehadiran guru BTQ</p></div>
           <button class="btn btn-p" onclick="openAbsensiGuruModal()">➕ Catat Absensi Guru</button>
         </div>
-        <div class="card" style="padding:14px;margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap">
+        <div class="card filter-bar mb-4">
           <input type="date" class="inp" id="fGAbsTgl" onchange="renderAbsensiGuru()" style="max-width:180px">
-          <select class="inp" id="fGAbsStatus" onchange="renderAbsensiGuru()" style="max-width:150px"><option value="">Semua Status</option><option>Hadir</option><option>Izin</option><option>Tidak Hadir</option></select>
+          <select class="inp" id="fGAbsStatus" onchange="renderAbsensiGuru()" style="max-width:150px">
+            <option value="">Semua Status</option><option>Hadir</option><option>Izin</option><option>Tidak Hadir</option>
+          </select>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px" id="guruAbsSummary"></div>
-        <div class="card"><div class="tw"><table><thead><tr><th>Tanggal</th><th>Nama Guru</th><th>Jam Mengajar</th><th>Kelas</th><th>Status</th><th>Keterangan</th><th>Aksi</th></tr></thead><tbody id="tbAbsensiGuru"></tbody></table></div></div>
+        <div class="grid-3 mb-4" id="guruAbsSummary"></div>
+        <div class="card">
+          <div class="tw">
+            <table><thead><tr><th>Tanggal</th><th>Nama Guru</th><th>Jam Mengajar</th><th>Kelas</th><th>Status</th><th>Keterangan</th><th>Aksi</th></tr></thead>
+            <tbody id="tbAbsensiGuru"></tbody></table>
+          </div>
+        </div>
       </div>
 
-      <!-- ===== PROGRESS MEMBACA ===== -->
+      <!-- ═══════════════════════════════════════════ -->
+      <!--  PROGRESS MEMBACA                           -->
+      <!-- ═══════════════════════════════════════════ -->
       <div id="page-progress" class="page">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
-          <div><h2 style="font-size:21px;font-weight:800;margin-bottom:3px">Progress Membaca 📖</h2><p style="color:var(--t2);font-size:13px">Pantau perkembangan membaca Iqro & Al-Qur'an</p></div>
+        <div class="page-header">
+          <div><h2>Progress Membaca 📖</h2><p>Pantau perkembangan membaca Iqro & Al-Qur'an</p></div>
           <button class="btn btn-p" onclick="openProgressModal()">➕ Update Progress</button>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px" id="progressCards"></div>
+        <div class="grid-cards" id="progressCards"></div>
       </div>
 
-      <!-- ===== HAFALAN ===== -->
+      <!-- ═══════════════════════════════════════════ -->
+      <!--  HAFALAN QUR'AN                             -->
+      <!-- ═══════════════════════════════════════════ -->
       <div id="page-hafalan" class="page">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
-          <div><h2 style="font-size:21px;font-weight:800;margin-bottom:3px">Hafalan Qur'an 📿</h2><p style="color:var(--t2);font-size:13px">Kelola catatan hafalan santri</p></div>
+        <div class="page-header">
+          <div><h2>Hafalan Qur'an 📿</h2><p>Kelola catatan hafalan santri</p></div>
           <button class="btn btn-p" onclick="openHafalanModal()">➕ Tambah Hafalan</button>
         </div>
-        <div class="card" style="padding:14px;margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap">
+        <div class="card filter-bar mb-4">
           <input type="text" class="inp" id="srchHafalan" placeholder="🔍 Cari..." oninput="renderHafalan()" style="max-width:180px">
-          <select class="inp" id="fHafStatus" onchange="renderHafalan()" style="max-width:180px"><option value="">Semua Status</option><option>Belum Hafal</option><option>Sedang Menghafal</option><option>Sudah Hafal</option></select>
+          <select class="inp" id="fHafStatus" onchange="renderHafalan()" style="max-width:200px">
+            <option value="">Semua Status</option><option>Belum Hafal</option><option>Sedang Menghafal</option><option>Sudah Hafal</option>
+          </select>
         </div>
-        <div class="card"><div class="tw"><table><thead><tr><th>Santri</th><th>Surat</th><th>Ayat</th><th>Tanggal</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="tbHafalan"></tbody></table></div></div>
+        <div class="card">
+          <div class="tw">
+            <table><thead><tr><th>Santri</th><th>Surat</th><th>Ayat</th><th>Tanggal</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody id="tbHafalan"></tbody></table>
+          </div>
+        </div>
       </div>
 
-      <!-- ===== JUZ 30 ===== -->
+      <!-- ═══════════════════════════════════════════ -->
+      <!--  JUZ 30                                     -->
+      <!-- ═══════════════════════════════════════════ -->
       <div id="page-juz30" class="page">
-        <div style="margin-bottom:18px"><h2 style="font-size:21px;font-weight:800;margin-bottom:3px">Hafalan Juz 30 Kelas 5 🌙</h2><p style="color:var(--t2);font-size:13px">Tracking hafalan khusus santri kelas 5</p></div>
-        <div class="card" style="padding:14px;margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap">
-          <select class="inp" id="selJuz30Santri" onchange="renderJuz30Detail()" style="max-width:260px"><option value="">-- Pilih Santri Kelas 5 --</option></select>
+        <div class="page-header">
+          <div><h2>Hafalan Juz 30 Kelas 5 🌙</h2><p>Tracking hafalan khusus santri kelas 5</p></div>
+        </div>
+        <div class="card filter-bar mb-4">
+          <select class="inp" id="selJuz30Santri" onchange="renderJuz30Detail()" style="max-width:260px">
+            <option value="">-- Pilih Santri Kelas 5 --</option>
+          </select>
           <button class="btn btn-p" onclick="saveJuz30Batch()">💾 Simpan Perubahan</button>
         </div>
-        <!-- Summary chart -->
-        <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px">
-          <div class="card" style="padding:18px"><h3 style="font-weight:700;font-size:14px;margin-bottom:14px">📊 Progress Semua Santri Kelas 5</h3><div class="ch"><canvas id="chJuz30Detail"></canvas></div></div>
-          <div class="card" style="padding:18px" id="juz30Stats"></div>
+        <div class="grid-2-1 mb-4">
+          <div class="card p-card">
+            <div class="section-title">📊 Progress Semua Santri Kelas 5</div>
+            <div class="ch"><canvas id="chJuz30Detail"></canvas></div>
+          </div>
+          <div class="card p-card" id="juz30Stats"></div>
         </div>
-        <div class="card" style="padding:18px">
-          <h3 style="font-weight:700;font-size:14px;margin-bottom:14px" id="juz30CardTitle">Pilih santri untuk melihat detail hafalan</h3>
+        <div class="card p-card">
+          <div class="section-title" id="juz30CardTitle">Pilih santri untuk melihat detail hafalan</div>
           <div class="juz-grid" id="juz30Grid"></div>
         </div>
       </div>
 
-      <!-- ===== ALUMNI ===== -->
+      <!-- ═══════════════════════════════════════════ -->
+      <!--  ALUMNI                                     -->
+      <!-- ═══════════════════════════════════════════ -->
       <div id="page-alumni" class="page">
-        <div style="margin-bottom:18px"><h2 style="font-size:21px;font-weight:800;margin-bottom:3px">Data Alumni 🎓</h2><p style="color:var(--t2);font-size:13px">Santri yang telah lulus program BTQ</p></div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px" id="alumniCards"></div>
+        <div class="page-header">
+          <div><h2>Data Alumni 🎓</h2><p>Santri yang telah lulus program BTQ</p></div>
+        </div>
+        <div class="grid-cards" id="alumniCards"></div>
       </div>
 
-      <!-- ===== RIWAYAT ===== -->
+      <!-- ═══════════════════════════════════════════ -->
+      <!--  RIWAYAT                                    -->
+      <!-- ═══════════════════════════════════════════ -->
       <div id="page-riwayat" class="page">
-        <div style="margin-bottom:18px"><h2 style="font-size:21px;font-weight:800;margin-bottom:3px">Riwayat Progress 📋</h2><p style="color:var(--t2);font-size:13px">Semua perubahan progress santri</p></div>
-        <div class="card" style="padding:14px;margin-bottom:14px"><input type="text" class="inp" id="srchRiwayat" placeholder="🔍 Cari nama santri..." oninput="renderRiwayat()" style="max-width:280px"></div>
+        <div class="page-header">
+          <div><h2>Riwayat Progress 📋</h2><p>Semua perubahan progress santri</p></div>
+        </div>
+        <div class="card filter-bar mb-4">
+          <input type="text" class="inp" id="srchRiwayat" placeholder="🔍 Cari nama santri..." oninput="renderRiwayat()" style="max-width:280px">
+        </div>
         <div id="riwayatList" style="display:flex;flex-direction:column;gap:8px"></div>
       </div>
 
-      <!-- ===== LAPORAN ===== -->
+      <!-- ═══════════════════════════════════════════ -->
+      <!--  LAPORAN                                    -->
+      <!-- ═══════════════════════════════════════════ -->
       <div id="page-laporan" class="page">
-        <div style="margin-bottom:18px"><h2 style="font-size:21px;font-weight:800;margin-bottom:3px">Laporan 📊</h2><p style="color:var(--t2);font-size:13px">Laporan komprehensif santri BTQ</p></div>
-        <div class="card" style="padding:18px;margin-bottom:14px">
-          <h3 style="font-weight:700;font-size:14px;margin-bottom:14px">🔍 Filter Laporan</h3>
+        <div class="page-header">
+          <div><h2>Laporan 📊</h2><p>Laporan komprehensif santri BTQ</p></div>
+        </div>
+        <div class="card p-card mb-4">
+          <div class="section-title">🔍 Filter Laporan</div>
           <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
-            <div><label>Jenis Laporan</label><select class="inp" id="lapType" onchange="renderLaporan()" style="min-width:200px"><option value="santri">Laporan Per Santri</option><option value="kelas">Laporan Per Kelas</option><option value="absensi">Laporan Absensi</option><option value="hafalan">Laporan Hafalan</option></select></div>
-            <div><label>Santri (jika per santri)</label><select class="inp" id="lapSantri" onchange="renderLaporan()" style="min-width:200px"><option value="">Semua Santri</option></select></div>
-            <div><label>Kelas</label><select class="inp" id="lapKelas" onchange="renderLaporan()" style="min-width:120px"><option value="">Semua</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+            <div>
+              <label>Jenis Laporan</label>
+              <select class="inp" id="lapType" onchange="renderLaporan()" style="min-width:200px">
+                <option value="santri">Laporan Per Santri</option>
+                <option value="kelas">Laporan Per Kelas</option>
+                <option value="absensi">Laporan Absensi</option>
+                <option value="hafalan">Laporan Hafalan</option>
+              </select>
+            </div>
+            <div>
+              <label>Santri</label>
+              <select class="inp" id="lapSantri" onchange="renderLaporan()" style="min-width:200px">
+                <option value="">Semua Santri</option>
+              </select>
+            </div>
+            <div>
+              <label>Kelas</label>
+              <select class="inp" id="lapKelas" onchange="renderLaporan()" style="min-width:120px">
+                <option value="">Semua</option>
+                <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+              </select>
+            </div>
             <div style="display:flex;gap:8px">
               <button class="btn btn-p" onclick="renderLaporan()">🔄 Generate</button>
               <button class="btn btn-s" onclick="exportLaporanCSV()">📥 CSV</button>
-              <button class="btn btn-s" onclick="window.print()">🖨️ Print/PDF</button>
+              <button class="btn btn-s" onclick="window.print()">🖨️ Print</button>
             </div>
           </div>
         </div>
         <div id="laporanContent"></div>
       </div>
 
-      <!-- ===== PENGATURAN ===== -->
+      <!-- ═══════════════════════════════════════════ -->
+      <!--  PENGATURAN                                 -->
+      <!-- ═══════════════════════════════════════════ -->
       <div id="page-pengaturan" class="page">
-        <div style="margin-bottom:18px"><h2 style="font-size:21px;font-weight:800;margin-bottom:3px">Pengaturan ⚙️</h2><p style="color:var(--t2);font-size:13px">Konfigurasi sistem BTQ</p></div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px">
-          <div class="card" style="padding:22px">
-            <h3 style="font-weight:700;margin-bottom:14px">📅 Tahun Ajaran</h3>
-            <div style="margin-bottom:12px"><label>Tahun Ajaran Aktif</label><input type="text" class="inp" id="setTA" placeholder="2024/2025"></div>
-            <div style="margin-bottom:14px"><label>Semester</label><select class="inp" id="setSem"><option>Ganjil</option><option>Genap</option></select></div>
-            <button class="btn btn-p" onclick="saveSetting()" style="width:100%">Simpan</button>
+        <div class="page-header">
+          <div><h2>Pengaturan ⚙️</h2><p>Konfigurasi sistem BTQ</p></div>
+        </div>
+        <div class="grid-cards">
+          <div class="card settings-card">
+            <div class="section-title">📅 Tahun Ajaran</div>
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div><label>Tahun Ajaran Aktif</label><input type="text" class="inp" id="setTA" placeholder="2024/2025"></div>
+              <div><label>Semester</label><select class="inp" id="setSem"><option>Ganjil</option><option>Genap</option></select></div>
+              <button class="btn btn-p" onclick="saveSetting()" style="width:100%;justify-content:center">💾 Simpan</button>
+            </div>
           </div>
-          <div class="card" style="padding:22px">
-            <h3 style="font-weight:700;margin-bottom:14px">🏫 Kenaikan Kelas</h3>
+          <div class="card settings-card">
+            <div class="section-title">🏫 Kenaikan Kelas</div>
             <p style="color:var(--t2);font-size:12px;margin-bottom:14px;line-height:1.7">Proses kenaikan kelas otomatis. Santri kelas 5 semester Genap menjadi Alumni.</p>
-            <div style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:12px;margin-bottom:14px;font-size:12px">
-              <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--t2)">TA Aktif</span><span id="infoTA" style="font-weight:700">-</span></div>
-              <div style="display:flex;justify-content:space-between"><span style="color:var(--t2)">Semester</span><span id="infoSem" style="font-weight:700">-</span></div>
+            <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px">
+              <div class="info-row"><span class="label">TA Aktif</span><span class="value" id="infoTA">-</span></div>
+              <div class="info-row"><span class="label">Semester</span><span class="value" id="infoSem">-</span></div>
             </div>
-            <button class="btn btn-w" onclick="prosesKenaikan()" style="width:100%">🔄 Proses Kenaikan Kelas</button>
+            <button class="btn btn-w" onclick="prosesKenaikan()" style="width:100%;justify-content:center">🔄 Proses Kenaikan Kelas</button>
           </div>
-          <div class="card" style="padding:22px">
-            <h3 style="font-weight:700;margin-bottom:14px">📦 Import & Export</h3>
+          <div class="card settings-card">
+            <div class="section-title">📦 Import & Export</div>
             <div style="display:flex;flex-direction:column;gap:8px">
-              <button class="btn btn-s" onclick="exportAll()" style="width:100%">💾 Export Semua Data (JSON)</button>
-              <label style="cursor:pointer"><input type="file" accept=".json" onchange="importData(event)" style="display:none"><span class="btn btn-s" style="width:100%;display:flex;justify-content:center">📂 Import Data (JSON)</span></label>
-              <button class="btn btn-d" onclick="confirmReset()" style="width:100%">🗑️ Reset Semua Data</button>
+              <button class="btn btn-s" onclick="exportAll()" style="width:100%;justify-content:center">💾 Export Semua Data (JSON)</button>
+              <label style="cursor:pointer;width:100%">
+                <input type="file" accept=".json" onchange="importData(event)" style="display:none">
+                <span class="btn btn-s" style="width:100%;display:flex;justify-content:center">📂 Import Data (JSON)</span>
+              </label>
+              <button class="btn btn-d" onclick="confirmReset()" style="width:100%;justify-content:center">🗑️ Reset Semua Data</button>
             </div>
           </div>
-          <div class="card" style="padding:22px">
-            <h3 style="font-weight:700;margin-bottom:14px">ℹ️ Info Sistem</h3>
-            <div style="font-size:12px;display:flex;flex-direction:column;gap:9px;color:var(--t2)" id="sysInfo"></div>
+          <div class="card settings-card">
+            <div class="section-title">ℹ️ Info Sistem</div>
+            <div style="display:flex;flex-direction:column;gap:2px" id="sysInfo"></div>
           </div>
         </div>
       </div>
 
-    </div>
-  </div>
-</div>
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
 
-<!-- ===== MODALS ===== -->
+<!-- ═══════════════════════════════════════════════ -->
+<!--  MODALS                                         -->
+<!-- ═══════════════════════════════════════════════ -->
+
 <!-- Santri Modal -->
 <div class="modal-overlay" id="mSantri" style="display:none">
   <div class="modal">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px"><h3 style="font-weight:800;font-size:17px" id="mSantriTitle">Tambah Santri</h3><button class="btn btn-s" onclick="closeM('mSantri')" style="padding:5px 11px">✕</button></div>
+    <div class="modal-header">
+      <div class="modal-title" id="mSantriTitle">Tambah Santri</div>
+      <button class="modal-close" onclick="closeM('mSantri')">✕</button>
+    </div>
     <input type="hidden" id="eSantriId">
     <div class="form2">
       <div><label>Nama Santri *</label><input type="text" class="inp" id="iNama" placeholder="Nama lengkap"></div>
@@ -478,14 +1677,20 @@ tr:hover td{background:var(--card2)}
       <div><label>Status</label><select class="inp" id="iStatus"><option>Aktif</option><option>Alumni</option></select></div>
       <div><label>No. HP Wali</label><input type="text" class="inp" id="iHp" placeholder="08xx"></div>
     </div>
-    <div style="display:flex;gap:8px;margin-top:18px;justify-content:flex-end"><button class="btn btn-s" onclick="closeM('mSantri')">Batal</button><button class="btn btn-p" onclick="saveSantri()">💾 Simpan</button></div>
+    <div style="display:flex;gap:8px;margin-top:20px;justify-content:flex-end">
+      <button class="btn btn-s" onclick="closeM('mSantri')">Batal</button>
+      <button class="btn btn-p" onclick="saveSantri()">💾 Simpan</button>
+    </div>
   </div>
 </div>
 
 <!-- Guru Modal -->
-<div class="modal-overlay" id="mGuru" style="display:none">
+<div class="modal-overlay" id="modalGuru" style="display:none">
   <div class="modal">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px"><h3 style="font-weight:800;font-size:17px" id="mGuruTitle">Tambah Guru</h3><button class="btn btn-s" onclick="closeM('mGuru')" style="padding:5px 11px">✕</button></div>
+    <div class="modal-header">
+      <div class="modal-title" id="mGuruTitle">Tambah Guru</div>
+      <button class="modal-close" onclick="closeM('modalGuru')">✕</button>
+    </div>
     <input type="hidden" id="eGuruId">
     <div class="form2">
       <div><label>Nama Guru *</label><input type="text" class="inp" id="gNama" placeholder="Nama lengkap"></div>
@@ -495,14 +1700,20 @@ tr:hover td{background:var(--card2)}
       <div><label>Status</label><select class="inp" id="gStatus"><option>Aktif</option><option>Tidak Aktif</option></select></div>
       <div><label>Email</label><input type="text" class="inp" id="gEmail" placeholder="email@guru.com"></div>
     </div>
-    <div style="display:flex;gap:8px;margin-top:18px;justify-content:flex-end"><button class="btn btn-s" onclick="closeM('mGuru')">Batal</button><button class="btn btn-p" onclick="saveGuru()">💾 Simpan</button></div>
+    <div style="display:flex;gap:8px;margin-top:20px;justify-content:flex-end">
+      <button class="btn btn-s" onclick="closeM('modalGuru')">Batal</button>
+      <button class="btn btn-p" onclick="saveGuru()">💾 Simpan</button>
+    </div>
   </div>
 </div>
 
 <!-- Jadwal Modal -->
 <div class="modal-overlay" id="mJadwal" style="display:none">
   <div class="modal">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px"><h3 style="font-weight:800;font-size:17px" id="mJadwalTitle">Tambah Jadwal</h3><button class="btn btn-s" onclick="closeM('mJadwal')" style="padding:5px 11px">✕</button></div>
+    <div class="modal-header">
+      <div class="modal-title" id="mJadwalTitle">Tambah Jadwal</div>
+      <button class="modal-close" onclick="closeM('mJadwal')">✕</button>
+    </div>
     <input type="hidden" id="eJadwalId">
     <div class="form2">
       <div><label>Kelas *</label><select class="inp" id="jKelas"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
@@ -512,27 +1723,39 @@ tr:hover td{background:var(--card2)}
       <div><label>Guru Pengajar</label><select class="inp" id="jGuru"><option value="">-- Pilih Guru --</option></select></div>
       <div><label>Lokasi/Ruang</label><input type="text" class="inp" id="jLokasi" placeholder="Kelas / Mushola"></div>
     </div>
-    <div style="display:flex;gap:8px;margin-top:18px;justify-content:flex-end"><button class="btn btn-s" onclick="closeM('mJadwal')">Batal</button><button class="btn btn-p" onclick="saveJadwal()">💾 Simpan</button></div>
+    <div style="display:flex;gap:8px;margin-top:20px;justify-content:flex-end">
+      <button class="btn btn-s" onclick="closeM('mJadwal')">Batal</button>
+      <button class="btn btn-p" onclick="saveJadwal()">💾 Simpan</button>
+    </div>
   </div>
 </div>
 
 <!-- Absensi Santri Modal -->
-<div class="modal-overlay" id="mAbsensi" style="display:none">
+<div class="modal-overlay" id="modalAbsensiSantri" style="display:none">
   <div class="modal" style="max-width:680px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px"><h3 style="font-weight:800;font-size:17px">Catat Absensi Santri</h3><button class="btn btn-s" onclick="closeM('mAbsensi')" style="padding:5px 11px">✕</button></div>
+    <div class="modal-header">
+      <div class="modal-title">Catat Absensi Santri</div>
+      <button class="modal-close" onclick="closeM('modalAbsensiSantri')">✕</button>
+    </div>
     <div class="form2" style="margin-bottom:14px">
       <div><label>Tanggal *</label><input type="date" class="inp" id="absTgl"></div>
       <div><label>Kelas *</label><select class="inp" id="absKelas" onchange="loadAbsensiSantri()"><option value="">-- Pilih Kelas --</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
     </div>
     <div id="absListSantri" style="max-height:360px;overflow-y:auto"></div>
-    <div style="display:flex;gap:8px;margin-top:18px;justify-content:flex-end"><button class="btn btn-s" onclick="closeM('mAbsensi')">Batal</button><button class="btn btn-p" onclick="saveAbsensi()">💾 Simpan Absensi</button></div>
+    <div style="display:flex;gap:8px;margin-top:20px;justify-content:flex-end">
+      <button class="btn btn-s" onclick="closeM('modalAbsensiSantri')">Batal</button>
+      <button class="btn btn-p" onclick="saveAbsensiSantri()">💾 Simpan Absensi</button>
+    </div>
   </div>
 </div>
 
 <!-- Absensi Guru Modal -->
-<div class="modal-overlay" id="mAbsGuru" style="display:none">
+<div class="modal-overlay" id="modalAbsensiGuru" style="display:none">
   <div class="modal">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px"><h3 style="font-weight:800;font-size:17px" id="mAbsGuruTitle">Catat Absensi Guru</h3><button class="btn btn-s" onclick="closeM('mAbsGuru')" style="padding:5px 11px">✕</button></div>
+    <div class="modal-header">
+      <div class="modal-title" id="mAbsGuruTitle">Catat Absensi Guru</div>
+      <button class="modal-close" onclick="closeM('modalAbsensiGuru')">✕</button>
+    </div>
     <input type="hidden" id="eAbsGuruId">
     <div class="form2">
       <div><label>Guru *</label><select class="inp" id="agGuru"><option value="">-- Pilih Guru --</option></select></div>
@@ -542,49 +1765,76 @@ tr:hover td{background:var(--card2)}
       <div><label>Status *</label><select class="inp" id="agStatus"><option>Hadir</option><option>Izin</option><option>Tidak Hadir</option></select></div>
       <div><label>Keterangan</label><input type="text" class="inp" id="agKet" placeholder="Opsional"></div>
     </div>
-    <div style="display:flex;gap:8px;margin-top:18px;justify-content:flex-end"><button class="btn btn-s" onclick="closeM('mAbsGuru')">Batal</button><button class="btn btn-p" onclick="saveAbsensiGuru()">💾 Simpan</button></div>
+    <div style="display:flex;gap:8px;margin-top:20px;justify-content:flex-end">
+      <button class="btn btn-s" onclick="closeM('modalAbsensiGuru')">Batal</button>
+      <button class="btn btn-p" onclick="saveAbsensiGuru()">💾 Simpan</button>
+    </div>
   </div>
 </div>
 
 <!-- Progress Modal -->
 <div class="modal-overlay" id="mProgress" style="display:none">
   <div class="modal">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px"><h3 style="font-weight:800;font-size:17px">Update Progress Membaca</h3><button class="btn btn-s" onclick="closeM('mProgress')" style="padding:5px 11px">✕</button></div>
-    <div style="margin-bottom:12px"><label>Santri *</label><select class="inp" id="pSantri" onchange="setCurrentLevel()"><option value="">-- Pilih Santri --</option></select></div>
-    <div style="margin-bottom:12px"><label>Level Saat Ini</label><input type="text" class="inp" id="pCurLevel" readonly style="opacity:.6"></div>
-    <div style="margin-bottom:12px"><label>Level Baru *</label><select class="inp" id="pNewLevel"><option>Iqro 1</option><option>Iqro 2</option><option>Iqro 3</option><option>Iqro 4</option><option>Iqro 5</option><option>Iqro 6</option><option>Qur'an</option></select></div>
-    <div style="margin-bottom:12px"><label>Catatan</label><input type="text" class="inp" id="pCatatan" placeholder="Opsional"></div>
-    <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-s" onclick="closeM('mProgress')">Batal</button><button class="btn btn-p" onclick="saveProgress()">💾 Update</button></div>
+    <div class="modal-header">
+      <div class="modal-title">Update Progress Membaca</div>
+      <button class="modal-close" onclick="closeM('mProgress')">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div><label>Santri *</label><select class="inp" id="pSantri" onchange="setCurrentLevel()"><option value="">-- Pilih Santri --</option></select></div>
+      <div><label>Level Saat Ini</label><input type="text" class="inp" id="pCurLevel" readonly style="opacity:.5"></div>
+      <div><label>Level Baru *</label><select class="inp" id="pNewLevel"><option>Iqro 1</option><option>Iqro 2</option><option>Iqro 3</option><option>Iqro 4</option><option>Iqro 5</option><option>Iqro 6</option><option>Qur'an</option></select></div>
+      <div><label>Catatan</label><input type="text" class="inp" id="pCatatan" placeholder="Opsional"></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:20px;justify-content:flex-end">
+      <button class="btn btn-s" onclick="closeM('mProgress')">Batal</button>
+      <button class="btn btn-p" onclick="saveProgress()">💾 Update</button>
+    </div>
   </div>
 </div>
 
 <!-- Hafalan Modal -->
 <div class="modal-overlay" id="mHafalan" style="display:none">
   <div class="modal">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px"><h3 style="font-weight:800;font-size:17px" id="mHafTitle">Tambah Hafalan</h3><button class="btn btn-s" onclick="closeM('mHafalan')" style="padding:5px 11px">✕</button></div>
-    <input type="hidden" id="eHafId">
-    <div style="margin-bottom:12px"><label>Santri *</label><select class="inp" id="hSantri"><option value="">-- Pilih Santri --</option></select></div>
-    <div class="form2">
-      <div><label>Surat *</label><input type="text" class="inp" id="hSurat" placeholder="An-Naba"></div>
-      <div><label>Ayat</label><input type="text" class="inp" id="hAyat" placeholder="1 - 40"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="mHafTitle">Tambah Hafalan</div>
+      <button class="modal-close" onclick="closeM('mHafalan')">✕</button>
     </div>
-    <div style="margin-top:12px"><label>Status</label><select class="inp" id="hStatus"><option>Belum Hafal</option><option>Sedang Menghafal</option><option>Sudah Hafal</option></select></div>
-    <div style="display:flex;gap:8px;margin-top:18px;justify-content:flex-end"><button class="btn btn-s" onclick="closeM('mHafalan')">Batal</button><button class="btn btn-p" onclick="saveHafalan()">💾 Simpan</button></div>
+    <input type="hidden" id="eHafId">
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div><label>Santri *</label><select class="inp" id="hSantri"><option value="">-- Pilih Santri --</option></select></div>
+      <div class="form2">
+        <div><label>Surat *</label><input type="text" class="inp" id="hSurat" placeholder="An-Naba"></div>
+        <div><label>Ayat</label><input type="text" class="inp" id="hAyat" placeholder="1 - 40"></div>
+      </div>
+      <div><label>Status</label><select class="inp" id="hStatus"><option>Belum Hafal</option><option>Sedang Menghafal</option><option>Sudah Hafal</option></select></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:20px;justify-content:flex-end">
+      <button class="btn btn-s" onclick="closeM('mHafalan')">Batal</button>
+      <button class="btn btn-p" onclick="saveHafalan()">💾 Simpan</button>
+    </div>
   </div>
 </div>
 
 <!-- Konfirmasi Modal -->
 <div class="modal-overlay" id="mKonfirm" style="display:none">
-  <div class="modal" style="max-width:360px;text-align:center">
-    <div style="font-size:44px;margin-bottom:10px" id="kIcon">⚠️</div>
-    <h3 style="font-weight:800;margin-bottom:7px" id="kTitle">Konfirmasi</h3>
-    <p style="color:var(--t2);font-size:13px;margin-bottom:18px" id="kMsg">Apakah Anda yakin?</p>
-    <div style="display:flex;gap:8px;justify-content:center"><button class="btn btn-s" onclick="closeM('mKonfirm')">Batal</button><button class="btn btn-d" id="kBtn">Hapus</button></div>
+  <div class="modal" style="max-width:380px;text-align:center">
+    <div style="font-size:48px;margin-bottom:12px" id="kIcon">⚠️</div>
+    <div style="font-weight:800;font-size:18px;margin-bottom:8px;letter-spacing:-0.3px" id="kTitle">Konfirmasi</div>
+    <p style="color:var(--t2);font-size:13px;margin-bottom:22px;line-height:1.6" id="kMsg">Apakah Anda yakin?</p>
+    <div style="display:flex;gap:8px;justify-content:center">
+      <button class="btn btn-s" onclick="closeM('mKonfirm')">Batal</button>
+      <button class="btn btn-d" id="kBtn">Hapus</button>
+    </div>
   </div>
 </div>
 
 <!-- Toast -->
-<div id="toast"><div class="toast-inner"><span id="tIcon" style="font-size:19px">✅</span><span id="tMsg" style="font-size:13px;font-weight:500"></span></div></div>
+<div id="toast">
+  <div class="toast-inner">
+    <span id="tIcon" style="font-size:20px">✅</span>
+    <span id="tMsg" style="font-size:13px;font-weight:600"></span>
+  </div>
+</div>
 
 <script>
 // ====================================================
@@ -593,7 +1843,7 @@ tr:hover td{background:var(--card2)}
 const LEVELS = ['Iqro 1','Iqro 2','Iqro 3','Iqro 4','Iqro 5','Iqro 6',"Qur'an"];
 const LCOLORS = ['#38bdf8','#818cf8','#34d399','#fb923c','#f472b6','#fbbf24','#10b981'];
 const DAYS = ['Senin','Selasa','Rabu','Kamis','Jumat'];
-const JUZ30 = ['An-Naba','An-Nazi\'at','Abasa','At-Takwir','Al-Infitar','Al-Mutaffifin','Al-Insyiqaq','Al-Buruj','At-Tariq','Al-A\'la','Al-Ghasiyah','Al-Fajr','Al-Balad','Asy-Syams','Al-Lail','Ad-Duha','Asy-Syarh','At-Tin','Al-Alaq','Al-Qadr','Al-Bayyinah','Az-Zalzalah','Al-Adiyat','Al-Qari\'ah','At-Takatsur','Al-Asr','Al-Humazah','Al-Fil','Quraisy','Al-Ma\'un','Al-Kautsar','Al-Kafirun','An-Nasr','Al-Lahab','Al-Ikhlas','Al-Falaq','An-Nas'];
+const JUZ30 = ['An-Naba',"An-Nazi'at",'Abasa','At-Takwir','Al-Infitar','Al-Mutaffifin','Al-Insyiqaq','Al-Buruj','At-Tariq',"Al-A'la",'Al-Ghasiyah','Al-Fajr','Al-Balad','Asy-Syams','Al-Lail','Ad-Duha','Asy-Syarh','At-Tin','Al-Alaq','Al-Qadr','Al-Bayyinah','Az-Zalzalah',"Al-Adiyat","Al-Qari'ah",'At-Takatsur','Al-Asr','Al-Humazah','Al-Fil','Quraisy',"Al-Ma'un",'Al-Kautsar','Al-Kafirun','An-Nasr','Al-Lahab','Al-Ikhlas','Al-Falaq','An-Nas'];
 
 const DB = {
   get: k => JSON.parse(localStorage.getItem('btq_'+k)||'[]'),
@@ -604,8 +1854,12 @@ const DB = {
 const gid = () => 'ID'+Date.now().toString(36).toUpperCase();
 const today = () => new Date().toISOString().split('T')[0];
 
-// Charts instances
 let charts = {};
+
+// Chart.js default config for dark/glass style
+Chart.defaults.color = '#6b8ab8';
+Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
 
 // ====================================================
 // AUTH
@@ -659,6 +1913,20 @@ function startApp() {
 // ====================================================
 // INIT & SAMPLE DATA
 // ====================================================
+function updateBadges() {
+  const santri = DB.get('santri');
+  const alumni = DB.get('alumni');
+  const guru = DB.get('guru');
+  const santriAktif = santri.filter(s => s.status === 'Aktif');
+  const guruAktif = guru.filter(g => g.status === 'Aktif');
+  const badgeSantri = document.getElementById('badgeSantri') || document.getElementById('bSantri');
+  const badgeAlumni = document.getElementById('badgeAlumni') || document.getElementById('bAlumni');
+  const badgeGuru = document.getElementById('badgeGuru') || document.getElementById('bGuru');
+  if (badgeSantri) badgeSantri.textContent = santriAktif.length;
+  if (badgeAlumni) badgeAlumni.textContent = alumni.length;
+  if (badgeGuru) badgeGuru.textContent = guruAktif.length;
+}
+
 function init() {
   if(!DB.obj('settings').tahunAjaran) DB.sobj('settings',{tahunAjaran:'2024/2025',semester:'Ganjil'});
   if(DB.get('santri').length===0) loadSample();
@@ -709,9 +1977,7 @@ function loadSample() {
     {id:'JD007',kelas:'2',hari:'Senin',mulai:'10:00',selesai:'11:00',guru:'GR002',guruNama:'Ustadzah Sari Dewi',lokasi:'Mushola'},
     {id:'JD008',kelas:'3',hari:'Selasa',mulai:'10:00',selesai:'11:00',guru:'GR002',guruNama:'Ustadzah Sari Dewi',lokasi:'Mushola'},
   ]);
-  // Sample absensi - last few days
   const sampleAbs = [];
-  const santri5 = ['ID004','ID009','ID010'];
   const allSantri = ['ID001','ID002','ID003','ID004','ID005','ID006','ID007','ID008','ID009','ID010'];
   const statuses = ['Hadir','Hadir','Hadir','Izin','Sakit'];
   for(let i=0;i<5;i++){
@@ -722,13 +1988,11 @@ function loadSample() {
       if(s) sampleAbs.push({id:gid(),santriId:sid,santriNama:s.nama,kelas:s.kelas,tanggal:tgl,status:statuses[Math.floor(Math.random()*statuses.length)],ket:''});
     });
   }
-  DB.set('absensi',sampleAbs);
-  // Absensi guru
+  DB.set('absensi_santri',sampleAbs);
   DB.set('absensi_guru',[
     {id:gid(),guruId:'GR001',guruNama:'Ustadz Ahmad Syarif',tanggal:today(),jam:'12:30-13:30',kelas:'5',status:'Hadir',ket:''},
     {id:gid(),guruId:'GR002',guruNama:'Ustadzah Sari Dewi',tanggal:today(),jam:'10:00-11:00',kelas:'1',status:'Hadir',ket:''},
   ]);
-  // Juz 30 progress for kelas 5
   const juz30data = {};
   ['ID004','ID009','ID010'].forEach(sid=>{
     const progress = {};
@@ -738,9 +2002,6 @@ function loadSample() {
   DB.sobj('juz30',juz30data);
 }
 
-// ====================================================
-// NAVIGATION
-// ====================================================
 function showPage(page) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
@@ -748,89 +2009,136 @@ function showPage(page) {
   if(pg) pg.classList.add('active');
   const nav = document.querySelector(`[data-page="${page}"]`);
   if(nav) nav.classList.add('active');
-  const titles = {dashboard:'Dashboard',santri:'Data Santri',guru:'Guru BTQ',jadwal:'Jadwal BTQ',absensi:'Absensi Santri','absensi-guru':'Absensi Guru',progress:'Progress Membaca',hafalan:"Hafalan Qur'an",juz30:'Hafalan Juz 30',alumni:'Data Alumni',riwayat:'Riwayat Progress',laporan:'Laporan',pengaturan:'Pengaturan'};
+  const titles = {dashboard:'Dashboard',santri:'Data Santri',guru:'Guru BTQ',jadwal:'Jadwal BTQ','absensi-santri':'Absensi Santri','absensi-guru':'Absensi Guru',progress:'Progress Membaca',hafalan:"Hafalan Qur'an",juz30:'Hafalan Juz 30',alumni:'Data Alumni',riwayat:'Riwayat Progress',pengaturan:'Pengaturan'};
   document.getElementById('pageTitle').textContent = titles[page]||'';
   closeSidebar();
-  // Render page
-  const renders = {dashboard:renderDashboard,santri:renderSantri,guru:renderGuru,jadwal:renderJadwal,absensi:renderAbsensi,'absensi-guru':renderAbsensiGuru,progress:renderProgress,hafalan:renderHafalan,juz30:renderJuz30,alumni:renderAlumni,riwayat:renderRiwayat,laporan:renderLaporan,pengaturan:renderPengaturan};
+  const renders = {dashboard:renderDashboard,santri:renderSantri,guru:renderGuru,jadwal:renderJadwal,'absensi-santri':renderAbsensiSantri,'absensi-guru':renderAbsensiGuru,progress:renderProgress,hafalan:renderHafalan,juz30:renderJuz30,alumni:renderAlumni,riwayat:renderRiwayat,pengaturan:renderPengaturan};
   if(renders[page]) renders[page]();
 }
 
-// ====================================================
-// BADGES
-// ====================================================
-function updateBadges() {
-  document.getElementById('bSantri').textContent = DB.get('santri').filter(s=>s.status==='Aktif').length;
-  document.getElementById('bAlumni').textContent = DB.get('alumni').length;
-  document.getElementById('bGuru').textContent = DB.get('guru').filter(g=>g.status==='Aktif').length;
+function renderAll() {
+  populateDropdowns();
+  renderDashboard();
+  renderSantri();
+  renderGuru();
+  renderJadwal();
+  renderAbsensiSantri();
+  renderAbsensiGuru();
+  renderProgressCards();
+  renderHafalan();
+  renderAlumni();
+  renderRiwayat();
+  renderPengaturan();
+}
+
+function populateDropdowns() {
+  const santri = DB.get('santri').filter(s=>s.status==='Aktif');
+  const gurus = DB.get('guru').filter(g=>g.status==='Aktif');
+  const s5 = santri.filter(s=>s.kelas==='5');
+  const santriOpts = '<option value="">-- Pilih Santri --</option>' + santri.map(s => `<option value="${s.id}">${s.nama} (Kls ${s.kelas})</option>`).join('');
+  const guruOpts = '<option value="">-- Pilih Guru --</option>' + gurus.map(g => `<option value="${g.id}">${g.nama}</option>`).join('');
+  const pSantri = document.getElementById('pSantri'); if(pSantri) pSantri.innerHTML = santriOpts;
+  const hSantri = document.getElementById('hSantri'); if(hSantri) hSantri.innerHTML = santriOpts;
+  const agGuru = document.getElementById('agGuru'); if(agGuru) agGuru.innerHTML = guruOpts;
+  const selJuz30 = document.getElementById('selJuz30Santri'); if(selJuz30) selJuz30.innerHTML = '<option value="">-- Pilih Santri Kls 5 --</option>' + s5.map(s => `<option value="${s.id}">${s.nama}</option>`).join('');
 }
 
 // ====================================================
-// DASHBOARD
+// DASHBOARD & CHARTS
 // ====================================================
 function renderDashboard() {
-  const santri = DB.get('santri'), alumni = DB.get('alumni'), hafalan = DB.get('hafalan'), abs = DB.get('absensi'), aguru = DB.get('absensi_guru');
+  const santri = DB.get('santri'), alumni = DB.get('alumni'), hafalan = DB.get('hafalan'), abs = DB.get('absensi_santri'), aguru = DB.get('absensi_guru');
   const aktif = santri.filter(s=>s.status==='Aktif');
   const settings = DB.obj('settings');
-
-  document.getElementById('dashSub').textContent = `TA ${settings.tahunAjaran} Semester ${settings.semester}`;
-
-  // Stats
+  document.getElementById('dashSub').textContent = `TA ${settings.tahunAjaran} · Semester ${settings.semester}`;
   const absToday = abs.filter(a=>a.tanggal===today());
   const hadirToday = absToday.filter(a=>a.status==='Hadir').length;
+
   document.getElementById('statsRow').innerHTML = `
-    <div class="stat s-blue"><div style="font-size:26px;margin-bottom:4px">👥</div><div style="font-size:26px;font-weight:800;color:var(--acc)">${aktif.length}</div><div style="font-size:12px;color:var(--t2)">Santri Aktif</div></div>
-    <div class="stat s-green"><div style="font-size:26px;margin-bottom:4px">✅</div><div style="font-size:26px;font-weight:800;color:var(--acc3)">${hadirToday}</div><div style="font-size:12px;color:var(--t2)">Hadir Hari Ini</div></div>
-    <div class="stat s-purple"><div style="font-size:26px;margin-bottom:4px">👨‍🏫</div><div style="font-size:26px;font-weight:800;color:var(--acc2)">${DB.get('guru').filter(g=>g.status==='Aktif').length}</div><div style="font-size:12px;color:var(--t2)">Guru Aktif</div></div>
-    <div class="stat s-orange"><div style="font-size:26px;margin-bottom:4px">📿</div><div style="font-size:26px;font-weight:800;color:var(--acc4)">${hafalan.filter(h=>h.status==='Sudah Hafal').length}</div><div style="font-size:12px;color:var(--t2)">Sudah Hafal</div></div>
-    <div class="stat s-pink"><div style="font-size:26px;margin-bottom:4px">🎓</div><div style="font-size:26px;font-weight:800;color:var(--acc5)">${alumni.length}</div><div style="font-size:12px;color:var(--t2)">Total Alumni</div></div>
-    <div class="stat s-gold"><div style="font-size:26px;margin-bottom:4px">📖</div><div style="font-size:26px;font-weight:800;color:var(--gold)">${aktif.filter(s=>s.level==="Qur'an").length}</div><div style="font-size:12px;color:var(--t2)">Level Qur'an</div></div>
+    <div class="stat s-blue">
+      <div class="stat-icon">👥</div>
+      <div class="stat-value num" style="color:var(--acc)">${aktif.length}</div>
+      <div class="stat-label">Santri Aktif</div>
+    </div>
+    <div class="stat s-green">
+      <div class="stat-icon">✅</div>
+      <div class="stat-value num" style="color:var(--acc3)">${hadirToday}</div>
+      <div class="stat-label">Hadir Hari Ini</div>
+    </div>
+    <div class="stat s-purple">
+      <div class="stat-icon">👨‍🏫</div>
+      <div class="stat-value num" style="color:var(--acc2)">${DB.get('guru').filter(g=>g.status==='Aktif').length}</div>
+      <div class="stat-label">Guru Aktif</div>
+    </div>
+    <div class="stat s-orange">
+      <div class="stat-icon">📿</div>
+      <div class="stat-value num" style="color:var(--acc4)">${hafalan.filter(h=>h.status==='Sudah Hafal').length}</div>
+      <div class="stat-label">Sudah Hafal</div>
+    </div>
+    <div class="stat s-pink">
+      <div class="stat-icon">🎓</div>
+      <div class="stat-value num" style="color:var(--acc5)">${alumni.length}</div>
+      <div class="stat-label">Total Alumni</div>
+    </div>
+    <div class="stat s-gold">
+      <div class="stat-icon">📖</div>
+      <div class="stat-value num" style="color:var(--gold)">${aktif.filter(s=>s.level==="Qur'an").length}</div>
+      <div class="stat-label">Level Qur'an</div>
+    </div>
   `;
 
-  // Chart Level
+  const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+  const gridC = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,30,80,0.08)';
+  const tickC = isDark ? '#6b8ab8' : '#4a6890';
+
   const lc = {}; LEVELS.forEach(l=>lc[l]=0); aktif.forEach(s=>{if(lc[s.level]!==undefined)lc[s.level]++;});
-  mkChart('chLevel','bar',{labels:LEVELS,datasets:[{label:'Santri',data:LEVELS.map(l=>lc[l]),backgroundColor:LCOLORS.map(c=>c+'99'),borderColor:LCOLORS,borderWidth:2,borderRadius:8}]},{plugins:{legend:{display:false}},scales:{y:{ticks:{color:'#7a9cc4',stepSize:1},grid:{color:'#1e3354'}},x:{ticks:{color:'#7a9cc4'},grid:{display:false}}}});
+  mkChart('chLevel','bar',{labels:LEVELS,datasets:[{label:'Santri',data:LEVELS.map(l=>lc[l]),backgroundColor:LCOLORS.map(c=>c+'44'),borderColor:LCOLORS,borderWidth:2,borderRadius:8,borderSkipped:false}]},{plugins:{legend:{display:false}},scales:{y:{ticks:{color:tickC,stepSize:1},grid:{color:gridC}},x:{ticks:{color:tickC},grid:{display:false}}}});
 
-  // Chart Absensi 30 hari
-  const absLast30 = []; const now = new Date();
+  const absLast30=[]; const now=new Date();
   for(let i=29;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);absLast30.push(d.toISOString().split('T')[0]);}
-  const hadirPerDay = absLast30.map(d=>abs.filter(a=>a.tanggal===d&&a.status==='Hadir').length);
-  const alphaPerDay = absLast30.map(d=>abs.filter(a=>a.tanggal===d&&a.status==='Alpha').length);
-  const labels30 = absLast30.map(d=>d.slice(5));
-  mkChart('chAbsensi','line',{labels:labels30,datasets:[{label:'Hadir',data:hadirPerDay,borderColor:'#34d399',backgroundColor:'#34d39922',tension:.4,fill:true},{label:'Alpha',data:alphaPerDay,borderColor:'#f87171',backgroundColor:'#f8717122',tension:.4,fill:true}]},{plugins:{legend:{position:'bottom',labels:{color:'#7a9cc4',padding:8,font:{size:11}}}},scales:{y:{ticks:{color:'#7a9cc4'},grid:{color:'#1e3354'}},x:{ticks:{color:'#7a9cc4',maxTicksLimit:10},grid:{display:false}}}});
+  const hadirPerDay=absLast30.map(d=>abs.filter(a=>a.tanggal===d&&a.status==='Hadir').length);
+  const alphaPerDay=absLast30.map(d=>abs.filter(a=>a.tanggal===d&&a.status==='Alpha').length);
+  const labels30=absLast30.map(d=>d.slice(5));
+  mkChart('chAbsensi','line',{labels:labels30,datasets:[{label:'Hadir',data:hadirPerDay,borderColor:'#34d399',backgroundColor:'rgba(52,211,153,0.08)',tension:.4,fill:true,pointRadius:0,pointHoverRadius:4},{label:'Alpha',data:alphaPerDay,borderColor:'#f87171',backgroundColor:'rgba(248,113,113,0.08)',tension:.4,fill:true,pointRadius:0,pointHoverRadius:4}]},{plugins:{legend:{position:'bottom',labels:{color:tickC,padding:12,font:{size:11},boxWidth:12}}},scales:{y:{ticks:{color:tickC},grid:{color:gridC}},x:{ticks:{color:tickC,maxTicksLimit:8},grid:{display:false}}}});
 
-  // Juz 30 Chart for kelas 5
-  const juz30 = DB.obj('juz30');
-  const santri5 = aktif.filter(s=>s.kelas==='5');
-  const juzLabels = santri5.map(s=>s.nama.split(' ')[0]);
-  const juzDone = santri5.map(s=>{ const p=juz30[s.id]||{}; return JUZ30.filter(sr=>p[sr]==='Sudah Hafal').length; });
-  const juzProc = santri5.map(s=>{ const p=juz30[s.id]||{}; return JUZ30.filter(sr=>p[sr]==='Sedang Menghafal').length; });
-  mkChart('chJuz30','bar',{labels:juzLabels.length?juzLabels:['Belum Ada'],datasets:[{label:'Sudah Hafal',data:juzDone,backgroundColor:'#34d39999',borderColor:'#34d399',borderWidth:2,borderRadius:6},{label:'Sedang Hafal',data:juzProc,backgroundColor:'#fbbf2499',borderColor:'#fbbf24',borderWidth:2,borderRadius:6}]},{plugins:{legend:{position:'bottom',labels:{color:'#7a9cc4',font:{size:11}}}},scales:{y:{max:37,ticks:{color:'#7a9cc4',stepSize:5},grid:{color:'#1e3354'}},x:{ticks:{color:'#7a9cc4'},grid:{display:false}}}});
+  const juz30=DB.obj('juz30');
+  const santri5=aktif.filter(s=>s.kelas==='5');
+  const juzLabels=santri5.map(s=>s.nama.split(' ')[0]);
+  const juzDone=santri5.map(s=>{const p=juz30[s.id]||{};return JUZ30.filter(sr=>p[sr]==='Sudah Hafal').length;});
+  const juzProc=santri5.map(s=>{const p=juz30[s.id]||{};return JUZ30.filter(sr=>p[sr]==='Sedang Menghafal').length;});
+  mkChart('chJuz30','bar',{labels:juzLabels.length?juzLabels:['Belum Ada'],datasets:[{label:'Sudah Hafal',data:juzDone,backgroundColor:'rgba(52,211,153,0.5)',borderColor:'#34d399',borderWidth:2,borderRadius:6},{label:'Sedang Menghafal',data:juzProc,backgroundColor:'rgba(251,191,36,0.5)',borderColor:'#fbbf24',borderWidth:2,borderRadius:6}]},{plugins:{legend:{position:'bottom',labels:{color:tickC,font:{size:11},boxWidth:12}}},scales:{y:{max:37,ticks:{color:tickC,stepSize:5},grid:{color:gridC}},x:{ticks:{color:tickC},grid:{display:false}}}});
 
-  // Hafalan Donut
-  const hsc = {'Belum Hafal':0,'Sedang Menghafal':0,'Sudah Hafal':0};
+  const hsc={'Belum Hafal':0,'Sedang Menghafal':0,'Sudah Hafal':0};
   hafalan.forEach(h=>{if(hsc[h.status]!==undefined)hsc[h.status]++;});
-  mkChart('chHafalan','doughnut',{labels:Object.keys(hsc),datasets:[{data:Object.values(hsc),backgroundColor:['#f8717188','#fbbf2488','#34d39988'],borderColor:['#f87171','#fbbf24','#34d399'],borderWidth:2}]},{plugins:{legend:{position:'bottom',labels:{color:'#7a9cc4',padding:8,font:{size:11}}}}});
+  mkChart('chHafalan','doughnut',{labels:Object.keys(hsc),datasets:[{data:Object.values(hsc),backgroundColor:['rgba(248,113,113,0.6)','rgba(251,191,36,0.6)','rgba(52,211,153,0.6)'],borderColor:['#f87171','#fbbf24','#34d399'],borderWidth:2,hoverOffset:6}]},{plugins:{legend:{position:'bottom',labels:{color:tickC,padding:8,font:{size:11},boxWidth:12}}}});
 
-  // Alumni per tahun
-  const aby = {}; alumni.forEach(a=>{ aby[a.tahunLulus]=(aby[a.tahunLulus]||0)+1; });
-  const yrs = Object.keys(aby).sort();
-  mkChart('chAlumni','bar',{labels:yrs.length?yrs:['Belum Ada'],datasets:[{label:'Alumni',data:yrs.length?yrs.map(y=>aby[y]):[0],backgroundColor:'#818cf888',borderColor:'#818cf8',borderWidth:2,borderRadius:8}]},{plugins:{legend:{display:false}},scales:{y:{ticks:{color:'#7a9cc4',stepSize:1},grid:{color:'#1e3354'}},x:{ticks:{color:'#7a9cc4'},grid:{display:false}}}});
+  const aby={}; alumni.forEach(a=>{aby[a.tahunLulus]=(aby[a.tahunLulus]||0)+1;});
+  const yrs=Object.keys(aby).sort();
+  mkChart('chAlumni','bar',{labels:yrs.length?yrs:['Belum Ada'],datasets:[{label:'Alumni',data:yrs.length?yrs.map(y=>aby[y]):[0],backgroundColor:'rgba(129,140,248,0.5)',borderColor:'#818cf8',borderWidth:2,borderRadius:8}]},{plugins:{legend:{display:false}},scales:{y:{ticks:{color:tickC,stepSize:1},grid:{color:gridC}},x:{ticks:{color:tickC},grid:{display:false}}}});
 
-  // Guru absensi
-  const gac = {Hadir:0,Izin:0,'Tidak Hadir':0};
+  const gac={Hadir:0,Izin:0,'Tidak Hadir':0};
   aguru.forEach(a=>{if(gac[a.status]!==undefined)gac[a.status]++;});
-  mkChart('chGuruAbs','pie',{labels:Object.keys(gac),datasets:[{data:Object.values(gac),backgroundColor:['#34d39988','#38bdf888','#f8717188'],borderColor:['#34d399','#38bdf8','#f87171'],borderWidth:2}]},{plugins:{legend:{position:'bottom',labels:{color:'#7a9cc4',font:{size:11}}}}});
+  mkChart('chGuruAbs','doughnut',{labels:Object.keys(gac),datasets:[{data:Object.values(gac),backgroundColor:['rgba(52,211,153,0.6)','rgba(56,189,248,0.6)','rgba(248,113,113,0.6)'],borderColor:['#34d399','#38bdf8','#f87171'],borderWidth:2,hoverOffset:6}]},{plugins:{legend:{position:'bottom',labels:{color:tickC,font:{size:11},boxWidth:12}}}});
 
-  // Recent activity
-  const rw = DB.get('riwayat').slice(-6).reverse();
+  const rw=DB.get('riwayat').slice(-6).reverse();
   document.getElementById('recentAct').innerHTML = rw.length===0
-    ? '<div style="text-align:center;padding:30px;color:var(--t2)">📋 Belum ada aktivitas</div>'
-    : rw.map(r=>`<div style="display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border)">
-        <div style="width:34px;height:34px;border-radius:9px;background:${r.tipe==='level'?'rgba(56,189,248,.15)':'rgba(52,211,153,.15)'};display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px">${r.tipe==='level'?'📖':'📿'}</div>
-        <div><div style="font-weight:700;font-size:13px">${r.santriNama}</div>
-        <div style="font-size:12px;color:var(--t2)">${r.tipe==='level'?`${r.dari} → <span style="color:var(--acc3)">${r.ke}</span>`:`Hafalan: <span style="color:var(--acc3)">${r.ke}</span>`}${r.catatan?` · <em>${r.catatan}</em>`:''}</div>
-        <div style="font-size:10px;color:var(--t2);margin-top:2px">📅 ${r.tanggal}</div></div></div>`).join('');
+    ? '<div style="text-align:center;padding:36px;color:var(--t2)">📋 Belum ada aktivitas</div>'
+    : rw.map(r=>`
+      <div class="activity-item">
+        <div class="activity-icon" style="background:${r.tipe==='level'?'rgba(56,189,248,0.1)':'rgba(52,211,153,0.1)'}">
+          ${r.tipe==='level'?'📖':'📿'}
+        </div>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:13px;margin-bottom:2px">${r.santriNama}</div>
+          <div style="font-size:12px;color:var(--t2)">
+            ${r.tipe==='level'
+              ? `${r.dari} → <span style="color:var(--acc3);font-weight:600">${r.ke}</span>`
+              : `Hafalan: <span style="color:var(--acc3);font-weight:600">${r.ke}</span>`}
+            ${r.catatan?` · <em>${r.catatan}</em>`:''}
+          </div>
+          <div style="font-size:11px;color:var(--t3);margin-top:3px">📅 ${r.tanggal}</div>
+        </div>
+      </div>`).join('');
 }
 
 function mkChart(id, type, data, options) {
@@ -854,20 +2162,21 @@ function renderSantri() {
   if(fs) data = data.filter(x=>x.status===fs);
   const tb = document.getElementById('tbSantri');
   if(!tb) return;
-  tb.innerHTML = data.length===0 ? `<tr><td colspan="8"><div style="text-align:center;padding:40px;color:var(--t2)">👥 Tidak ada data santri</div></td></tr>` :
-    data.map(s=>`<tr>
-      <td style="font-family:monospace;font-size:11px;color:var(--t2)">${s.id}</td>
-      <td><strong>${s.nama}</strong>${s.hp?`<div style="font-size:11px;color:var(--t2)">${s.hp}</div>`:''}</td>
-      <td><span class="badge b-level">Kelas ${s.kelas}</span></td>
-      <td style="font-size:12px">${s.tahunAjaran} · ${s.semester}</td>
-      <td><span class="badge b-level">${s.level}</span></td>
-      <td style="font-size:12px">${s.hafalan||'-'}</td>
-      <td><span class="badge ${s.status==='Aktif'?'b-aktif':'b-alumni'}">${s.status}</span></td>
-      <td><div style="display:flex;gap:5px">
-        <button class="btn btn-s" onclick="editSantri('${s.id}')" style="padding:3px 9px;font-size:11px">✏️</button>
-        <button class="btn btn-d" onclick="confirmDel('santri','${s.id}','${s.nama}')" style="padding:3px 9px;font-size:11px">🗑️</button>
-      </div></td>
-    </tr>`).join('');
+  tb.innerHTML = data.length===0
+    ? `<tr><td colspan="8"><div style="text-align:center;padding:48px;color:var(--t2)">👥 Tidak ada data santri</div></td></tr>`
+    : data.map(s=>`<tr>
+        <td style="font-family:monospace;font-size:11px;color:var(--t3)">${s.id}</td>
+        <td><div style="font-weight:700;font-size:13px">${s.nama}</div>${s.hp?`<div style="font-size:11px;color:var(--t2)">${s.hp}</div>`:''}</td>
+        <td><span class="badge b-level">Kelas ${s.kelas}</span></td>
+        <td style="font-size:12px;color:var(--t2)">${s.tahunAjaran} · ${s.semester}</td>
+        <td><span class="badge b-level">${s.level}</span></td>
+        <td style="font-size:12px">${s.hafalan||'—'}</td>
+        <td><span class="badge ${s.status==='Aktif'?'b-aktif':'b-alumni'}">${s.status}</span></td>
+        <td><div style="display:flex;gap:5px">
+          <button class="btn btn-s" onclick="editSantri('${s.id}')" style="padding:4px 10px;font-size:11px">✏️</button>
+          <button class="btn btn-d" onclick="confirmDel('santri','${s.id}','${s.nama}')" style="padding:4px 10px;font-size:11px">🗑️</button>
+        </div></td>
+      </tr>`).join('');
   document.getElementById('santriInfo').textContent = `Menampilkan ${data.length} santri`;
   updateBadges();
 }
@@ -946,7 +2255,7 @@ function confirmDel(type,id,nama) {
     else if(type==='hafalan')delHafalan(id);
     else if(type==='guru')delGuru(id);
     else if(type==='jadwal')delJadwal(id);
-    else if(type==='absensi')delAbsensi(id);
+    else if(type==='absensi-santri')delAbsensi(id);
     else if(type==='absensi-guru')delAbsensiGuru(id);
     closeM('mKonfirm');
   };
@@ -966,28 +2275,27 @@ function renderGuru() {
   const container = document.getElementById('guruCards');
   if(!container) return;
   container.innerHTML = guru.length===0
-    ? '<div style="text-align:center;padding:50px;color:var(--t2);width:100%">👨‍🏫 Belum ada data guru</div>'
+    ? '<div style="text-align:center;padding:60px;color:var(--t2);width:100%">👨‍🏫 Belum ada data guru</div>'
     : guru.map(g=>`
-      <div class="card" style="padding:18px">
-        <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px">
-          <div style="width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--acc2),var(--acc5));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">👨‍🏫</div>
-          <div>
-            <div style="font-weight:800;font-size:15px">${g.nama}</div>
-            <div style="font-size:11px;color:var(--t2)">${g.email||''}</div>
-            <span class="badge ${g.status==='Aktif'?'b-aktif':'b-alpha'}" style="margin-top:4px;display:inline-block">${g.status}</span>
+      <div class="card" style="padding:20px">
+        <div style="display:flex;gap:14px;align-items:flex-start;margin-bottom:16px">
+          <div class="guru-card-avatar" style="background:linear-gradient(135deg,rgba(129,140,248,0.2),rgba(244,114,182,0.2));border:1px solid rgba(129,140,248,0.2)">👨‍🏫</div>
+          <div style="flex:1">
+            <div style="font-weight:800;font-size:15px;letter-spacing:-0.2px">${g.nama}</div>
+            <div style="font-size:11px;color:var(--t2);margin-top:2px">${g.email||''}</div>
+            <span class="badge ${g.status==='Aktif'?'b-aktif':'b-alpha'}" style="margin-top:6px;display:inline-block">${g.status}</span>
           </div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:8px;font-size:12px">
-          <div style="display:flex;justify-content:space-between"><span style="color:var(--t2)">HP</span><span>${g.hp}</span></div>
-          <div style="display:flex;justify-content:space-between"><span style="color:var(--t2)">Kelas</span><span style="font-weight:600">${g.kelas}</span></div>
-          <div style="display:flex;justify-content:space-between"><span style="color:var(--t2)">Jadwal</span><span style="font-weight:600">${g.jadwal}</span></div>
+        <div style="display:flex;flex-direction:column;gap:2px;font-size:12px;margin-bottom:14px">
+          <div class="info-row"><span class="label">HP</span><span class="value">${g.hp}</span></div>
+          <div class="info-row"><span class="label">Kelas</span><span class="value">${g.kelas}</span></div>
+          <div class="info-row"><span class="label">Jadwal</span><span class="value">${g.jadwal}</span></div>
         </div>
-        <div style="display:flex;gap:6px;margin-top:14px">
+        <div style="display:flex;gap:6px">
           <button class="btn btn-s" onclick="editGuru('${g.id}')" style="flex:1;justify-content:center;font-size:12px">✏️ Edit</button>
-          <button class="btn btn-d" onclick="confirmDel('guru','${g.id}','${g.nama}')" style="padding:7px 12px;font-size:12px">🗑️</button>
+          <button class="btn btn-d" onclick="confirmDel('guru','${g.id}','${g.nama}')" style="padding:8px 12px;font-size:12px">🗑️</button>
         </div>
-      </div>
-    `).join('');
+      </div>`).join('');
 }
 
 function openGuruModal(id=null) {
@@ -1007,7 +2315,7 @@ function openGuruModal(id=null) {
     ['eGuruId','gNama','gHp','gKelas','gJadwal','gEmail'].forEach(i=>document.getElementById(i).value='');
     document.getElementById('gStatus').value='Aktif';
   }
-  show('mGuru');
+  show('modalGuru');
 }
 
 function editGuru(id){ if(!isAdmin())return; openGuruModal(id); }
@@ -1023,7 +2331,7 @@ function saveGuru() {
   if(eid){ const idx=list.findIndex(g=>g.id===eid); if(idx!==-1) list[idx]={...list[idx],...obj}; }
   else list.push({id:gid(),...obj});
   DB.set('guru',list);
-  closeM('mGuru');
+  closeM('modalGuru');
   renderGuru();
   updateBadges();
   toast('✅',eid?'Data guru diupdate!':'Guru baru ditambahkan!');
@@ -1041,38 +2349,35 @@ const DAYCOLORS = ['#38bdf8','#818cf8','#34d399','#fb923c','#f472b6'];
 
 function renderJadwal() {
   const jadwal = DB.get('jadwal');
-  // Table
   const tb = document.getElementById('tbJadwal');
   if(tb) tb.innerHTML = jadwal.length===0
-    ? `<tr><td colspan="7"><div style="text-align:center;padding:30px;color:var(--t2)">🗓️ Belum ada jadwal</div></td></tr>`
+    ? `<tr><td colspan="7"><div style="text-align:center;padding:36px;color:var(--t2)">🗓️ Belum ada jadwal</div></td></tr>`
     : jadwal.map(j=>`<tr>
         <td><span class="badge b-level">Kelas ${j.kelas}</span></td>
         <td style="font-weight:600">${j.hari}</td>
         <td>${j.mulai}</td>
         <td>${j.selesai}</td>
-        <td>${j.guruNama||'-'}</td>
-        <td style="color:var(--t2);font-size:12px">${j.lokasi||'-'}</td>
+        <td>${j.guruNama||'—'}</td>
+        <td style="color:var(--t2);font-size:12px">${j.lokasi||'—'}</td>
         <td><div style="display:flex;gap:5px">
-          <button class="btn btn-s" onclick="editJadwal('${j.id}')" style="padding:3px 9px;font-size:11px">✏️</button>
-          <button class="btn btn-d" onclick="confirmDel('jadwal','${j.id}','jadwal kelas ${j.kelas}')" style="padding:3px 9px;font-size:11px">🗑️</button>
+          <button class="btn btn-s" onclick="editJadwal('${j.id}')" style="padding:4px 10px;font-size:11px">✏️</button>
+          <button class="btn btn-d" onclick="confirmDel('jadwal','${j.id}','jadwal kelas ${j.kelas}')" style="padding:4px 10px;font-size:11px">🗑️</button>
         </div></td>
       </tr>`).join('');
 
-  // Calendar
   const grid = document.getElementById('calGrid');
   if(!grid) return;
   let html = `<div class="cal-hdr"></div>`;
   DAYS.forEach(d=>html+=`<div class="cal-hdr">${d}</div>`);
-  // Time slots
   const slots = ['07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00'];
   slots.forEach(slot=>{
     html += `<div class="cal-time">${slot}</div>`;
     DAYS.forEach((day,di)=>{
       const events = jadwal.filter(j=>j.hari===day && j.mulai.slice(0,2)===slot.slice(0,2));
-      html += `<div class="cal-cell" style="padding:4px">`;
+      html += `<div class="cal-cell" style="padding:3px">`;
       events.forEach(e=>{
-        html += `<div class="cal-event" style="background:${DAYCOLORS[di]}22;border-left:3px solid ${DAYCOLORS[di]};color:${DAYCOLORS[di]}">
-          Kelas ${e.kelas}<br><span style="font-weight:400;opacity:.8">${e.mulai}-${e.selesai}</span>
+        html += `<div class="cal-event" style="background:${DAYCOLORS[di]}18;border-left:3px solid ${DAYCOLORS[di]};color:${DAYCOLORS[di]}">
+          Kelas ${e.kelas}<br><span style="font-weight:400;opacity:.7">${e.mulai}-${e.selesai}</span>
         </div>`;
       });
       html += `</div>`;
@@ -1139,8 +2444,8 @@ function delJadwal(id){
 // ====================================================
 // ABSENSI SANTRI
 // ====================================================
-function renderAbsensi() {
-  let data = DB.get('absensi');
+function renderAbsensiSantri() {
+  let data = DB.get('absensi_santri');
   const ftgl=document.getElementById('fAbsensiTgl')?.value||'';
   const fk=document.getElementById('fAbsensiKelas')?.value||'';
   const fs=document.getElementById('fAbsensiStatus')?.value||'';
@@ -1150,39 +2455,36 @@ function renderAbsensi() {
   if(fs) data=data.filter(a=>a.status===fs);
   if(srch) data=data.filter(a=>a.santriNama.toLowerCase().includes(srch));
   data.sort((a,b)=>b.tanggal.localeCompare(a.tanggal));
-
-  // Summary
   const h=data.filter(a=>a.status==='Hadir').length;
   const iz=data.filter(a=>a.status==='Izin').length;
   const sk=data.filter(a=>a.status==='Sakit').length;
   const al=data.filter(a=>a.status==='Alpha').length;
   document.getElementById('absensiSummary').innerHTML=`
-    <div class="stat s-green" style="padding:14px"><div style="font-size:22px;font-weight:800;color:var(--acc3)">${h}</div><div style="font-size:12px;color:var(--t2)">✅ Hadir</div></div>
-    <div class="stat s-blue" style="padding:14px"><div style="font-size:22px;font-weight:800;color:var(--acc)">${iz}</div><div style="font-size:12px;color:var(--t2)">📋 Izin</div></div>
-    <div class="stat s-orange" style="padding:14px"><div style="font-size:22px;font-weight:800;color:var(--acc4)">${sk}</div><div style="font-size:12px;color:var(--t2)">🤒 Sakit</div></div>
-    <div class="stat s-pink" style="padding:14px"><div style="font-size:22px;font-weight:800;color:var(--red)">${al}</div><div style="font-size:12px;color:var(--t2)">❌ Alpha</div></div>`;
-
-  const tb=document.getElementById('tbAbsensi');
+    <div class="stat s-green" style="padding:16px"><div class="stat-icon" style="background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);width:36px;height:36px;font-size:16px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px">✅</div><div class="stat-value num" style="font-size:24px;color:var(--acc3)">${h}</div><div class="stat-label">Hadir</div></div>
+    <div class="stat s-blue" style="padding:16px"><div class="stat-icon" style="background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.2);width:36px;height:36px;font-size:16px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px">📋</div><div class="stat-value num" style="font-size:24px;color:var(--acc)">${iz}</div><div class="stat-label">Izin</div></div>
+    <div class="stat s-orange" style="padding:16px"><div class="stat-icon" style="background:rgba(251,146,60,0.1);border:1px solid rgba(251,146,60,0.2);width:36px;height:36px;font-size:16px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px">🤒</div><div class="stat-value num" style="font-size:24px;color:var(--acc4)">${sk}</div><div class="stat-label">Sakit</div></div>
+    <div class="stat s-pink" style="padding:16px"><div class="stat-icon" style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.2);width:36px;height:36px;font-size:16px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px">❌</div><div class="stat-value num" style="font-size:24px;color:var(--red)">${al}</div><div class="stat-label">Alpha</div></div>`;
+  const tb=document.getElementById('tbAbsensiSantri');
   if(!tb)return;
   const statusCls={Hadir:'b-hadir',Izin:'b-izin',Sakit:'b-sakit',Alpha:'b-alpha'};
   tb.innerHTML = data.length===0
-    ? `<tr><td colspan="6"><div style="text-align:center;padding:30px;color:var(--t2)">📝 Belum ada data absensi</div></td></tr>`
+    ? `<tr><td colspan="6"><div style="text-align:center;padding:40px;color:var(--t2)">📝 Belum ada data absensi</div></td></tr>`
     : data.map(a=>`<tr>
-        <td style="font-size:12px">${a.tanggal}</td>
+        <td style="font-size:12px;color:var(--t2)">${a.tanggal}</td>
         <td><span class="badge b-level">Kelas ${a.kelas}</span></td>
         <td><strong>${a.santriNama}</strong></td>
         <td><span class="badge ${statusCls[a.status]||''}">${a.status}</span></td>
-        <td style="font-size:12px;color:var(--t2)">${a.ket||'-'}</td>
-        <td><button class="btn btn-d" onclick="confirmDel('absensi','${a.id}','absensi ${a.santriNama}')" style="padding:3px 9px;font-size:11px">🗑️</button></td>
+        <td style="font-size:12px;color:var(--t2)">${a.ket||'—'}</td>
+        <td><button class="btn btn-d" onclick="confirmDel('absensi-santri','${a.id}','absensi ${a.santriNama}')" style="padding:4px 10px;font-size:11px">🗑️</button></td>
       </tr>`).join('');
 }
 
-function openAbsensiModal() {
+function openModalAbsensiSantri() {
   if(!isAdmin())return;
   document.getElementById('absTgl').value=today();
   document.getElementById('absKelas').value='';
   document.getElementById('absListSantri').innerHTML='';
-  show('mAbsensi');
+  show('modalAbsensiSantri');
 }
 
 function loadAbsensiSantri() {
@@ -1190,44 +2492,44 @@ function loadAbsensiSantri() {
   const tgl=document.getElementById('absTgl').value;
   if(!kelas){document.getElementById('absListSantri').innerHTML='';return;}
   const santri=DB.get('santri').filter(s=>s.kelas===kelas&&s.status==='Aktif');
-  const existing=DB.get('absensi').filter(a=>a.tanggal===tgl&&a.kelas===kelas);
+  const existing=DB.get('absensi_santri').filter(a=>a.tanggal===tgl&&a.kelas===kelas);
   document.getElementById('absListSantri').innerHTML = santri.length===0
     ? '<div style="text-align:center;padding:20px;color:var(--t2)">Tidak ada santri di kelas ini</div>'
-    : `<div style="font-size:12px;font-weight:700;color:var(--t2);margin-bottom:8px;padding:0 2px">DAFTAR SANTRI KELAS ${kelas}</div>`+santri.map(s=>{
+    : `<div style="font-size:10px;font-weight:700;color:var(--t2);margin-bottom:10px;letter-spacing:0.8px;text-transform:uppercase;">DAFTAR SANTRI KELAS ${kelas}</div>`+santri.map(s=>{
         const ex=existing.find(a=>a.santriId===s.id);
         return `<div class="abs-row">
           <span style="flex:1;font-weight:600;font-size:13px">${s.nama}</span>
           ${['Hadir','Izin','Sakit','Alpha'].map(st=>`
-            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;color:var(--t2);margin-bottom:0">
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:11px;color:var(--t2);margin-bottom:0;text-transform:none;letter-spacing:0;font-weight:500">
               <input type="radio" name="abs_${s.id}" value="${st}" ${(ex?.status||'Hadir')===st?'checked':''} style="accent-color:var(--acc)">${st}
             </label>`).join('')}
-          <input type="text" placeholder="Ket..." id="ket_${s.id}" value="${ex?.ket||''}" class="inp" style="max-width:100px;padding:5px 8px;font-size:11px">
+          <input type="text" placeholder="Ket..." id="ket_${s.id}" value="${ex?.ket||''}" class="inp" style="max-width:90px;padding:5px 8px;font-size:11px">
         </div>`;
       }).join('');
 }
 
-function saveAbsensi() {
+function saveAbsensiSantri() {
   if(!isAdmin())return;
   const tgl=document.getElementById('absTgl').value;
   const kelas=document.getElementById('absKelas').value;
   if(!tgl||!kelas){toast('❌','Pilih tanggal dan kelas');return;}
   const santri=DB.get('santri').filter(s=>s.kelas===kelas&&s.status==='Aktif');
   if(santri.length===0){toast('⚠️','Tidak ada santri');return;}
-  let abs=DB.get('absensi').filter(a=>!(a.tanggal===tgl&&a.kelas===kelas));
+  let abs=DB.get('absensi_santri').filter(a=>!(a.tanggal===tgl&&a.kelas===kelas));
   santri.forEach(s=>{
     const r=document.querySelector(`input[name="abs_${s.id}"]:checked`);
     const ket=document.getElementById(`ket_${s.id}`)?.value||'';
     if(r) abs.push({id:gid(),santriId:s.id,santriNama:s.nama,kelas,tanggal:tgl,status:r.value,ket});
   });
-  DB.set('absensi',abs);
-  closeM('mAbsensi');
-  renderAbsensi();
+  DB.set('absensi_santri',abs);
+  closeM('modalAbsensiSantri');
+  renderAbsensiSantri();
   toast('✅','Absensi berhasil disimpan!');
 }
 
 function delAbsensi(id){
-  DB.set('absensi',DB.get('absensi').filter(a=>a.id!==id));
-  renderAbsensi(); toast('🗑️','Absensi dihapus');
+  DB.set('absensi_santri',DB.get('absensi_santri').filter(a=>a.id!==id));
+  renderAbsensiSantri(); toast('🗑️','Absensi dihapus');
 }
 
 // ====================================================
@@ -1240,29 +2542,27 @@ function renderAbsensiGuru() {
   if(ftgl) data=data.filter(a=>a.tanggal===ftgl);
   if(fs) data=data.filter(a=>a.status===fs);
   data.sort((a,b)=>b.tanggal.localeCompare(a.tanggal));
-
   const h=data.filter(a=>a.status==='Hadir').length;
   const iz=data.filter(a=>a.status==='Izin').length;
   const th=data.filter(a=>a.status==='Tidak Hadir').length;
   document.getElementById('guruAbsSummary').innerHTML=`
-    <div class="stat s-green" style="padding:14px"><div style="font-size:22px;font-weight:800;color:var(--acc3)">${h}</div><div style="font-size:12px;color:var(--t2)">✅ Hadir</div></div>
-    <div class="stat s-blue" style="padding:14px"><div style="font-size:22px;font-weight:800;color:var(--acc)">${iz}</div><div style="font-size:12px;color:var(--t2)">📋 Izin</div></div>
-    <div class="stat s-pink" style="padding:14px"><div style="font-size:22px;font-weight:800;color:var(--red)">${th}</div><div style="font-size:12px;color:var(--t2)">❌ Tidak Hadir</div></div>`;
-
+    <div class="stat s-green" style="padding:16px"><div class="stat-icon" style="background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);width:36px;height:36px;font-size:16px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px">✅</div><div class="stat-value num" style="font-size:24px;color:var(--acc3)">${h}</div><div class="stat-label">Hadir</div></div>
+    <div class="stat s-blue" style="padding:16px"><div class="stat-icon" style="background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.2);width:36px;height:36px;font-size:16px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px">📋</div><div class="stat-value num" style="font-size:24px;color:var(--acc)">${iz}</div><div class="stat-label">Izin</div></div>
+    <div class="stat s-pink" style="padding:16px"><div class="stat-icon" style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.2);width:36px;height:36px;font-size:16px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px">❌</div><div class="stat-value num" style="font-size:24px;color:var(--red)">${th}</div><div class="stat-label">Tidak Hadir</div></div>`;
   const tb=document.getElementById('tbAbsensiGuru');
   if(!tb)return;
   tb.innerHTML = data.length===0
-    ? `<tr><td colspan="7"><div style="text-align:center;padding:30px;color:var(--t2)">🧑‍🏫 Belum ada data</div></td></tr>`
+    ? `<tr><td colspan="7"><div style="text-align:center;padding:40px;color:var(--t2)">🧑‍🏫 Belum ada data</div></td></tr>`
     : data.map(a=>`<tr>
-        <td style="font-size:12px">${a.tanggal}</td>
+        <td style="font-size:12px;color:var(--t2)">${a.tanggal}</td>
         <td><strong>${a.guruNama}</strong></td>
-        <td style="font-size:12px">${a.jam||'-'}</td>
-        <td>${a.kelas?`<span class="badge b-level">Kelas ${a.kelas}</span>`:'-'}</td>
+        <td style="font-size:12px">${a.jam||'—'}</td>
+        <td>${a.kelas?`<span class="badge b-level">Kelas ${a.kelas}</span>`:'—'}</td>
         <td><span class="badge ${a.status==='Hadir'?'b-hadir':a.status==='Izin'?'b-izin':'b-alpha'}">${a.status}</span></td>
-        <td style="font-size:12px;color:var(--t2)">${a.ket||'-'}</td>
+        <td style="font-size:12px;color:var(--t2)">${a.ket||'—'}</td>
         <td><div style="display:flex;gap:5px">
-          <button class="btn btn-s" onclick="editAbsGuru('${a.id}')" style="padding:3px 9px;font-size:11px">✏️</button>
-          <button class="btn btn-d" onclick="confirmDel('absensi-guru','${a.id}','absensi guru')" style="padding:3px 9px;font-size:11px">🗑️</button>
+          <button class="btn btn-s" onclick="editAbsGuru('${a.id}')" style="padding:4px 10px;font-size:11px">✏️</button>
+          <button class="btn btn-d" onclick="confirmDel('absensi-guru','${a.id}','absensi guru')" style="padding:4px 10px;font-size:11px">🗑️</button>
         </div></td>
       </tr>`).join('');
 }
@@ -1291,7 +2591,7 @@ function openAbsensiGuruModal(id=null) {
     document.getElementById('agStatus').value='Hadir';
     document.getElementById('agKet').value='';
   }
-  show('mAbsGuru');
+  show('modalAbsensiGuru');
 }
 
 function editAbsGuru(id){ if(!isAdmin())return; openAbsensiGuruModal(id); }
@@ -1308,7 +2608,7 @@ function saveAbsensiGuru() {
   if(eid){ const idx=list.findIndex(a=>a.id===eid); if(idx!==-1)list[idx]={...list[idx],...obj}; }
   else list.push({id:gid(),...obj});
   DB.set('absensi_guru',list);
-  closeM('mAbsGuru');
+  closeM('modalAbsensiGuru');
   renderAbsensiGuru();
   toast('✅','Absensi guru disimpan!');
 }
@@ -1326,21 +2626,28 @@ function renderProgress() {
   const container=document.getElementById('progressCards');
   if(!container)return;
   container.innerHTML = santri.length===0
-    ? '<div style="text-align:center;padding:50px;color:var(--t2);width:100%">📖 Belum ada santri</div>'
+    ? '<div style="text-align:center;padding:60px;color:var(--t2);width:100%">📖 Belum ada santri</div>'
     : santri.map(s=>{
         const li=LEVELS.indexOf(s.level);
         const pct=li>=0?Math.round(((li+1)/LEVELS.length)*100):0;
         const col=LCOLORS[li]||'#38bdf8';
-        return `<div class="card" style="padding:16px">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
-            <div><div style="font-weight:800;font-size:14px">${s.nama}</div><div style="font-size:11px;color:var(--t2)">Kelas ${s.kelas} · ${s.tahunAjaran}</div></div>
+        return `<div class="card" style="padding:18px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+            <div>
+              <div style="font-weight:800;font-size:14px;letter-spacing:-0.2px">${s.nama}</div>
+              <div style="font-size:11px;color:var(--t2);margin-top:2px">Kelas ${s.kelas} · ${s.tahunAjaran}</div>
+            </div>
             <span class="badge b-level">${s.level}</span>
           </div>
-          <div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t2);margin-bottom:4px"><span>Progress</span><span>${pct}%</span></div>
-          <div class="pbar"><div class="pfill" style="width:${pct}%;background:${col}"></div></div></div>
+          <div style="margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t2);margin-bottom:5px">
+              <span>Progress</span><span style="color:${col};font-weight:700">${pct}%</span>
+            </div>
+            <div class="pbar"><div class="pfill" style="width:${pct}%;background:${col}"></div></div>
+          </div>
           <div style="display:flex;justify-content:space-between;align-items:center">
-            <span style="font-size:11px;color:var(--t2)">${li<LEVELS.length-1?'Target: '+LEVELS[li+1]:'🌟 Level Max'}</span>
-            <button class="btn btn-p" onclick="quickUpdateProgress('${s.id}')" style="padding:4px 10px;font-size:11px">📈 Update</button>
+            <span style="font-size:11px;color:var(--t2)">${li<LEVELS.length-1?'→ '+LEVELS[li+1]:'🌟 Level Max'}</span>
+            <button class="btn btn-p" onclick="quickUpdateProgress('${s.id}')" style="padding:5px 12px;font-size:11px">📈 Update</button>
           </div>
         </div>`;
       }).join('');
@@ -1400,16 +2707,16 @@ function renderHafalan() {
   const tb=document.getElementById('tbHafalan');
   if(!tb)return;
   tb.innerHTML = data.length===0
-    ? `<tr><td colspan="6"><div style="text-align:center;padding:30px;color:var(--t2)">📿 Belum ada data hafalan</div></td></tr>`
+    ? `<tr><td colspan="6"><div style="text-align:center;padding:40px;color:var(--t2)">📿 Belum ada data hafalan</div></td></tr>`
     : data.map(h=>`<tr>
         <td><strong>${h.santriNama}</strong></td>
         <td>${h.surat}</td>
-        <td style="font-size:12px">${h.ayat}</td>
+        <td style="font-size:12px;color:var(--t2)">${h.ayat}</td>
         <td style="font-size:12px;color:var(--t2)">${h.tanggal}</td>
         <td><span class="badge ${h.status==='Sudah Hafal'?'b-hafal':h.status==='Sedang Menghafal'?'b-proses':'b-belum'}">${h.status}</span></td>
         <td><div style="display:flex;gap:5px">
-          <button class="btn btn-s" onclick="editHafalan('${h.id}')" style="padding:3px 9px;font-size:11px">✏️</button>
-          <button class="btn btn-d" onclick="confirmDel('hafalan','${h.id}','hafalan ${h.surat}')" style="padding:3px 9px;font-size:11px">🗑️</button>
+          <button class="btn btn-s" onclick="editHafalan('${h.id}')" style="padding:4px 10px;font-size:11px">✏️</button>
+          <button class="btn btn-d" onclick="confirmDel('hafalan','${h.id}','hafalan ${h.surat}')" style="padding:4px 10px;font-size:11px">🗑️</button>
         </div></td>
       </tr>`).join('');
 }
@@ -1482,19 +2789,18 @@ function renderJuz30Chart() {
   const santri5=DB.get('santri').filter(s=>s.kelas==='5'&&s.status==='Aktif');
   const juz30=DB.obj('juz30');
   const labels=santri5.map(s=>s.nama.split(' ')[0]);
-  const done=santri5.map(s=>{ const p=juz30[s.id]||{}; return JUZ30.filter(sr=>p[sr]==='Sudah Hafal').length; });
-  const proc=santri5.map(s=>{ const p=juz30[s.id]||{}; return JUZ30.filter(sr=>p[sr]==='Sedang Menghafal').length; });
-  const belum=santri5.map(s=>{ const p=juz30[s.id]||{}; return JUZ30.filter(sr=>!p[sr]||p[sr]==='Belum Hafal').length; });
+  const done=santri5.map(s=>{const p=juz30[s.id]||{};return JUZ30.filter(sr=>p[sr]==='Sudah Hafal').length;});
+  const proc=santri5.map(s=>{const p=juz30[s.id]||{};return JUZ30.filter(sr=>p[sr]==='Sedang Menghafal').length;});
+  const belum=santri5.map(s=>{const p=juz30[s.id]||{};return JUZ30.filter(sr=>!p[sr]||p[sr]==='Belum Hafal').length;});
   mkChart('chJuz30Detail','bar',{
     labels:labels.length?labels:['Belum Ada'],
     datasets:[
-      {label:'Sudah Hafal',data:done,backgroundColor:'#34d39988',borderColor:'#34d399',borderWidth:2,borderRadius:5},
-      {label:'Sedang',data:proc,backgroundColor:'#fbbf2488',borderColor:'#fbbf24',borderWidth:2,borderRadius:5},
-      {label:'Belum',data:belum,backgroundColor:'#f8717188',borderColor:'#f87171',borderWidth:2,borderRadius:5}
+      {label:'Sudah Hafal',data:done,backgroundColor:'rgba(52,211,153,0.6)',borderColor:'#34d399',borderWidth:2,borderRadius:5},
+      {label:'Sedang',data:proc,backgroundColor:'rgba(251,191,36,0.6)',borderColor:'#fbbf24',borderWidth:2,borderRadius:5},
+      {label:'Belum',data:belum,backgroundColor:'rgba(248,113,113,0.5)',borderColor:'#f87171',borderWidth:2,borderRadius:5}
     ]
-  },{plugins:{legend:{position:'bottom',labels:{color:'#7a9cc4',font:{size:11}}}},scales:{x:{stacked:true,ticks:{color:'#7a9cc4'},grid:{display:false}},y:{stacked:true,max:37,ticks:{color:'#7a9cc4',stepSize:5},grid:{color:'#1e3354'}}}});
+  },{plugins:{legend:{position:'bottom',labels:{color:'#6b8ab8',font:{size:11},boxWidth:12}}},scales:{x:{stacked:true,ticks:{color:'#6b8ab8'},grid:{display:false}},y:{stacked:true,max:37,ticks:{color:'#6b8ab8',stepSize:5},grid:{color:'rgba(255,255,255,0.05)'}}}});
 
-  // Stats panel
   const juz30stats=document.getElementById('juz30Stats');
   if(juz30stats){
     const totalSantri=santri5.length;
@@ -1502,14 +2808,16 @@ function renderJuz30Chart() {
     const maxDone=Math.max(...done,0);
     const bestS=done.indexOf(maxDone);
     juz30stats.innerHTML=`
-      <h3 style="font-weight:700;font-size:14px;margin-bottom:14px">📊 Statistik Juz 30</h3>
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <div><div style="font-size:12px;color:var(--t2);margin-bottom:4px">Total Surat Juz 30</div><div style="font-size:24px;font-weight:800;color:var(--acc)">${JUZ30.length}</div></div>
-        <div><div style="font-size:12px;color:var(--t2);margin-bottom:4px">Rata-rata Hafalan</div><div style="font-size:24px;font-weight:800;color:var(--acc3)">${avgDone} surat</div>
-          <div class="pbar" style="margin-top:4px"><div class="pfill" style="width:${Math.round(avgDone/JUZ30.length*100)}%;background:var(--acc3)"></div></div>
+      <div class="section-title">📊 Statistik Juz 30</div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div><div style="font-size:11px;color:var(--t2);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px">Total Surat</div><div class="num" style="font-size:28px;font-weight:800;color:var(--acc)">${JUZ30.length}</div></div>
+        <div>
+          <div style="font-size:11px;color:var(--t2);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Rata-rata Hafalan</div>
+          <div class="num" style="font-size:28px;font-weight:800;color:var(--acc3)">${avgDone} <span style="font-size:14px;font-weight:500;color:var(--t2)">surat</span></div>
+          <div class="pbar" style="margin-top:8px"><div class="pfill" style="width:${Math.round(avgDone/JUZ30.length*100)}%;background:var(--acc3)"></div></div>
         </div>
-        <div><div style="font-size:12px;color:var(--t2);margin-bottom:4px">Terbaik</div><div style="font-size:15px;font-weight:800;color:var(--gold)">${labels[bestS]||'-'} (${maxDone} surat)</div></div>
-        <div><div style="font-size:12px;color:var(--t2);margin-bottom:4px">Santri Kelas 5</div><div style="font-size:24px;font-weight:800;color:var(--acc2)">${totalSantri}</div></div>
+        <div><div style="font-size:11px;color:var(--t2);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px">Terbaik</div><div style="font-size:14px;font-weight:700;color:var(--gold)">${labels[bestS]||'—'} <span style="font-weight:400;color:var(--t2)">(${maxDone} surat)</span></div></div>
+        <div><div style="font-size:11px;color:var(--t2);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px">Santri Kelas 5</div><div class="num" style="font-size:28px;font-weight:800;color:var(--acc2)">${totalSantri}</div></div>
       </div>`;
   }
 }
@@ -1519,7 +2827,7 @@ function renderJuz30Detail() {
   const grid=document.getElementById('juz30Grid');
   const title=document.getElementById('juz30CardTitle');
   if(!grid||!sid){
-    if(grid) grid.innerHTML='<div style="text-align:center;padding:30px;color:var(--t2);width:100%">Pilih santri untuk melihat detail hafalan</div>';
+    if(grid) grid.innerHTML='<div style="text-align:center;padding:40px;color:var(--t2);width:100%">Pilih santri untuk melihat detail hafalan</div>';
     return;
   }
   const s=DB.get('santri').find(x=>x.id===sid);
@@ -1529,11 +2837,12 @@ function renderJuz30Detail() {
   grid.innerHTML=JUZ30.map((surat,i)=>{
     const st=prog[surat]||'Belum Hafal';
     const cls=st==='Sudah Hafal'?'done':st==='Sedang Menghafal'?'inprog':'';
-    const ic=st==='Sudah Hafal'?'✅':st==='Sedang Menghafal'?'🔄':'⭕';
     return `<div class="juz-card ${cls}">
-      <div><div style="font-size:12px;font-weight:700">${i+1}. ${surat}</div>
-      <span class="badge ${st==='Sudah Hafal'?'b-hafal':st==='Sedang Menghafal'?'b-proses':'b-belum'}" style="margin-top:4px;display:inline-block">${st}</span></div>
-      <select onchange="updateJuz30('${sid}','${surat}',this.value)" style="background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:4px 6px;color:var(--t1);font-size:11px;font-family:'Outfit',sans-serif;cursor:pointer">
+      <div>
+        <div style="font-size:12px;font-weight:700;margin-bottom:4px">${i+1}. ${surat}</div>
+        <span class="badge ${st==='Sudah Hafal'?'b-hafal':st==='Sedang Menghafal'?'b-proses':'b-belum'}">${st}</span>
+      </div>
+      <select onchange="updateJuz30('${sid}','${surat}',this.value)" style="background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:5px 7px;color:var(--t1);font-size:11px;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;outline:none">
         <option ${st==='Belum Hafal'?'selected':''}>Belum Hafal</option>
         <option ${st==='Sedang Menghafal'?'selected':''}>Sedang Menghafal</option>
         <option ${st==='Sudah Hafal'?'selected':''}>Sudah Hafal</option>
@@ -1548,7 +2857,6 @@ function updateJuz30(sid, surat, status) {
   if(!juz30[sid]) juz30[sid]={};
   juz30[sid][surat]=status;
   DB.sobj('juz30',juz30);
-  // Update card style dynamically
   renderJuz30Detail();
   renderJuz30Chart();
 }
@@ -1566,16 +2874,19 @@ function renderAlumni() {
   const container=document.getElementById('alumniCards');
   if(!container)return;
   container.innerHTML = alumni.length===0
-    ? '<div style="text-align:center;padding:50px;color:var(--t2);width:100%">🎓 Belum ada alumni</div>'
+    ? '<div style="text-align:center;padding:60px;color:var(--t2);width:100%">🎓 Belum ada alumni</div>'
     : alumni.map(a=>`
-      <div class="card" style="padding:18px">
-        <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:12px">
-          <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--gold),var(--acc4));display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0">🎓</div>
-          <div><div style="font-weight:800;font-size:15px">${a.nama}</div><div style="font-size:11px;color:var(--t2)">Lulus ${a.tahunLulus}</div></div>
+      <div class="card" style="padding:20px">
+        <div style="display:flex;gap:14px;align-items:flex-start;margin-bottom:14px">
+          <div style="width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,rgba(251,191,36,0.2),rgba(251,146,60,0.2));border:1px solid rgba(251,191,36,0.25);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🎓</div>
+          <div>
+            <div style="font-weight:800;font-size:15px;letter-spacing:-0.2px">${a.nama}</div>
+            <div style="font-size:11px;color:var(--t2);margin-top:2px">Lulus ${a.tahunLulus}</div>
+          </div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:7px;font-size:12px">
-          <div style="display:flex;justify-content:space-between"><span style="color:var(--t2)">Level Terakhir</span><span class="badge b-level">${a.levelTerakhir}</span></div>
-          <div style="display:flex;justify-content:space-between"><span style="color:var(--t2)">Hafalan</span><span style="font-weight:700">${a.hafalanTerakhir||'-'}</span></div>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <div class="info-row"><span class="label">Level Terakhir</span><span class="badge b-level">${a.levelTerakhir}</span></div>
+          <div class="info-row"><span class="label">Hafalan</span><span class="value">${a.hafalanTerakhir||'—'}</span></div>
         </div>
       </div>`).join('');
 }
@@ -1596,16 +2907,16 @@ function renderRiwayat() {
   const container=document.getElementById('riwayatList');
   if(!container)return;
   container.innerHTML = data.length===0
-    ? '<div style="text-align:center;padding:50px;color:var(--t2)">📋 Belum ada riwayat</div>'
+    ? '<div style="text-align:center;padding:60px;color:var(--t2)">📋 Belum ada riwayat</div>'
     : data.map(r=>`
       <div class="card" style="padding:14px;display:flex;gap:12px;align-items:flex-start">
-        <div style="width:36px;height:36px;border-radius:9px;background:${r.tipe==='level'?'rgba(56,189,248,.15)':'rgba(52,211,153,.15)'};display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0">${r.tipe==='level'?'📖':'📿'}</div>
+        <div style="width:38px;height:38px;border-radius:10px;background:${r.tipe==='level'?'rgba(56,189,248,0.1)':'rgba(52,211,153,0.1)'};border:1px solid ${r.tipe==='level'?'rgba(56,189,248,0.2)':'rgba(52,211,153,0.2)'};display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0">${r.tipe==='level'?'📖':'📿'}</div>
         <div style="flex:1">
-          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px">
-            <div><span style="font-weight:800;font-size:13px">${r.santriNama}</span><span style="font-size:11px;color:var(--t2);margin-left:8px">${r.tipe==='level'?'Progress Membaca':'Hafalan'}</span></div>
+          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;margin-bottom:3px">
+            <span style="font-weight:800;font-size:13px">${r.santriNama}</span>
             <span style="font-size:11px;color:var(--t2)">📅 ${r.tanggal}</span>
           </div>
-          <div style="font-size:12px;margin-top:3px">${r.tipe==='level'?`${r.dari} → <span style="color:var(--acc3);font-weight:700">${r.ke}</span>`:`<span style="color:var(--acc3);font-weight:700">${r.ke}</span>`}</div>
+          <div style="font-size:12px">${r.tipe==='level'?`${r.dari} → <span style="color:var(--acc3);font-weight:700">${r.ke}</span>`:`<span style="color:var(--acc3);font-weight:700">${r.ke}</span>`}</div>
           ${r.catatan?`<div style="font-size:11px;color:var(--t2);font-style:italic;margin-top:2px">${r.catatan}</div>`:''}
         </div>
       </div>`).join('');
@@ -1618,22 +2929,20 @@ function renderLaporan() {
   const type=document.getElementById('lapType')?.value||'santri';
   const lapSantriSel=document.getElementById('lapSantri');
   const lapKelas=document.getElementById('lapKelas')?.value||'';
-  // Populate santri select
   const santri=DB.get('santri');
   lapSantriSel.innerHTML='<option value="">Semua Santri</option>'+santri.map(s=>`<option value="${s.id}">${s.nama} (Kelas ${s.kelas})</option>`).join('');
-
   const sel=lapSantriSel.value;
   const container=document.getElementById('laporanContent');
   if(!container)return;
-
   const settings=DB.obj('settings');
-  let html=`<div class="card" style="padding:20px" id="lapPrint">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)">
-      <div><div style="font-size:20px;font-weight:800">BTQ Pro – Laporan ${type==='santri'?'Per Santri':type==='kelas'?'Per Kelas':type==='absensi'?'Absensi':'Hafalan'}</div>
-      <div style="font-size:12px;color:var(--t2);margin-top:4px">Tahun Ajaran ${settings.tahunAjaran} Semester ${settings.semester} · Dicetak ${today()}</div></div>
-      <div style="font-size:30px">🕌</div>
+  let html=`<div class="card" style="padding:22px" id="lapPrint">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--border)">
+      <div>
+        <div style="font-size:20px;font-weight:900;letter-spacing:-0.5px">BTQ Pro — Laporan ${type==='santri'?'Per Santri':type==='kelas'?'Per Kelas':type==='absensi'?'Absensi':'Hafalan'}</div>
+        <div style="font-size:12px;color:var(--t2);margin-top:5px">TA ${settings.tahunAjaran} · Semester ${settings.semester} · Dicetak ${today()}</div>
+      </div>
+      <div style="font-size:32px">🕌</div>
     </div>`;
-
   if(type==='santri') {
     let data=santri; if(lapKelas) data=data.filter(s=>s.kelas===lapKelas); if(sel) data=data.filter(s=>s.id===sel);
     const abs=DB.get('absensi'); const hafalan=DB.get('hafalan'); const juz30=DB.obj('juz30');
@@ -1644,34 +2953,38 @@ function renderLaporan() {
       const sJuz=juz30[s.id]||{};
       const doneJuz=JUZ30.filter(sr=>sJuz[sr]==='Sudah Hafal').length;
       const li=LEVELS.indexOf(s.level); const pct=li>=0?Math.round(((li+1)/LEVELS.length)*100):0;
-      html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
-        <div><div style="font-size:18px;font-weight:800;margin-bottom:4px">${s.nama}</div>
-        <div style="font-size:13px;color:var(--t2)">Kelas ${s.kelas} · ${s.tahunAjaran} · ${s.semester}</div>
-        <div style="margin-top:8px"><span class="badge b-level">${s.level}</span> <span class="badge ${s.status==='Aktif'?'b-aktif':'b-alumni'}">${s.status}</span></div></div>
-        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px">
-          <div style="display:flex;justify-content:space-between"><span style="color:var(--t2)">Total Hadir</span><strong>${sAbs.filter(a=>a.status==='Hadir').length}</strong></div>
-          <div style="display:flex;justify-content:space-between"><span style="color:var(--t2)">Total Alpha</span><strong>${sAbs.filter(a=>a.status==='Alpha').length}</strong></div>
-          <div style="display:flex;justify-content:space-between"><span style="color:var(--t2)">Hafalan Tercatat</span><strong>${sHaf.length}</strong></div>
-          <div style="display:flex;justify-content:space-between"><span style="color:var(--t2)">Juz 30 Terhafal</span><strong style="color:var(--acc3)">${doneJuz}/${JUZ30.length}</strong></div>
+      html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px">
+        <div>
+          <div style="font-size:20px;font-weight:900;letter-spacing:-0.5px;margin-bottom:4px">${s.nama}</div>
+          <div style="font-size:13px;color:var(--t2)">Kelas ${s.kelas} · ${s.tahunAjaran} · ${s.semester}</div>
+          <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap"><span class="badge b-level">${s.level}</span> <span class="badge ${s.status==='Aktif'?'b-aktif':'b-alumni'}">${s.status}</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;font-size:12px">
+          <div class="info-row"><span class="label">Total Hadir</span><strong style="color:var(--acc3)">${sAbs.filter(a=>a.status==='Hadir').length}</strong></div>
+          <div class="info-row"><span class="label">Total Alpha</span><strong style="color:var(--red)">${sAbs.filter(a=>a.status==='Alpha').length}</strong></div>
+          <div class="info-row"><span class="label">Hafalan Tercatat</span><strong>${sHaf.length}</strong></div>
+          <div class="info-row"><span class="label">Juz 30 Terhafal</span><strong style="color:var(--acc3)">${doneJuz}/${JUZ30.length}</strong></div>
         </div>
       </div>
-      <h4 style="font-weight:700;margin-bottom:10px;font-size:13px">📖 Progress Level</h4>
-      <div style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t2);margin-bottom:4px"><span>${s.level}</span><span>${pct}%</span></div>
-      <div class="pbar"><div class="pfill" style="width:${pct}%;background:var(--acc)"></div></div></div>
-      <h4 style="font-weight:700;margin-bottom:10px;font-size:13px">📿 Riwayat Hafalan</h4>
-      <table style="margin-bottom:16px"><thead><tr><th>Surat</th><th>Ayat</th><th>Status</th><th>Tanggal</th></tr></thead><tbody>
-        ${sHaf.length?sHaf.map(h=>`<tr><td>${h.surat}</td><td>${h.ayat}</td><td><span class="badge ${h.status==='Sudah Hafal'?'b-hafal':h.status==='Sedang Menghafal'?'b-proses':'b-belum'}">${h.status}</span></td><td>${h.tanggal}</td></tr>`).join(''):'<tr><td colspan="4" style="text-align:center;color:var(--t2)">Belum ada data hafalan</td></tr>'}
+      <div style="font-weight:700;font-size:13px;margin-bottom:10px">📖 Progress Level</div>
+      <div style="margin-bottom:18px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t2);margin-bottom:5px"><span>${s.level}</span><span>${pct}%</span></div>
+        <div class="pbar"><div class="pfill" style="width:${pct}%;background:var(--acc)"></div></div>
+      </div>
+      <div style="font-weight:700;font-size:13px;margin-bottom:10px">📿 Riwayat Hafalan</div>
+      <table style="margin-bottom:18px"><thead><tr><th>Surat</th><th>Ayat</th><th>Status</th><th>Tanggal</th></tr></thead><tbody>
+        ${sHaf.length?sHaf.map(h=>`<tr><td>${h.surat}</td><td>${h.ayat}</td><td><span class="badge ${h.status==='Sudah Hafal'?'b-hafal':h.status==='Sedang Menghafal'?'b-proses':'b-belum'}">${h.status}</span></td><td>${h.tanggal}</td></tr>`).join(''):'<tr><td colspan="4" style="text-align:center;color:var(--t2)">Belum ada data</td></tr>'}
       </tbody></table>`;
       if(s.kelas==='5'){
-        html+=`<h4 style="font-weight:700;margin-bottom:10px;font-size:13px">🌙 Hafalan Juz 30</h4>
+        html+=`<div style="font-weight:700;font-size:13px;margin-bottom:10px">🌙 Hafalan Juz 30</div>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
-          ${JUZ30.map(sr=>`<div style="padding:6px 8px;border-radius:6px;font-size:11px;background:${sJuz[sr]==='Sudah Hafal'?'rgba(52,211,153,.15)':sJuz[sr]==='Sedang Menghafal'?'rgba(251,191,36,.15)':'var(--card2)'};border:1px solid ${sJuz[sr]==='Sudah Hafal'?'var(--acc3)':sJuz[sr]==='Sedang Menghafal'?'var(--gold)':'var(--border)'}">
+          ${JUZ30.map(sr=>`<div style="padding:7px 9px;border-radius:8px;font-size:11px;background:${sJuz[sr]==='Sudah Hafal'?'rgba(52,211,153,0.1)':sJuz[sr]==='Sedang Menghafal'?'rgba(251,191,36,0.1)':'rgba(255,255,255,0.03)'};border:1px solid ${sJuz[sr]==='Sudah Hafal'?'rgba(52,211,153,0.3)':sJuz[sr]==='Sedang Menghafal'?'rgba(251,191,36,0.3)':'var(--border)'}">
             ${sJuz[sr]==='Sudah Hafal'?'✅':sJuz[sr]==='Sedang Menghafal'?'🔄':'⭕'} ${sr}
           </div>`).join('')}
         </div>`;
       }
     } else {
-      html+=`<h4 style="font-weight:700;margin-bottom:12px;font-size:13px">📋 Daftar Santri ${lapKelas?`Kelas ${lapKelas}`:''}</h4>
+      html+=`<div style="font-weight:700;font-size:13px;margin-bottom:12px">📋 Daftar Santri ${lapKelas?`Kelas ${lapKelas}`:''}</div>
       <table><thead><tr><th>Nama</th><th>Kelas</th><th>Level</th><th>Hadir</th><th>Alpha</th><th>Hafalan</th><th>Status</th></tr></thead><tbody>
         ${data.map(s=>{
           const sAbs=abs.filter(a=>a.santriId===s.id);
@@ -1683,14 +2996,14 @@ function renderLaporan() {
   } else if(type==='absensi') {
     let abs=DB.get('absensi'); if(lapKelas) abs=abs.filter(a=>a.kelas===lapKelas);
     const total=abs.length, h=abs.filter(a=>a.status==='Hadir').length, al=abs.filter(a=>a.status==='Alpha').length;
-    html+=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">
-      <div class="stat s-blue" style="padding:14px"><div style="font-size:22px;font-weight:800;color:var(--acc)">${total}</div><div style="font-size:11px;color:var(--t2)">Total Catatan</div></div>
-      <div class="stat s-green" style="padding:14px"><div style="font-size:22px;font-weight:800;color:var(--acc3)">${h}</div><div style="font-size:11px;color:var(--t2)">Hadir</div></div>
-      <div class="stat s-pink" style="padding:14px"><div style="font-size:22px;font-weight:800;color:var(--red)">${al}</div><div style="font-size:11px;color:var(--t2)">Alpha</div></div>
-      <div class="stat s-orange" style="padding:14px"><div style="font-size:22px;font-weight:800;color:var(--acc4)">${total>0?Math.round(h/total*100):0}%</div><div style="font-size:11px;color:var(--t2)">% Kehadiran</div></div>
+    html+=`<div class="grid-4" style="margin-bottom:18px">
+      <div class="stat s-blue" style="padding:16px"><div class="stat-value num" style="font-size:22px;color:var(--acc)">${total}</div><div class="stat-label">Total Catatan</div></div>
+      <div class="stat s-green" style="padding:16px"><div class="stat-value num" style="font-size:22px;color:var(--acc3)">${h}</div><div class="stat-label">Hadir</div></div>
+      <div class="stat s-pink" style="padding:16px"><div class="stat-value num" style="font-size:22px;color:var(--red)">${al}</div><div class="stat-label">Alpha</div></div>
+      <div class="stat s-orange" style="padding:16px"><div class="stat-value num" style="font-size:22px;color:var(--acc4)">${total>0?Math.round(h/total*100):0}%</div><div class="stat-label">Kehadiran</div></div>
     </div>
     <table><thead><tr><th>Tanggal</th><th>Kelas</th><th>Santri</th><th>Status</th><th>Keterangan</th></tr></thead><tbody>
-      ${abs.slice(-50).reverse().map(a=>`<tr><td style="font-size:12px">${a.tanggal}</td><td>Kelas ${a.kelas}</td><td>${a.santriNama}</td><td><span class="badge ${a.status==='Hadir'?'b-hadir':a.status==='Izin'?'b-izin':a.status==='Sakit'?'b-sakit':'b-alpha'}">${a.status}</span></td><td style="font-size:12px;color:var(--t2)">${a.ket||'-'}</td></tr>`).join('')}
+      ${abs.slice(-50).reverse().map(a=>`<tr><td style="font-size:12px">${a.tanggal}</td><td>Kelas ${a.kelas}</td><td>${a.santriNama}</td><td><span class="badge ${a.status==='Hadir'?'b-hadir':a.status==='Izin'?'b-izin':a.status==='Sakit'?'b-sakit':'b-alpha'}">${a.status}</span></td><td style="font-size:12px;color:var(--t2)">${a.ket||'—'}</td></tr>`).join('')}
     </tbody></table>`;
   } else if(type==='hafalan') {
     let haf=DB.get('hafalan'); if(lapKelas){ const ids=DB.get('santri').filter(s=>s.kelas===lapKelas).map(s=>s.id); haf=haf.filter(h=>ids.includes(h.santriId)); }
@@ -1704,7 +3017,7 @@ function renderLaporan() {
 
 function exportLaporanCSV() {
   const type=document.getElementById('lapType')?.value||'santri';
-  let csv='',data=[];
+  let csv='';
   if(type==='santri'||type==='kelas') {
     csv='Nama,Kelas,Level,Status\n';
     DB.get('santri').forEach(s=>{ csv+=`"${s.nama}",${s.kelas},"${s.level}","${s.status}"\n`; });
@@ -1730,19 +3043,20 @@ function renderPengaturan() {
   if(sem) sem.value=s.semester||'Ganjil';
   const infoTA=document.getElementById('infoTA');
   const infoSem=document.getElementById('infoSem');
-  if(infoTA) infoTA.textContent=s.tahunAjaran||'-';
-  if(infoSem) infoSem.textContent=s.semester||'-';
+  if(infoTA) infoTA.textContent=s.tahunAjaran||'—';
+  if(infoSem) infoSem.textContent=s.semester||'—';
   const si=document.getElementById('sysInfo');
   if(si){
     const santri=DB.get('santri'); const alumni=DB.get('alumni'); const riwayat=DB.get('riwayat'); const guru=DB.get('guru');
-    si.innerHTML=`
-      <div style="display:flex;justify-content:space-between"><span>Versi</span><span style="color:var(--acc);font-weight:700">2.0.0 Pro</span></div>
-      <div style="display:flex;justify-content:space-between"><span>Santri Aktif</span><span style="font-weight:700;color:var(--t1)">${santri.filter(s=>s.status==='Aktif').length}</span></div>
-      <div style="display:flex;justify-content:space-between"><span>Guru Aktif</span><span style="font-weight:700;color:var(--t1)">${guru.filter(g=>g.status==='Aktif').length}</span></div>
-      <div style="display:flex;justify-content:space-between"><span>Alumni</span><span style="font-weight:700;color:var(--t1)">${alumni.length}</span></div>
-      <div style="display:flex;justify-content:space-between"><span>Riwayat</span><span style="font-weight:700;color:var(--t1)">${riwayat.length}</span></div>
-      <div style="display:flex;justify-content:space-between"><span>Absensi</span><span style="font-weight:700;color:var(--t1)">${DB.get('absensi').length}</span></div>
-      <div style="display:flex;justify-content:space-between"><span>Storage</span><span style="color:var(--acc3);font-weight:700">LocalStorage</span></div>`;
+    si.innerHTML=[
+      ['Versi','2.0.0 Pro','var(--acc)'],
+      ['Santri Aktif',santri.filter(s=>s.status==='Aktif').length,'var(--t1)'],
+      ['Guru Aktif',guru.filter(g=>g.status==='Aktif').length,'var(--t1)'],
+      ['Alumni',alumni.length,'var(--t1)'],
+      ['Riwayat',riwayat.length,'var(--t1)'],
+      ['Absensi',DB.get('absensi').length,'var(--t1)'],
+      ['Storage','LocalStorage','var(--acc3)'],
+    ].map(([l,v,c])=>`<div class="info-row"><span class="label">${l}</span><span style="font-weight:700;color:${c}">${v}</span></div>`).join('');
   }
 }
 
@@ -1786,7 +3100,10 @@ function confirmReset() {
   document.getElementById('kTitle').textContent='Reset Semua Data';
   document.getElementById('kMsg').textContent='Semua data akan dihapus permanen! Tidak bisa dibatalkan.';
   document.getElementById('kBtn').textContent='Reset';
-  document.getElementById('kBtn').onclick=()=>{ ['santri','alumni','hafalan','riwayat','settings','guru','jadwal','absensi','absensi_guru','juz30'].forEach(k=>localStorage.removeItem('btq_'+k)); closeM('mKonfirm'); init(); toast('🔄','Data direset!'); };
+  document.getElementById('kBtn').onclick=()=>{
+    ['santri','alumni','hafalan','riwayat','settings','guru','jadwal','absensi','absensi_guru','juz30'].forEach(k=>localStorage.removeItem('btq_'+k));
+    closeM('mKonfirm'); init(); toast('🔄','Data direset!');
+  };
   show('mKonfirm');
 }
 
@@ -1811,7 +3128,7 @@ function exportPDF() {
 }
 
 function exportAll() {
-  const data={santri:DB.get('santri'),alumni:DB.get('alumni'),hafalan:DB.get('hafalan'),riwayat:DB.get('riwayat'),settings:DB.obj('settings'),guru:DB.get('guru'),jadwal:DB.get('jadwal'),absensi:DB.get('absensi'),absensi_guru:DB.get('absensi_guru'),juz30:DB.obj('juz30'),exportDate:new Date().toISOString()};
+  const data={santri:DB.get('santri'),alumni:DB.get('alumni'),hafalan:DB.get('hafalan'),riwayat:DB.get('riwayat'),settings:DB.obj('settings'),guru:DB.get('guru'),jadwal:DB.get('jadwal'),absensi_santri:DB.get('absensi_santri'),absensi_guru:DB.get('absensi_guru'),juz30:DB.obj('juz30'),exportDate:new Date().toISOString()};
   dlFile(JSON.stringify(data,null,2),'btq-backup.json','application/json');
   toast('💾','Backup JSON diexport!');
 }
@@ -1830,7 +3147,7 @@ function importData(e) {
       if(d.settings)DB.sobj('settings',d.settings);
       if(d.guru)DB.set('guru',d.guru);
       if(d.jadwal)DB.set('jadwal',d.jadwal);
-      if(d.absensi)DB.set('absensi',d.absensi);
+      if(d.absensi_santri)DB.set('absensi_santri',d.absensi_santri);
       if(d.absensi_guru)DB.set('absensi_guru',d.absensi_guru);
       if(d.juz30)DB.sobj('juz30',d.juz30);
       updateBadges(); renderDashboard(); renderSantri(); renderPengaturan();
@@ -1860,12 +3177,16 @@ function globalSearch() {
 // ====================================================
 // UI HELPERS
 // ====================================================
-function toast(icon, msg, dur=3000) {
+function toast(icon, msg, dur=3200) {
   document.getElementById('tIcon').textContent=icon;
   document.getElementById('tMsg').textContent=msg;
-  document.getElementById('toast').style.display='block';
+  const t=document.getElementById('toast');
+  t.style.display='block';
+  t.querySelector('.toast-inner').style.animation='none';
+  void t.querySelector('.toast-inner').offsetWidth;
+  t.querySelector('.toast-inner').style.animation='toastIn 0.4s cubic-bezier(0.16,1,0.3,1)';
   clearTimeout(window._toastT);
-  window._toastT=setTimeout(()=>document.getElementById('toast').style.display='none',dur);
+  window._toastT=setTimeout(()=>t.style.display='none',dur);
 }
 
 function show(id){ document.getElementById(id).style.display='flex'; }
@@ -1874,6 +3195,11 @@ function closeM(id){ document.getElementById(id).style.display='none'; }
 function toggleTheme() {
   const h=document.documentElement;
   h.setAttribute('data-theme',h.getAttribute('data-theme')==='dark'?'light':'dark');
+  // Update chart colors
+  setTimeout(()=>{
+    const page=document.querySelector('.page.active');
+    if(page&&page.id==='page-dashboard') renderDashboard();
+  },100);
 }
 
 let sidebarCollapsed=false;
@@ -1892,7 +3218,6 @@ function closeSidebar() {
   document.getElementById('sidebarOv').classList.remove('show');
 }
 
-// Responsive
 function checkMobile() {
   const mm=document.getElementById('mobileMenu');
   if(window.innerWidth<=768) { mm.style.display='flex'; }
@@ -1900,7 +3225,6 @@ function checkMobile() {
 }
 window.addEventListener('resize',checkMobile);
 
-// Close modal on overlay click
 document.querySelectorAll('.modal-overlay').forEach(ov=>{
   ov.addEventListener('click',e=>{ if(e.target===ov) ov.style.display='none'; });
 });
