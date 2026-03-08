@@ -581,26 +581,87 @@ PAGE TRANSITION SYSTEM
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ─── PAGE HEADER ────────────────────────────────── */
+/* ─── PAGE HEADER PROFESIONAL ────────────────────── */
 .page-header {
   display: flex;
-  align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
+  align-items: center;
   gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
 }
 
-.page-header h2 {
+.header-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.page-title {
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 700;
+  color: var(--t1);
+  margin: 0;
   letter-spacing: -0.5px;
-  margin-bottom: 4px;
 }
 
-.page-header p { color: var(--t2); font-size: 13px; }
+.page-subtitle {
+  font-size: 13px;
+  opacity: 0.7;
+  color: var(--t2);
+  margin-top: 4px;
+}
 
-.header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.header-actions { 
+  display: flex; 
+  gap: 8px; 
+  flex-wrap: wrap; 
+  align-items: center; 
+}
+
+/* Tombol Tambah Profesional */
+.btn-add {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 12px;
+  background: #38bdf8;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  transition: all .2s ease;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.btn-add:hover {
+  transform: translateY(-2px);
+  background: #0ea5e9;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+/* icon plus */
+.btn-add .icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+@media (max-width: 600px) {
+  .btn-add {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    justify-content: center;
+  }
+  .btn-add .text {
+    display: none;
+  }
+  .btn-add .icon {
+    font-size: 22px;
+  }
+}
 
 /* ─── GLASS CARDS ────────────────────────────────── */
 .card {
@@ -1874,82 +1935,7 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     padding: 0 !important;
   }
 
-  /* 1. HEADER MOBILE HARUS SAMA DENGAN DESKTOP */
-  #page-absensi-santri .page-header,
-  #page-absensi-guru .page-header {
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    flex-wrap: wrap !important;
-    gap: 10px !important;
-    margin-bottom: 16px !important;
-  }
-  #page-absensi-santri .page-header > div,
-  #page-absensi-guru .page-header > div {
-    flex: 1 1 auto;
-    min-width: 180px;
-  }
-  #page-absensi-santri .page-header h2,
-  #page-absensi-guru .page-header h2 {
-    font-size: 20px !important;
-    font-weight: 700 !important;
-    margin-bottom: 2px !important;
-  }
-  #page-absensi-santri .page-header p,
-  #page-absensi-guru .page-header p {
-    font-size: 13px !important;
-    opacity: 0.7 !important;
-  }
-
-  /* 2. TOMBOL "+ CATAT ABSENSI" DI KANAN ATAS (BUKAN FAB) */
-  #page-absensi-guru .page-header .btn-p,
-  #page-absensi-santri .page-header .btn-p {
-    position: relative !important;
-    bottom: auto !important;
-    right: auto !important;
-    width: auto !important;
-    height: auto !important;
-    padding: 10px 14px !important;
-    border-radius: 10px !important;
-    background: #38bdf8 !important;
-    color: white !important;
-    font-size: 13px !important;
-    font-weight: 600 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 6px !important;
-    white-space: nowrap !important;
-    box-shadow: 0 4px 12px rgba(56,189,248,0.2) !important;
-    transform: none !important;
-    z-index: 10 !important;
-    border: none !important;
-  }
-  
-  #page-absensi-guru .page-header .btn-p::after,
-  #page-absensi-santri .page-header .btn-p::after {
-    display: none !important; /* Hapus icon + besar sisa FAB */
-  }
-
-  /* Responsive ekstra untuk tombol jika layar sangat kecil (HP mini) */
-  @media (max-width: 420px) {
-    #page-absensi-guru .page-header .btn-p,
-    #page-absensi-santri .page-header .btn-p {
-      font-size: 0 !important; /* Sembunyikan text */
-      width: 38px !important;
-      height: 38px !important;
-      padding: 0 !important;
-    }
-    #page-absensi-guru .page-header .btn-p::before,
-    #page-absensi-santri .page-header .btn-p::before {
-      content: '+';
-      font-size: 20px !important;
-      font-weight: 400 !important;
-    }
-  }
-
-  /* 3. FILTER SECTION MOBILE */
+  /* Filter Section Mobile (Telah diperbarui dari sebelumnya) */
   #page-absensi-santri .filter-bar,
   #page-absensi-guru .filter-bar {
     display: flex !important;
@@ -2263,14 +2249,8 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
 
   /* 2. DATA SANTRI MOBILE FIXES */
   #page-santri .header-actions {
-    display: flex;
-    flex-direction: column;
     width: 100%;
-    gap: 8px;
-  }
-  #page-santri .header-actions .btn {
-    width: 100%;
-    justify-content: center;
+    justify-content: flex-end;
   }
   
   #page-santri .filter-bar {
@@ -2297,17 +2277,6 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
   }
 
   /* 3. HAFALAN QUR'AN MOBILE FIXES */
-  #page-hafalan .page-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  #page-hafalan .page-header .btn {
-    display: inline-flex !important;
-    width: auto !important;
-    align-self: flex-start;
-    margin-top: 8px;
-  }
-  
   #page-hafalan .filter-bar {
     display: flex;
     flex-direction: column;
@@ -2522,9 +2491,11 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
       <!--  DASHBOARD                                  -->
       <!-- ═══════════════════════════════════════════ -->
       <div id="page-dashboard" class="page active">
-        <div style="margin-bottom:22px">
-          <h2 style="font-size:22px;font-weight:900;letter-spacing:-0.5px;margin-bottom:4px">Dashboard 🕌</h2>
-          <p id="dashSub" style="color:var(--t2);font-size:13px"></p>
+        <div class="page-header">
+          <div class="header-left">
+            <h2 class="page-title">Dashboard 🕌</h2>
+            <p class="page-subtitle" id="dashSub"></p>
+          </div>
         </div>
 
         <div class="grid-stats" id="statsRow"></div>
@@ -2589,14 +2560,17 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
       <!-- ═══════════════════════════════════════════ -->
       <div id="page-santri" class="page">
         <div class="page-header">
-          <div>
-            <h2>Data Santri 👥</h2>
-            <p>Kelola data seluruh santri BTQ</p>
+          <div class="header-left">
+            <h2 class="page-title">Data Santri 👥</h2>
+            <p class="page-subtitle">Kelola data seluruh santri BTQ</p>
           </div>
           <div class="header-actions">
             <button class="btn btn-s" onclick="exportCSV()">📥 CSV</button>
             <button class="btn btn-s" onclick="exportPDF()">📄 PDF</button>
-            <button class="btn btn-p" onclick="openSantriModal()">➕ Tambah Santri</button>
+            <button class="btn-add" onclick="openSantriModal()">
+              <span class="icon">+</span>
+              <span class="text">Tambah</span>
+            </button>
           </div>
         </div>
         <div class="card filter-bar mb-4">
@@ -2627,8 +2601,14 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
       <!-- ═══════════════════════════════════════════ -->
       <div id="page-guru" class="page">
         <div class="page-header">
-          <div><h2>Guru BTQ 👨‍🏫</h2><p>Data pengajar BTQ</p></div>
-          <button class="btn btn-p" onclick="openGuruModal()">➕ Tambah Guru</button>
+          <div class="header-left">
+            <h2 class="page-title">Guru BTQ 👨‍🏫</h2>
+            <p class="page-subtitle">Data pengajar BTQ</p>
+          </div>
+          <button class="btn-add" onclick="openGuruModal()">
+            <span class="icon">+</span>
+            <span class="text">Tambah</span>
+          </button>
         </div>
         <div class="grid-cards" id="guruCards"></div>
       </div>
@@ -2638,7 +2618,10 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
       <!-- ═══════════════════════════════════════════ -->
       <div id="page-jadwal" class="page">
         <div class="page-header">
-          <div><h2>Jadwal BTQ 🗓️</h2><p>Jadwal kegiatan BTQ mingguan</p></div>
+          <div class="header-left">
+            <h2 class="page-title">Jadwal BTQ 🗓️</h2>
+            <p class="page-subtitle">Jadwal kegiatan BTQ mingguan</p>
+          </div>
         </div>
         <div class="card p-card mb-4">
           <div class="section-title">📅 Kalender Mingguan</div>
@@ -2661,8 +2644,14 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
       <!-- ═══════════════════════════════════════════ -->
       <div id="page-absensi-santri" class="page">
         <div class="page-header">
-          <div><h2>Absensi Santri 📝</h2><p>Rekap kehadiran santri BTQ</p></div>
-          <button class="btn btn-p" onclick="openModalAbsensiSantri()">➕ Catat Absensi</button>
+          <div class="header-left">
+            <h2 class="page-title">Absensi Santri 📝</h2>
+            <p class="page-subtitle">Rekap kehadiran santri BTQ</p>
+          </div>
+          <button class="btn-add" onclick="openModalAbsensiSantri()">
+            <span class="icon">+</span>
+            <span class="text">Catat</span>
+          </button>
         </div>
         <div class="card filter-bar mb-4">
           <input type="date" class="inp" id="fAbsensiTgl" onchange="renderAbsensiSantri()" style="max-width:180px">
@@ -2689,8 +2678,14 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
       <!-- ═══════════════════════════════════════════ -->
       <div id="page-absensi-guru" class="page">
         <div class="page-header">
-          <div><h2>Absensi Guru 🧑‍🏫</h2><p>Rekap kehadiran guru BTQ</p></div>
-          <button class="btn btn-p" onclick="openAbsensiGuruModal()">➕ Catat Absensi Guru</button>
+          <div class="header-left">
+            <h2 class="page-title">Absensi Guru 👨‍🏫🏫</h2>
+            <p class="page-subtitle">Rekap kehadiran guru BTQ</p>
+          </div>
+          <button class="btn-add" onclick="openAbsensiGuruModal()">
+            <span class="icon">+</span>
+            <span class="text">Catat</span>
+          </button>
         </div>
         <div class="card filter-bar mb-4">
           <input type="date" class="inp" id="fGAbsTgl" onchange="renderAbsensiGuru()" style="max-width:180px">
@@ -2712,8 +2707,14 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
       <!-- ═══════════════════════════════════════════ -->
       <div id="page-progress" class="page">
         <div class="page-header">
-          <div><h2>Progress Membaca 📖</h2><p>Pantau perkembangan membaca Iqro & Al-Qur'an</p></div>
-          <button class="btn btn-p" onclick="openProgressModal()">➕ Update Progress</button>
+          <div class="header-left">
+            <h2 class="page-title">Progress Membaca 📖</h2>
+            <p class="page-subtitle">Pantau perkembangan membaca Iqro & Al-Qur'an</p>
+          </div>
+          <button class="btn-add" onclick="openProgressModal()">
+            <span class="icon">+</span>
+            <span class="text">Update</span>
+          </button>
         </div>
         <div class="grid-cards" id="progressCards"></div>
       </div>
@@ -2723,8 +2724,14 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
       <!-- ═══════════════════════════════════════════ -->
       <div id="page-hafalan" class="page">
         <div class="page-header">
-          <div><h2>Hafalan Qur'an 📿</h2><p>Kelola catatan hafalan santri</p></div>
-          <button class="btn btn-p" onclick="openHafalanModal()">➕ Tambah Hafalan</button>
+          <div class="header-left">
+            <h2 class="page-title">Hafalan Qur'an 📿</h2>
+            <p class="page-subtitle">Kelola catatan hafalan santri</p>
+          </div>
+          <button class="btn-add" onclick="openHafalanModal()">
+            <span class="icon">+</span>
+            <span class="text">Tambah</span>
+          </button>
         </div>
         <div class="card filter-bar mb-4">
           <input type="text" class="inp" id="srchHafalan" placeholder="🔍 Cari..." oninput="renderHafalan()" style="max-width:180px">
@@ -2745,7 +2752,10 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
       <!-- ═══════════════════════════════════════════ -->
       <div id="page-juz30" class="page">
         <div class="page-header">
-          <div><h2>Hafalan Juz 30 Kelas 5 🌙</h2><p>Tracking hafalan khusus santri kelas 5</p></div>
+          <div class="header-left">
+            <h2 class="page-title">Hafalan Juz 30 Kelas 5 🌙</h2>
+            <p class="page-subtitle">Tracking hafalan khusus santri kelas 5</p>
+          </div>
         </div>
         <div class="card filter-bar mb-4">
           <select class="inp" id="selJuz30Santri" onchange="renderJuz30Detail()" style="max-width:260px">
@@ -2771,7 +2781,10 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
       <!-- ═══════════════════════════════════════════ -->
       <div id="page-alumni" class="page">
         <div class="page-header">
-          <div><h2>Data Alumni 🎓</h2><p>Santri yang telah lulus program BTQ</p></div>
+          <div class="header-left">
+            <h2 class="page-title">Data Alumni 🎓</h2>
+            <p class="page-subtitle">Santri yang telah lulus program BTQ</p>
+          </div>
         </div>
         <div class="grid-cards" id="alumniCards"></div>
       </div>
@@ -2781,7 +2794,10 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
       <!-- ═══════════════════════════════════════════ -->
       <div id="page-riwayat" class="page">
         <div class="page-header">
-          <div><h2>Riwayat Progress 📋</h2><p>Semua perubahan progress santri</p></div>
+          <div class="header-left">
+            <h2 class="page-title">Riwayat Progress 📋</h2>
+            <p class="page-subtitle">Semua perubahan progress santri</p>
+          </div>
         </div>
         <div class="card filter-bar mb-4">
           <input type="text" class="inp" id="srchRiwayat" placeholder="🔍 Cari nama santri..." oninput="renderRiwayat()" style="max-width:280px">
@@ -2794,7 +2810,10 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
       <!-- ═══════════════════════════════════════════ -->
       <div id="page-laporan" class="page">
         <div class="page-header">
-          <div><h2>Laporan 📊</h2><p>Laporan komprehensif santri BTQ</p></div>
+          <div class="header-left">
+            <h2 class="page-title">Laporan 📊</h2>
+            <p class="page-subtitle">Laporan komprehensif santri BTQ</p>
+          </div>
         </div>
         <div class="card p-card mb-4">
           <div class="section-title">🔍 Filter Laporan</div>
@@ -2836,7 +2855,10 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
       <!-- ═══════════════════════════════════════════ -->
       <div id="page-pengaturan" class="page">
         <div class="page-header">
-          <div><h2>Pengaturan ⚙️</h2><p>Konfigurasi sistem BTQ</p></div>
+          <div class="header-left">
+            <h2 class="page-title">Pengaturan ⚙️</h2>
+            <p class="page-subtitle">Konfigurasi sistem BTQ</p>
+          </div>
         </div>
         <div class="grid-cards">
           <div class="card settings-card">
