@@ -2578,105 +2578,117 @@ TAMBAHAN OVERRIDE: MOBILE LIGHT MODE FIX
   }
 }
 
-/* ======================================
-FINAL OVERRIDE 2: MOBILE LIGHT MODE FIX 
-====================================== */
-@media (max-width:768px){
-  html[data-theme="light"] body{
-    background:#f8fafc !important;
-    color:#0f172a !important;
-  }
-  html[data-theme="light"] .page{
-    background:#f8fafc !important;
-  }
-  html[data-theme="light"] .card{
-    background:#ffffff !important;
-    border:1px solid #e2e8f0 !important;
-  }
-  html[data-theme="light"] .filter-bar{
-    background:#ffffff !important;
-    border:1px solid #e2e8f0 !important;
-  }
-  html[data-theme="light"] input,
-  html[data-theme="light"] select{
-    background:#ffffff !important;
-    border:1px solid #e2e8f0 !important;
-    color:#1e293b !important;
-  }
-  html[data-theme="light"] table{
-    background:#ffffff !important;
-  }
-  html[data-theme="light"] thead th{
-    background:#f1f5f9 !important;
-    color:#64748b !important;
-  }
-  html[data-theme="light"] tbody tr{
-    background:#ffffff !important;
-  }
-  html[data-theme="light"] tbody td{
-    border-bottom:1px solid #e2e8f0 !important;
-  }
-  html[data-theme="light"] .stat{
-    background:#ffffff !important;
-    border:1px solid #e2e8f0 !important;
-  }
-}
-
-/* ============================= */
-/* FIX MOBILE LIGHT MODE */
-/* ============================= */
+/* =========================
+FIX HEADER LIGHT MODE MOBILE
+========================= */
 
 @media (max-width:768px){
 
-/* HEADER */
 html[data-theme="light"] .header,
-html[data-theme="light"] .topbar,
-html[data-theme="light"] .navbar{
+html[data-theme="light"] .topbar{
 background:#ffffff !important;
 border-bottom:1px solid #e2e8f0 !important;
+}
+
+/* TEXT HEADER */
+html[data-theme="light"] .header h1,
+html[data-theme="light"] #pageTitle{
 color:#0f172a !important;
 }
 
-/* PAGE ABSENSI */
-html[data-theme="light"] #page-absensi-santri,
-html[data-theme="light"] #page-absensi-guru{
-background:#f8fafc !important;
+/* HAMBURGER ICON */
+html[data-theme="light"] #mobileMenu,
+html[data-theme="light"] .hamburger{
+color:#0f172a !important;
+font-size:22px;
 }
 
-/* CARD ABSENSI */
-html[data-theme="light"] #page-absensi-santri .card,
-html[data-theme="light"] #page-absensi-guru .card{
-background:#ffffff !important;
-border:1px solid #e2e8f0 !important;
+/* jika icon pakai span */
+html[data-theme="light"] #mobileMenu span{
+background:#0f172a !important;
 }
 
-/* FILTER ABSENSI */
+html[data-theme="light"] #mobileMenu svg{
+fill:#0f172a !important;
+stroke:#0f172a !important;
+}
+
+}
+
+/* =========================
+FIX FILTER ABSENSI MOBILE
+========================= */
+
+@media (max-width:768px){
+
 html[data-theme="light"] #page-absensi-santri input,
 html[data-theme="light"] #page-absensi-santri select,
 html[data-theme="light"] #page-absensi-guru input,
 html[data-theme="light"] #page-absensi-guru select{
+
 background:#ffffff !important;
-border:1px solid #e2e8f0 !important;
 color:#0f172a !important;
-}
-
-/* STAT CARD */
-html[data-theme="light"] #absensiSummary .stat,
-html[data-theme="light"] #guruAbsSummary .stat{
-background:#ffffff !important;
 border:1px solid #e2e8f0 !important;
+box-shadow:none !important;
+
 }
 
-/* TABLE */
+html[data-theme="light"] #page-absensi-santri input::placeholder{
+color:#94a3b8 !important;
+}
+
+}
+
+/* =========================
+FIX TABLE ABSENSI LIGHT MODE
+========================= */
+
+@media (max-width:768px){
+
 html[data-theme="light"] #page-absensi-santri table,
 html[data-theme="light"] #page-absensi-guru table{
 background:#ffffff !important;
+}
+
+html[data-theme="light"] #page-absensi-santri tbody tr,
+html[data-theme="light"] #page-absensi-guru tbody tr{
+background:#ffffff !important;
+color:#0f172a !important;
+border-bottom:1px solid #e2e8f0 !important;
 }
 
 html[data-theme="light"] #page-absensi-santri thead th,
 html[data-theme="light"] #page-absensi-guru thead th{
 background:#f1f5f9 !important;
 color:#64748b !important;
+}
+
+}
+
+/* =========================
+FIX CARD STAT (HADIR / IZIN / SAKIT)
+========================= */
+
+@media (max-width:768px){
+
+html[data-theme="light"] #absensiSummary .stat,
+html[data-theme="light"] #guruAbsSummary .stat{
+
+background:#ffffff !important;
+border:1px solid #e2e8f0 !important;
+
+}
+
+}
+
+/* =========================
+FIX BACKGROUND PAGE
+========================= */
+
+@media (max-width:768px){
+
+html[data-theme="light"] .content{
+background:#f8fafc !important;
 }
 
 }
