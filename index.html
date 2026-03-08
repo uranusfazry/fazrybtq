@@ -2396,6 +2396,99 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     white-space: nowrap;
   }
 }
+
+/* ======================================
+FIX DARK MODE MOBILE
+====================================== */
+
+:root{
+  color-scheme: dark;
+}
+
+*{
+  background-clip:padding-box;
+}
+
+body,
+html{
+  background:#020617 !important;
+  color:#e2e8f0;
+}
+
+/* container utama */
+main,
+.content,
+.page{
+  background:#020617 !important;
+}
+
+/* card dashboard */
+.card,
+.stat{
+  background:#0f172a !important;
+  border:1px solid rgba(255,255,255,0.06);
+}
+
+/* tabel */
+table{
+  background:#0f172a !important;
+}
+
+thead{
+  background:#111827 !important;
+}
+
+tbody tr{
+  background:#0f172a !important;
+}
+
+/* input form */
+input,
+select{
+  background:#1e293b !important;
+  border:1px solid #334155 !important;
+  color:#e2e8f0 !important;
+}
+
+/* placeholder */
+input::placeholder{
+  color:#94a3b8;
+}
+
+/* search box */
+input[type="search"]{
+  background:#1e293b !important;
+}
+
+/* mobile filter box */
+.filter,
+.filter-box{
+  background:#0f172a !important;
+}
+
+/* statistik card */
+.stat{
+  box-shadow:0 8px 20px rgba(0,0,0,.35);
+  border-radius:16px;
+}
+
+/* table wrapper mobile */
+@media(max-width:768px){
+
+  body{
+    background:#020617 !important;
+  }
+
+  .page{
+    background:#020617 !important;
+  }
+
+  .content{
+    background:#020617 !important;
+  }
+
+}
+
 </style>
 </head>
 <body>
