@@ -2799,55 +2799,42 @@ const JUZ30 = ['An-Naba',"An-Nazi'at",'Abasa','At-Takwir','Al-Infitar','Al-Mutaf
 // BACKEND API CONFIG
 // ======================================================
 const API_URL = "https://script.google.com/macros/s/AKfycbz6wKcFgyRKR2Kr3YHu2xdTtENc0Fl9IVfASNN71mA8sBeKe-dL1p75XI0rGuC6cZVvmw/exec";
-const API_KEY = "BTQ_SECURE_2026";
 
 // ======================================================
 // API HELPER FUNCTIONS
 // ======================================================
 
-// Helper utama untuk memproses semua Request ke Backend
-// Otomatis menambahkan apikey ke URL
-async function apiRequest(action, extraParams = "", options = {}, retry = 2) {
-  const url = `${API_URL}?action=${action}&apikey=${API_KEY}${extraParams}`;
-  
-  try {
-    const res = await fetch(url, options);
-    if (!res.ok) throw new Error("Server error");
-    return await res.json();
-  } catch (err) {
-    if (retry > 0) {
-      return apiRequest(action, extraParams, options, retry - 1);
-    }
-    console.error(`API Error (${action}):`, err);
-    throw err;
-  }
-}
-
-// ambil semua data (Contoh pemakaian method GET)
+// ambil semua data
 async function apiGetAll(){
-  const json = await apiRequest("getAll", "", {
+  const res = await fetch(API_URL + "?action=getAll",{
     method:"GET",
     mode:"cors"
   });
+
+  if(!res.ok){
+    throw new Error("Server tidak merespon");
+  }
+
+  const json = await res.json();
   
   // Jika backend memakai struktur {status,data} atau langsung object
   return json.data || json;
 }
 
-// ambil data berdasarkan key (Contoh pemakaian GET parameter)
+// ambil data berdasarkan key
 async function apiGet(key){
-  const json = await apiRequest("get", `&key=${encodeURIComponent(key)}`, {
-    method:"GET",
-    mode:"cors"
-  });
-  return json.data || json;
+  const res = await fetch(API_URL + "?action=get&key=" + key);
+  const data = await res.json();
+  return data;
 }
 
-// simpan data (Contoh pemakaian method POST)
+// simpan data
 async function apiSave(key,data){
-  return await apiRequest("save", "", {
+  const res = await fetch(API_URL + "?action=save",{
     method:"POST",
     headers:{
+      // Menggunakan text/plain sangat disarankan untuk Google Apps Script 
+      // agar terhindar dari pemblokiran CORS Preflight dari Vercel
       "Content-Type":"text/plain"
     },
     body:JSON.stringify({
@@ -2855,11 +2842,12 @@ async function apiSave(key,data){
       data:data
     })
   });
+  return await res.json();
 }
 
-// hapus data (Contoh pemakaian method POST)
+// hapus data
 async function apiDelete(key){
-  return await apiRequest("delete", "", {
+  const res = await fetch(API_URL + "?action=delete",{
     method:"POST",
     headers:{
       "Content-Type":"text/plain"
@@ -2868,6 +2856,7 @@ async function apiDelete(key){
       key:key
     })
   });
+  return await res.json();
 }
 
 // ====================================================
@@ -2915,8 +2904,7 @@ async function handleLogin(e) {
   toast('⏳', 'Memverifikasi data...', 60000);
 
   try {
-    // Contoh pemakaian login POST request
-    const data = await apiRequest("login", "", {
+    const res = await fetch(API_URL + "?action=login", {
       method: "POST",
       headers: {
         "Content-Type": "text/plain"
@@ -2927,6 +2915,8 @@ async function handleLogin(e) {
       })
     });
 
+    const data = await res.json();
+
     if (data.success) {
       sessionStorage.setItem('role', 'admin');
       toast('✅', 'Login berhasil. Selamat datang Admin!');
@@ -2935,6 +2925,7 @@ async function handleLogin(e) {
       toast('❌', data.message || 'Username atau password salah');
     }
   } catch (err) {
+    console.error("Login API Error:", err);
     toast('❌', 'Gagal terhubung ke server login');
   }
 }
@@ -3011,13 +3002,7 @@ function updateBadges() {
 function init() {
   populateDropdowns();
   if(!DB.obj('settings').tahunAjaran) DB.sobj('settings',{tahunAjaran:'2024/2025',semester:'Ganjil'});
-  
-  if(!isDataLoaded){
-     console.warn("Data belum load dari server");
-  }else if(DB.get('santri').length===0){
-     loadSample();
-  }
-  
+  if(DB.get('santri').length===0) loadSample();
   updateBadges();
   renderDashboard();
   renderSantri();
