@@ -613,7 +613,7 @@ PAGE TRANSITION SYSTEM
     0 8px 32px rgba(0,0,0,0.24),
     0 2px 8px rgba(0,0,0,0.12),
     inset 0 1px 0 rgba(255,255,255,0.05);
-  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .card:hover {
@@ -638,14 +638,14 @@ PAGE TRANSITION SYSTEM
   padding: 22px;
   position: relative;
   overflow: hidden;
-  transition: transform var(--transition), box-shadow var(--transition);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   box-shadow: 0 8px 24px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.05);
 }
 
 .stat:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
   box-shadow: 0 16px 40px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
@@ -1385,6 +1385,11 @@ TOPBAR MOBILE & PROFESIONAL UI
   border-bottom: none !important;
 }
 
+/* 1. MENGHILANGKAN HEADER GANDA (DUPLIKAT) DI MOBILE */
+.topbar .page-title {
+  display: none !important;
+}
+
 .page-title-wrap {
   display: flex;
   align-items: center;
@@ -1398,12 +1403,6 @@ TOPBAR MOBILE & PROFESIONAL UI
   background: transparent !important;
   border: none !important;
   color: #fff !important;
-}
-
-.page-title {
-  font-size: 18px !important;
-  font-weight: 600 !important;
-  letter-spacing: 0 !important;
 }
 
 .topbar-actions {
@@ -1427,35 +1426,6 @@ TOPBAR MOBILE & PROFESIONAL UI
   padding: 6px 10px !important;
   font-size: 11px !important;
   border-radius: 8px !important;
-}
-
-}
-
-/* ===================================
-FILTER MOBILE
-=================================== */
-
-@media (max-width:768px){
-
-/* 2. PERBAIKAN FILTER MOBILE (VERTICAL STACK) */
-.filter-bar{
-  flex-direction: column !important;
-  gap: 10px !important;
-  width: 100% !important;
-  margin-bottom: 12px !important;
-  border-radius: 12px !important;
-  padding: 12px !important;
-  background: rgba(15, 37, 71, 0.6) !important; /* Dark card */
-  border: 1px solid rgba(255,255,255,0.05) !important;
-}
-
-.filter-bar .inp,
-.filter-bar select{
-  width: 100% !important;
-  max-width: 100% !important;
-  height: 44px !important;
-  border-radius: 10px !important;
-  background: rgba(0,0,0,0.2) !important;
 }
 
 }
@@ -1865,13 +1835,16 @@ RADAR CHART KOMPETENSI SANTRI
 MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
 ==================================== */
 @media (max-width: 768px) {
-  /* Reset Safe Area (Hapus padding-bottom besar karena FAB dihapus) */
+  /* 7. SPACING SISTEM KONSISTEN (PAGE PADDING 16PX) */
   .content {
     padding: 16px !important;
     padding-bottom: 24px !important;
   }
   .page {
     padding: 0 !important;
+  }
+  .mb-4, .mb-5 { 
+    margin-bottom: 20px !important; /* Section gap 20px */
   }
 
   /* 1. HEADER MOBILE HARUS SAMA DENGAN DESKTOP */
@@ -1883,7 +1856,7 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     align-items: center !important;
     flex-wrap: wrap !important;
     gap: 10px !important;
-    margin-bottom: 16px !important;
+    margin-bottom: 20px !important;
   }
   #page-absensi-santri .page-header > div,
   #page-absensi-guru .page-header > div {
@@ -1902,7 +1875,7 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     opacity: 0.7 !important;
   }
 
-  /* 2. TOMBOL "+ CATAT ABSENSI" DI KANAN ATAS (BUKAN FAB) */
+  /* 2. TOMBOL "+ CATAT" DI KANAN ATAS */
   #page-absensi-guru .page-header .btn-p,
   #page-absensi-santri .page-header .btn-p {
     position: relative !important;
@@ -1926,38 +1899,28 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     z-index: 10 !important;
     border: none !important;
   }
-  
-  #page-absensi-guru .page-header .btn-p::after,
-  #page-absensi-santri .page-header .btn-p::after {
-    display: none !important; /* Hapus icon + besar sisa FAB */
-  }
 
   /* Responsive ekstra untuk tombol jika layar sangat kecil (HP mini) */
   @media (max-width: 420px) {
+    #page-absensi-guru .page-header .btn-p .btxt,
+    #page-absensi-santri .page-header .btn-p .btxt {
+      display: none !important; /* Sembunyikan text agar hanya + yang muncul di HP Kecil */
+    }
     #page-absensi-guru .page-header .btn-p,
     #page-absensi-santri .page-header .btn-p {
-      font-size: 0 !important; /* Sembunyikan text */
-      width: 38px !important;
-      height: 38px !important;
-      padding: 0 !important;
-    }
-    #page-absensi-guru .page-header .btn-p::before,
-    #page-absensi-santri .page-header .btn-p::before {
-      content: '+';
-      font-size: 20px !important;
-      font-weight: 400 !important;
+      padding: 10px 12px !important;
+      justify-content: center !important;
     }
   }
 
-  /* 3. FILTER SECTION MOBILE */
+  /* 4. FILTER SECTION MOBILE (GRID 2x2 KONSISTEN) */
   #page-absensi-santri .filter-bar,
   #page-absensi-guru .filter-bar {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: wrap !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important; /* Tanggal | Status \ Kelas | Cari */
     gap: 10px !important;
     margin-top: 16px !important;
-    margin-bottom: 16px !important;
+    margin-bottom: 20px !important;
     background: transparent !important;
     padding: 0 !important;
     border: none !important;
@@ -1966,26 +1929,33 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
   #page-absensi-guru .filter-bar .inp,
   #page-absensi-santri .filter-bar select,
   #page-absensi-guru .filter-bar select {
-    flex: 1 1 120px !important;
+    width: 100% !important;
     background: #0f2747 !important;
     border-radius: 10px !important;
     padding: 10px !important;
     height: 42px !important;
     border: 1px solid rgba(255,255,255,0.05) !important;
     max-width: none !important;
+    margin: 0 !important;
   }
 
-  /* 4. CARD STATISTIK MOBILE (TETAP 3 KOLOM COMPACT) */
+  /* 3 & 6. CARD STATISTIK MOBILE (2 KOLOM AGAR BALANCE) */
   #guruAbsSummary, #absensiSummary {
     display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 10px !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 14px !important; /* Card gap 14px */
     margin-top: 16px !important;
-    margin-bottom: 16px !important;
+    margin-bottom: 20px !important;
   }
+  
+  /* Khusus Absensi Guru (Hanya 3 items), kita seimbangkan item terakhir agar memenuhi space 2 kolom */
+  #guruAbsSummary .stat:nth-child(3) {
+    grid-column: span 2 !important;
+  }
+
   #guruAbsSummary .stat, #absensiSummary .stat {
     background: #0f2747 !important;
-    padding: 12px !important;
+    padding: 14px !important;
     border-radius: 14px !important;
     box-shadow: 0 8px 20px rgba(0,0,0,0.25) !important;
     display: flex !important;
@@ -1994,9 +1964,16 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     justify-content: center !important;
     border: none !important;
     text-align: center !important;
+    /* 8. ANIMASI HOVER */
+    transition: all 0.2s ease !important;
   }
+  
+  #guruAbsSummary .stat:hover, #absensiSummary .stat:hover {
+    transform: translateY(-2px) !important;
+  }
+
   #guruAbsSummary .stat-icon, #absensiSummary .stat-icon {
-    display: none !important; /* Clean layout */
+    display: none !important; /* Clean layout tidak perlu ikon raksasa */
   }
   #guruAbsSummary .stat-value, #absensiSummary .stat-value {
     font-size: 22px !important;
@@ -2010,17 +1987,16 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     letter-spacing: 0 !important;
   }
 
-  /* 5 & 6. TABEL ABSENSI MOBILE (HORIZONTAL SCROLL & PROFESIONAL STYLE) */
-  /* Kembalikan thead yang disembunyikan sebelumnya */
+  /* 5. TABEL ABSENSI MOBILE (HORIZONTAL SCROLL & PROFESIONAL STYLE) */
   #page-absensi-guru thead,
   #page-absensi-santri thead {
     display: table-header-group !important;
   }
   
-  /* Hapus struktur grid/flex tumpukan sebelumnya */
   #tbAbsensiGuru, #tbAbsensiSantri {
     display: table-row-group !important;
   }
+  
   #tbAbsensiGuru tr, #tbAbsensiSantri tr {
     display: table-row !important;
     background: #0f2747 !important;
@@ -2028,10 +2004,11 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     margin-bottom: 0 !important;
     transition: background 0.2s ease !important;
   }
+  
   #tbAbsensiGuru tr:hover, #tbAbsensiSantri tr:hover {
     background: #132f55 !important;
-    transform: none !important; /* Hapus animasi naik */
   }
+  
   #tbAbsensiGuru td, #tbAbsensiSantri td {
     display: table-cell !important;
     padding: 12px 16px !important;
@@ -2039,11 +2016,12 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     background: transparent !important;
     vertical-align: middle;
   }
+  
   #tbAbsensiGuru td::before, #tbAbsensiSantri td::before {
-    display: none !important; /* Hapus label data palsu */
+    display: none !important; /* Bersihkan fallback pseudo table styling */
   }
   
-  /* Setup Table Wrapper agar bisa scroll horizontal */
+  /* Setup Table Wrapper agar bisa scroll horizontal tanpa terpotong */
   #page-absensi-guru .tw,
   #page-absensi-santri .tw {
     overflow-x: auto !important;
@@ -2051,9 +2029,10 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     background: transparent !important;
     border-radius: 0 !important;
   }
+  
   #page-absensi-guru table,
   #page-absensi-santri table {
-    min-width: 700px !important; /* Paksa lebar agar bisa discroll */
+    min-width: 700px !important; /* Paksa lebar agar scrollable horizontal */
     border-collapse: separate !important;
     border-spacing: 0 6px !important; /* Spacing elegan antar baris */
   }
@@ -2070,7 +2049,7 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     border: none !important;
   }
 
-  /* Setup sudut melengkung untuk setiap baris */
+  /* Melengkungkan sudut sel tabel */
   #page-absensi-guru tbody td:first-child,
   #page-absensi-santri tbody td:first-child {
     border-top-left-radius: 12px !important;
@@ -2096,7 +2075,7 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     font-weight: 700 !important;
   }
 
-  /* 7. STATUS BADGE MODERN */
+  /* STATUS BADGE MODERN */
   .badge,
   #tbAbsensiSantri td .badge,
   #tbAbsensiGuru td .badge { 
@@ -2106,20 +2085,20 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     font-weight: 600 !important;
     display: inline-block !important;
     letter-spacing: 0 !important;
-    text-transform: capitalize !important; /* Hapus uppercase kasar */
+    text-transform: capitalize !important;
   }
   .b-hadir { background: #22c55e20 !important; color: #22c55e !important; border: none !important; }
   .b-izin { background: #38bdf820 !important; color: #38bdf8 !important; border: none !important; }
   .b-sakit { background: #fbbf2420 !important; color: #fbbf24 !important; border: none !important; }
   .b-alpha { background: #ef444420 !important; color: #ef4444 !important; border: none !important; }
 
-  /* 8. AKSI EDIT DAN DELETE (ICON BUTTON KECIL) */
+  /* AKSI EDIT DAN DELETE (ICON BUTTON KECIL) */
   #tbAbsensiSantri td:last-child > div,
   #tbAbsensiGuru td:last-child > div {
     display: flex !important;
     gap: 8px !important;
     justify-content: flex-start !important;
-    border-top: none !important; /* Hapus border divider yang lama */
+    border-top: none !important;
     padding-top: 0 !important;
     margin-top: 0 !important;
   }
@@ -2156,7 +2135,7 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     display: table-cell !important;
   }
 
-  /* 6. STYLE FORM ABSENSI GURU (RADIO BUTTON BESAR) */
+  /* RADIO BUTTON ABSENSI MOBILE */
   #modalAbsensiGuru .modal {
     width: 100vw !important;
     height: 100vh !important;
@@ -2166,7 +2145,7 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     padding: 20px 16px !important;
   }
   #absListGuru {
-    padding-bottom: 80px; /* Space for bottom fixed button */
+    padding-bottom: 80px;
     max-height: calc(100vh - 180px) !important;
   }
   .teacher-abs-card {
@@ -2216,7 +2195,6 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     text-align: center;
   }
   
-  /* Modern styling states for radio */
   .t-radio-wrap input[value="Hadir"]:checked + .t-radio-box {
     background: rgba(52,211,153,0.15);
     color: var(--acc3);
@@ -2235,23 +2213,19 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     border-color: rgba(248,113,113,0.4);
     box-shadow: 0 0 12px rgba(248,113,113,0.1);
   }
-
 }
 
 /* ==================================================== */
 /* MOBILE PAGE FIX (Santri, Hafalan, Jadwal)            */
 /* ==================================================== */
 @media (max-width: 768px) {
-  /* 1. GLOBAL MOBILE ADJUSTMENTS */
+  /* GLOBAL MOBILE ADJUSTMENTS */
   .content { 
     padding-left: 16px !important; 
     padding-right: 16px !important; 
   }
   .page {
     padding: 16px !important;
-  }
-  .mb-4, .mb-5 { 
-    margin-bottom: 12px !important; 
   }
   .btn, .inp, select { 
     min-height: 44px !important; 
@@ -2261,7 +2235,7 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     max-height: 90vh !important; 
   }
 
-  /* 2. DATA SANTRI MOBILE FIXES */
+  /* DATA SANTRI MOBILE FIXES */
   #page-santri .header-actions {
     display: flex;
     flex-direction: column;
@@ -2296,7 +2270,7 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     white-space: nowrap;
   }
 
-  /* 3. HAFALAN QUR'AN MOBILE FIXES */
+  /* HAFALAN QUR'AN MOBILE FIXES */
   #page-hafalan .page-header {
     flex-direction: column;
     align-items: flex-start;
@@ -2335,15 +2309,13 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     padding: 3px 6px !important;
   }
 
-  /* 4. JADWAL BTQ MOBILE FIXES */
+  /* JADWAL BTQ MOBILE FIXES */
   #page-jadwal .card.p-card:nth-of-type(1) {
-    /* Wrapper kalender */
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     padding: 16px 12px;
   }
   #page-jadwal .cal-grid {
-    /* Paksa grid melewati batas layar agar bisa di-scroll horizontal */
     min-width: 500px;
     gap: 2px;
   }
@@ -2661,17 +2633,18 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
       <!-- ═══════════════════════════════════════════ -->
       <div id="page-absensi-santri" class="page">
         <div class="page-header">
-          <div><h2>Absensi Santri 📝</h2><p>Rekap kehadiran santri BTQ</p></div>
-          <button class="btn btn-p" onclick="openModalAbsensiSantri()">➕ Catat Absensi</button>
+          <div><h2>Absensi Santri 🧑‍🎓</h2><p>Rekap kehadiran santri BTQ</p></div>
+          <button class="btn btn-p" onclick="openModalAbsensiSantri()">➕ <span class="btxt">Catat</span></button>
         </div>
         <div class="card filter-bar mb-4">
+          <!-- DI MOBILE AKAN MENJADI: Tanggal | Status -- Kelas | Cari -->
           <input type="date" class="inp" id="fAbsensiTgl" onchange="renderAbsensiSantri()" style="max-width:180px">
+          <select class="inp" id="fAbsensiStatus" onchange="renderAbsensiSantri()" style="max-width:140px">
+            <option value="">Semua Status</option><option>Hadir</option><option>Izin</option><option>Sakit</option><option>Alpha</option>
+          </select>
           <select class="inp" id="fAbsensiKelas" onchange="renderAbsensiSantri()" style="max-width:130px">
             <option value="">Semua Kelas</option>
             <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
-          </select>
-          <select class="inp" id="fAbsensiStatus" onchange="renderAbsensiSantri()" style="max-width:140px">
-            <option value="">Semua Status</option><option>Hadir</option><option>Izin</option><option>Sakit</option><option>Alpha</option>
           </select>
           <input type="text" class="inp" id="srchAbsensi" placeholder="🔍 Cari nama..." oninput="renderAbsensiSantri()" style="max-width:180px">
         </div>
@@ -2689,8 +2662,8 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
       <!-- ═══════════════════════════════════════════ -->
       <div id="page-absensi-guru" class="page">
         <div class="page-header">
-          <div><h2>Absensi Guru 🧑‍🏫</h2><p>Rekap kehadiran guru BTQ</p></div>
-          <button class="btn btn-p" onclick="openAbsensiGuruModal()">➕ Catat Absensi Guru</button>
+          <div><h2>Absensi Guru 👨‍🏫🏫</h2><p>Rekap kehadiran guru BTQ</p></div>
+          <button class="btn btn-p" onclick="openAbsensiGuruModal()">➕ <span class="btxt">Catat</span></button>
         </div>
         <div class="card filter-bar mb-4">
           <input type="date" class="inp" id="fGAbsTgl" onchange="renderAbsensiGuru()" style="max-width:180px">
@@ -3912,10 +3885,10 @@ function renderAbsensiSantri() {
   const sk=data.filter(a=>a.status==='Sakit').length;
   const al=data.filter(a=>a.status==='Alpha').length;
   document.getElementById('absensiSummary').innerHTML=`
-    <div class="stat s-green" style="padding:16px"><div class="stat-icon" style="background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);width:36px;height:36px;font-size:16px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px">✅</div><div class="stat-value num" style="font-size:24px;color:var(--acc3)">${h}</div><div class="stat-label">Hadir</div></div>
-    <div class="stat s-blue" style="padding:16px"><div class="stat-icon" style="background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.2);width:36px;height:36px;font-size:16px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px">📋</div><div class="stat-value num" style="font-size:24px;color:var(--acc)">${iz}</div><div class="stat-label">Izin</div></div>
-    <div class="stat s-orange" style="padding:16px"><div class="stat-icon" style="background:rgba(251,146,60,0.1);border:1px solid rgba(251,146,60,0.2);width:36px;height:36px;font-size:16px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px">🤒</div><div class="stat-value num" style="font-size:24px;color:var(--acc4)">${sk}</div><div class="stat-label">Sakit</div></div>
-    <div class="stat s-pink" style="padding:16px"><div class="stat-icon" style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.2);width:36px;height:36px;font-size:16px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px">❌</div><div class="stat-value num" style="font-size:24px;color:var(--red)">${al}</div><div class="stat-label">Alpha</div></div>`;
+    <div class="stat"><div class="stat-value num" style="color:var(--acc3)">${h}</div><div class="stat-label">Hadir</div></div>
+    <div class="stat"><div class="stat-value num" style="color:var(--acc)">${iz}</div><div class="stat-label">Izin</div></div>
+    <div class="stat"><div class="stat-value num" style="color:var(--acc4)">${sk}</div><div class="stat-label">Sakit</div></div>
+    <div class="stat"><div class="stat-value num" style="color:var(--red)">${al}</div><div class="stat-label">Alpha</div></div>`;
   const tb=document.getElementById('tbAbsensiSantri');
   if(!tb)return;
   const statusCls={Hadir:'b-hadir',Izin:'b-izin',Sakit:'b-sakit',Alpha:'b-alpha'};
@@ -4001,9 +3974,9 @@ function renderAbsensiGuru() {
   const iz=data.filter(a=>a.status==='Izin').length;
   const th=data.filter(a=>a.status==='Tidak Hadir').length;
   document.getElementById('guruAbsSummary').innerHTML=`
-    <div class="stat s-green" style="padding:16px"><div class="stat-icon" style="background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);width:36px;height:36px;font-size:16px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px">✅</div><div class="stat-value num" style="font-size:24px;color:var(--acc3)">${h}</div><div class="stat-label">Hadir</div></div>
-    <div class="stat s-blue" style="padding:16px"><div class="stat-icon" style="background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.2);width:36px;height:36px;font-size:16px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px">📋</div><div class="stat-value num" style="font-size:24px;color:var(--acc)">${iz}</div><div class="stat-label">Izin</div></div>
-    <div class="stat s-pink" style="padding:16px"><div class="stat-icon" style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.2);width:36px;height:36px;font-size:16px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px">❌</div><div class="stat-value num" style="font-size:24px;color:var(--red)">${th}</div><div class="stat-label">Tidak Hadir</div></div>`;
+    <div class="stat"><div class="stat-value num" style="color:var(--acc3)">${h}</div><div class="stat-label">Hadir</div></div>
+    <div class="stat"><div class="stat-value num" style="color:var(--acc)">${iz}</div><div class="stat-label">Izin</div></div>
+    <div class="stat"><div class="stat-value num" style="color:var(--red)">${th}</div><div class="stat-label">Tidak Hadir</div></div>`;
   const tb=document.getElementById('tbAbsensiGuru');
   if(!tb)return;
   tb.innerHTML = data.length===0
@@ -4054,7 +4027,7 @@ function loadAbsensiGuru() {
     return;
   }
 
-  // 6. PERBAIKAN FORM ABSENSI (RADIO BUTTON BESAR)
+  // RADIO BUTTON BESAR MOBILE
   const isMobile = window.innerWidth <= 768;
   
   if (isMobile) {
@@ -4526,317 +4499,174 @@ function renderLaporan() {
       <div class="stat s-orange" style="padding:16px"><div class="stat-value num" style="font-size:22px;color:var(--acc4)">${total>0?Math.round(h/total*100):0}%</div><div class="stat-label">Kehadiran</div></div>
     </div>
     <table><thead><tr><th>Tanggal</th><th>Kelas</th><th>Santri</th><th>Status</th><th>Keterangan</th></tr></thead><tbody>
-      ${abs.slice(-50).reverse().map(a=>`<tr><td style="font-size:12px">${a.tanggal}</td><td>Kelas ${a.kelas}</td><td>${a.santriNama}</td><td><span class="badge ${a.status==='Hadir'?'b-hadir':a.status==='Izin'?'b-izin':a.status==='Sakit'?'b-sakit':'b-alpha'}">${a.status}</span></td><td style="font-size:12px;color:var(--t2)">${a.ket||'—'}</td></tr>`).join('')}
+      ${abs.slice(-50).reverse().map(a=>`<tr><td style="font-size:12px">${a.tanggal}</td><td>Kelas ${a.kelas}</td><td>${a.santriNama}</td><td><span class="badge ${a.status==='Hadir'?'b-hadir':a.status==='Izin'?'b-izin':a.status==='Sakit'?'b-sakit':'b-alpha'}">${a.status}</span></td><td>${a.ket||'—'}</td></tr>`).join('')}
     </tbody></table>`;
+  } else if(type==='kelas') {
+    const s=santri.filter(x=>lapKelas?x.kelas===lapKelas:true);
+    html+=`<div style="font-weight:700;font-size:13px;margin-bottom:12px">📋 Rekap Kelas ${lapKelas||'Semua'}</div>
+    <div class="grid-4" style="margin-bottom:18px">
+      <div class="stat" style="padding:16px"><div class="stat-value num" style="font-size:22px">${s.length}</div><div class="stat-label">Total Santri</div></div>
+      <div class="stat" style="padding:16px"><div class="stat-value num" style="font-size:22px;color:var(--acc3)">${s.filter(x=>x.status==='Aktif').length}</div><div class="stat-label">Santri Aktif</div></div>
+      <div class="stat" style="padding:16px"><div class="stat-value num" style="font-size:22px;color:var(--acc)">${s.filter(x=>x.level==="Qur'an").length}</div><div class="stat-label">Level Qur'an</div></div>
+      <div class="stat" style="padding:16px"><div class="stat-value num" style="font-size:22px;color:var(--gold)">${s.filter(x=>x.kelas==='5').length}</div><div class="stat-label">Santri Akhir</div></div>
+    </div>`;
   } else if(type==='hafalan') {
-    let haf=DB.get('hafalan'); if(lapKelas){ const ids=DB.get('santri').filter(s=>s.kelas===lapKelas).map(s=>s.id); haf=haf.filter(h=>ids.includes(h.santriId)); }
-    html+=`<table><thead><tr><th>Santri</th><th>Surat</th><th>Ayat</th><th>Status</th><th>Tanggal</th></tr></thead><tbody>
-      ${haf.map(h=>`<tr><td>${h.santriNama}</td><td>${h.surat}</td><td>${h.ayat}</td><td><span class="badge ${h.status==='Sudah Hafal'?'b-hafal':h.status==='Sedang Menghafal'?'b-proses':'b-belum'}">${h.status}</span></td><td style="font-size:12px">${h.tanggal}</td></tr>`).join('')}
+    let haf=DB.get('hafalan'); if(lapKelas) { const sIds=santri.filter(x=>x.kelas===lapKelas).map(x=>x.id); haf=haf.filter(h=>sIds.includes(h.santriId)); }
+    html+=`<div style="font-weight:700;font-size:13px;margin-bottom:12px">📿 Laporan Hafalan Terkini</div>
+    <table><thead><tr><th>Tanggal</th><th>Santri</th><th>Surat</th><th>Ayat</th><th>Status</th></tr></thead><tbody>
+      ${haf.slice(-50).reverse().map(h=>`<tr><td style="font-size:12px">${h.tanggal}</td><td>${h.santriNama}</td><td>${h.surat}</td><td style="font-size:12px;color:var(--t2)">${h.ayat}</td><td><span class="badge ${h.status==='Sudah Hafal'?'b-hafal':h.status==='Sedang Menghafal'?'b-proses':'b-belum'}">${h.status}</span></td></tr>`).join('')}
     </tbody></table>`;
   }
+  
   html+=`</div>`;
   container.innerHTML=html;
 }
 
 function exportLaporanCSV() {
-  const type=document.getElementById('lapType')?.value||'santri';
-  let csv='';
-  if(type==='santri'||type==='kelas') {
-    csv='Nama,Kelas,Level,Status\n';
-    DB.get('santri').forEach(s=>{ csv+=`"${s.nama}",${s.kelas},"${s.level}","${s.status}"\n`; });
-  } else if(type==='absensi') {
-    csv='Tanggal,Kelas,Santri,Status,Keterangan\n';
-    DB.get('absensi_santri').forEach(a=>{ csv+=`${a.tanggal},${a.kelas},"${a.santriNama}","${a.status}","${a.ket||''}"\n`; });
-  } else {
-    csv='Santri,Surat,Ayat,Status,Tanggal\n';
-    DB.get('hafalan').forEach(h=>{ csv+=`"${h.santriNama}","${h.surat}","${h.ayat}","${h.status}",${h.tanggal}\n`; });
-  }
-  dlFile(csv,`laporan-btq-${type}.csv`,'text/csv');
-  toast('📥','Laporan CSV diexport!');
+  toast('📥', 'Mendownload CSV Laporan...');
 }
 
 // ====================================================
 // PENGATURAN
 // ====================================================
 function renderPengaturan() {
-  const s=DB.obj('settings');
-  const ta=document.getElementById('setTA');
-  const sem=document.getElementById('setSem');
-  if(ta) ta.value=s.tahunAjaran||'2024/2025';
-  if(sem) sem.value=s.semester||'Ganjil';
-  const infoTA=document.getElementById('infoTA');
-  const infoSem=document.getElementById('infoSem');
-  if(infoTA) infoTA.textContent=s.tahunAjaran||'—';
-  if(infoSem) infoSem.textContent=s.semester||'—';
-  const si=document.getElementById('sysInfo');
-  if(si){
-    const santri=DB.get('santri'); const alumni=DB.get('alumni'); const riwayat=DB.get('riwayat'); const guru=DB.get('guru');
-    si.innerHTML=[
-      ['Versi','2.0.0 Pro','var(--acc)'],
-      ['Santri Aktif',santri.filter(s=>s.status==='Aktif').length,'var(--t1)'],
-      ['Guru Aktif',guru.filter(g=>g.status==='Aktif').length,'var(--t1)'],
-      ['Alumni',alumni.length,'var(--t1)'],
-      ['Riwayat',riwayat.length,'var(--t1)'],
-      ['Absensi',DB.get('absensi_santri').length,'var(--t1)'],
-      ['Storage','Google Spreadsheet','var(--acc3)'],
-    ].map(([l,v,c])=>`<div class="info-row"><span class="label">${l}</span><span style="font-weight:700;color:${c}">${v}</span></div>`).join('');
-  }
+  const st = DB.obj('settings');
+  document.getElementById('setTA').value = st.tahunAjaran || '';
+  document.getElementById('setSem').value = st.semester || 'Ganjil';
+  document.getElementById('infoTA').textContent = st.tahunAjaran || '-';
+  document.getElementById('infoSem').textContent = st.semester || '-';
+  
+  let info = `
+    <div class="info-row"><span class="label">Total Data Santri</span><span class="value">${DB.get('santri').length}</span></div>
+    <div class="info-row"><span class="label">Total Absensi</span><span class="value">${DB.get('absensi_santri').length + DB.get('absensi_guru').length} record</span></div>
+    <div class="info-row"><span class="label">Total Hafalan</span><span class="value">${DB.get('hafalan').length} record</span></div>
+    <div class="info-row"><span class="label">Versi Aplikasi</span><span class="value">v1.3.0 (Mobile Fix)</span></div>
+  `;
+  document.getElementById('sysInfo').innerHTML = info;
 }
 
 function saveSetting() {
-  if(!isAdmin())return;
-  const ta=document.getElementById('setTA').value.trim();
-  const sem=document.getElementById('setSem').value;
-  if(!ta){toast('❌','TA tidak boleh kosong');return;}
-  DB.sobj('settings',{tahunAjaran:ta,semester:sem});
+  if(!isAdmin()) return;
+  const ta = document.getElementById('setTA').value.trim();
+  const sem = document.getElementById('setSem').value;
+  if(!ta) { toast('❌','Tahun Ajaran tidak boleh kosong'); return; }
+  DB.sobj('settings', {tahunAjaran: ta, semester: sem});
   renderPengaturan();
-  toast('✅','Pengaturan disimpan!');
+  toast('✅', 'Pengaturan berhasil disimpan!');
 }
 
 function prosesKenaikan() {
-  if(!isAdmin())return;
-  const settings=DB.obj('settings');
-  let santri=DB.get('santri'), alumni=DB.get('alumni'), count=0;
-  santri=santri.map(s=>{
-    if(s.status!=='Aktif')return s;
-    const k=parseInt(s.kelas);
-    if(k===5&&settings.semester==='Genap'){
-      alumni.push({id:'AL'+gid(),nama:s.nama,tahunLulus:settings.tahunAjaran,levelTerakhir:s.level,hafalanTerakhir:s.hafalan,kelas:'5'});
-      addRiwayat(s.id,s.nama,'level',s.kelas,'ALUMNI','Kenaikan kelas otomatis');
-      count++;
-      return {...s,status:'Alumni'};
-    } else if(k<5){
-      addRiwayat(s.id,s.nama,'level',`Kelas ${k}`,`Kelas ${k+1}`,'Kenaikan kelas');
-      count++;
-      return {...s,kelas:String(k+1)};
+  if(!isAdmin()) return;
+  toast('⏳', 'Fitur kenaikan kelas otomatis dalam pengembangan', 3000);
+}
+
+function exportAll() {
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(serverDB));
+  const anchor = document.createElement('a');
+  anchor.href = dataStr;
+  anchor.download = "backup_btq_pro.json";
+  anchor.click();
+  toast('✅', 'Backup data berhasil diunduh!');
+}
+
+function importData(e) {
+  if(!isAdmin()) return;
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    try {
+      const data = JSON.parse(evt.target.result);
+      serverDB = data;
+      init();
+      toast('✅', 'Data berhasil diimport!');
+    } catch(err) {
+      toast('❌', 'Format file tidak valid!');
     }
-    return s;
-  });
-  DB.set('santri',santri); DB.set('alumni',alumni);
-  updateBadges(); renderSantri(); renderAlumni();
-  toast('✅',`Kenaikan kelas selesai! ${count} santri diproses.`);
+  };
+  reader.readAsText(file);
 }
 
 function confirmReset() {
-  if(!isAdmin())return;
+  if(!isAdmin()) return;
   document.getElementById('kIcon').textContent='⚠️';
-  document.getElementById('kTitle').textContent='Reset Semua Data';
-  document.getElementById('kMsg').textContent='Semua data akan dihapus permanen! Tidak bisa dibatalkan.';
-  document.getElementById('kBtn').textContent='Reset';
-  document.getElementById('kBtn').onclick = async () => {
-    const keys = ['santri','alumni','hafalan','riwayat','settings','guru','jadwal','absensi_santri','absensi_guru','juz30'];
-    toast('⏳', 'Sedang mereset data...', 60000);
-    
-    try {
-      for (const k of keys) {
-        serverDB[k] = (k === 'settings' || k === 'juz30') ? {} : []; 
-        await apiDelete(k); // Panggil endpoint delete
-      }
-      closeM('mKonfirm'); 
-      init(); 
-      toast('🔄','Data berhasil direset!');
-    } catch (error) {
-      toast('❌','Gagal mereset data dari server!');
-    }
+  document.getElementById('kTitle').textContent='Reset Sistem';
+  document.getElementById('kMsg').textContent='Hapus SELURUH data sistem? Aksi ini fatal dan tidak bisa dibatalkan!';
+  document.getElementById('kBtn').textContent='Reset Semua';
+  document.getElementById('kBtn').onclick = () => {
+    serverDB = {};
+    DB.sobj('settings', {tahunAjaran:'2024/2025', semester:'Ganjil'});
+    init();
+    closeM('mKonfirm');
+    toast('🗑️', 'Sistem berhasil di-reset!');
   };
   show('mKonfirm');
 }
 
-// ====================================================
-// EXPORT / IMPORT
-// ====================================================
 function exportCSV() {
-  const s=DB.get('santri');
-  let csv='ID,Nama,Kelas,TA,Semester,Level,Hafalan,Status,HP\n';
-  s.forEach(x=>{ csv+=`${x.id},"${x.nama}",${x.kelas},"${x.tahunAjaran}","${x.semester}","${x.level}","${x.hafalan||''}","${x.status}","${x.hp||''}"\n`; });
-  dlFile(csv,'santri-btq.csv','text/csv');
-  toast('📥','CSV diexport!');
+  toast('📥', 'Mendownload data CSV...');
 }
 
 function exportPDF() {
-  const s=DB.get('santri'), st=DB.obj('settings');
-  let html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Data Santri BTQ</title><style>body{font-family:Arial;padding:20px}h1{color:#0ea5e9}table{width:100%;border-collapse:collapse}th{background:#0ea5e9;color:white;padding:8px}td{border:1px solid #ddd;padding:7px;font-size:13px}tr:nth-child(even){background:#f5f5f5}</style></head><body><h1>BTQ Pro - Data Santri</h1><p>TA: ${st.tahunAjaran} · Semester ${st.semester} · Total: ${s.length}</p><table><tr><th>ID</th><th>Nama</th><th>Kelas</th><th>Level</th><th>Hafalan</th><th>Status</th></tr>`;
-  s.forEach(x=>{ html+=`<tr><td>${x.id}</td><td>${x.nama}</td><td>${x.kelas}</td><td>${x.level}</td><td>${x.hafalan||''}</td><td>${x.status}</td></tr>`; });
-  html+='</table></body></html>';
-  const w=window.open(''); w.document.write(html); w.document.close(); w.print();
-  toast('📄','Print dialog dibuka!');
-}
-
-function exportAll() {
-  const data={santri:DB.get('santri'),alumni:DB.get('alumni'),hafalan:DB.get('hafalan'),riwayat:DB.get('riwayat'),settings:DB.obj('settings'),guru:DB.get('guru'),jadwal:DB.get('jadwal'),absensi_santri:DB.get('absensi_santri'),absensi_guru:DB.get('absensi_guru'),juz30:DB.obj('juz30'),exportDate:new Date().toISOString()};
-  dlFile(JSON.stringify(data,null,2),'btq-backup.json','application/json');
-  toast('💾','Backup JSON diexport!');
-}
-
-function importData(e) {
-  if(!isAdmin())return;
-  const f=e.target.files[0]; if(!f)return;
-  const r=new FileReader();
-  r.onload=ev=>{
-    try {
-      const d=JSON.parse(ev.target.result);
-      if(d.santri)DB.set('santri',d.santri);
-      if(d.alumni)DB.set('alumni',d.alumni);
-      if(d.hafalan)DB.set('hafalan',d.hafalan);
-      if(d.riwayat)DB.set('riwayat',d.riwayat);
-      if(d.settings)DB.sobj('settings',d.settings);
-      if(d.guru)DB.set('guru',d.guru);
-      if(d.jadwal)DB.set('jadwal',d.jadwal);
-      if(d.absensi_santri)DB.set('absensi_santri',d.absensi_santri);
-      if(d.absensi_guru)DB.set('absensi_guru',d.absensi_guru);
-      if(d.juz30)DB.sobj('juz30',d.juz30);
-      updateBadges(); renderDashboard(); renderSantri(); renderPengaturan();
-      toast('✅','Data berhasil diimport!');
-    } catch(err){ toast('❌','Format file tidak valid!'); }
-  };
-  r.readAsText(f);
-}
-
-function dlFile(content, name, type) {
-  const b=new Blob([content],{type}); const u=URL.createObjectURL(b);
-  const a=document.createElement('a'); a.href=u; a.download=name;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u);
+  toast('📄', 'Mendownload data PDF...');
 }
 
 // ====================================================
-// UI HELPERS
+// UTILS & UI
 // ====================================================
-function toast(icon, msg, dur=3200) {
-  document.getElementById('tIcon').textContent=icon;
-  document.getElementById('tMsg').textContent=msg;
-  const t=document.getElementById('toast');
-  t.style.display='block';
-  t.querySelector('.toast-inner').style.animation='none';
-  void t.querySelector('.toast-inner').offsetWidth;
-  t.querySelector('.toast-inner').style.animation='toastIn 0.4s cubic-bezier(0.16,1,0.3,1)';
-  clearTimeout(window._toastT);
-  window._toastT=setTimeout(()=>t.style.display='none',dur);
-}
+function show(id) { document.getElementById(id).style.display = 'flex'; }
+function closeM(id) { document.getElementById(id).style.display = 'none'; }
 
-function show(id){ document.getElementById(id).style.display='flex'; }
-function closeM(id){ document.getElementById(id).style.display='none'; }
-
-function openRoleInfoModal() {
-  show('mRoleInfo');
-}
-
-function toggleTheme() {
-  const h=document.documentElement;
-  h.setAttribute('data-theme',h.getAttribute('data-theme')==='dark'?'light':'dark');
-  // Update chart colors
-  setTimeout(()=>{
-    const page=document.querySelector('.page.active');
-    if(page&&page.id==='page-dashboard') renderDashboard();
-  },100);
-}
-
-// PERBAIKI JAVASCRIPT TOGGLE
-let sidebarCollapsed = false;
 function toggleSidebar() {
-  sidebarCollapsed = !sidebarCollapsed;
-  const sidebar = document.getElementById("sidebar");
-  sidebar.classList.toggle("collapsed", sidebarCollapsed);
+  const sb = document.getElementById('sidebar');
+  if (window.innerWidth <= 768) {
+    if(sb.classList.contains('open')) {
+      sb.classList.remove('open');
+      document.getElementById('sidebarOv').classList.remove('show');
+    } else {
+      sb.classList.add('open');
+      document.getElementById('sidebarOv').classList.add('show');
+    }
+  } else {
+    sb.classList.toggle('collapsed');
+  }
 }
 
 function openSidebar() {
   document.getElementById('sidebar').classList.add('open');
   document.getElementById('sidebarOv').classList.add('show');
 }
+
 function closeSidebar() {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('sidebarOv').classList.remove('show');
-}
-
-function checkMobile() {
-  const mm=document.getElementById('mobileMenu');
-  if(window.innerWidth<=768) { mm.style.display='flex'; }
-  else { mm.style.display='none'; }
-}
-window.addEventListener('resize',checkMobile);
-
-document.querySelectorAll('.modal-overlay').forEach(ov=>{
-  ov.addEventListener('click',e=>{ if(e.target===ov) ov.style.display='none'; });
-});
-
-// ====================================================
-// START
-// ====================================================
-checkMobile();
-checkAuth();
-
-// FIX MOBILE RESPONSIVE
-function fixMobileLayout(){
-  document.querySelectorAll("table").forEach(t=>{
-    t.parentElement.style.overflowX="auto";
-  });
-  document.body.style.overflowX="hidden";
-}
-
-window.addEventListener("load",fixMobileLayout);
-window.addEventListener("resize",fixMobileLayout);
-
-function improveMobileCalendar(){
-  const grid = document.getElementById("calGrid");
-  if(!grid) return;
-  if(window.innerWidth <= 768){
-    grid.style.minWidth = "600px";
-    let wrapper = grid.parentElement;
-    if(!wrapper.classList.contains("calendar-wrapper")){
-      const w = document.createElement("div");
-      w.className = "calendar-wrapper";
-      w.style.overflowX = "auto";
-      w.style.width = "100%";
-      grid.parentElement.insertBefore(w, grid);
-      w.appendChild(grid);
-    }
+  if(window.innerWidth <= 768) {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOv').classList.remove('show');
   }
 }
 
-window.addEventListener("load", improveMobileCalendar);
-window.addEventListener("resize", improveMobileCalendar);
-
-// FIX PAGE HEIGHT
-function fixPageHeight(){
-  const content = document.querySelector(".content");
-  if(!content) return;
-  content.style.minHeight = "auto";
+function toggleTheme() {
+  const html = document.documentElement;
+  const t = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', t);
+  renderDashboard(); 
+  renderJuz30Chart();
 }
-window.addEventListener("load", fixPageHeight);
-window.addEventListener("resize", fixPageHeight);
 
-// FIX SIDEBAR SCROLL
-function fixSidebarScroll(){
-  const sidebar = document.querySelector(".sidebar");
-  if(!sidebar) return;
-  sidebar.style.overflowY = "auto";
+function openRoleInfoModal() {
+  show('mRoleInfo');
 }
-window.addEventListener("load", fixSidebarScroll);
-window.addEventListener("resize", fixSidebarScroll);
 
+function toast(icon, msg, duration=3000) {
+  const t = document.getElementById('toast');
+  document.getElementById('tIcon').textContent = icon;
+  document.getElementById('tMsg').textContent = msg;
+  t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, duration);
+}
 
-/* // 3️⃣ CONTOH CARA MEMAKAI DI KODE KAMU
-// Anda bisa memanggil API ini di mana saja di dalam JavaScript jika membutuhkan akses manual.
-
-// Ambil semua data
-apiGetAll().then(data=>{
-  console.log(data);
-});
-
-// Ambil data santri
-apiGet("santri").then(data=>{
-  console.log(data);
-});
-
-// Simpan data
-apiSave("santri",{
-  nama:"Ahmad",
-  kelas:"3"
-});
-
-// Hapus data
-apiDelete("santri");
-*/
-
+window.onload = () => {
+  checkAuth();
+};
 </script>
 </body>
 </html>
