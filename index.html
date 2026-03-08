@@ -2807,16 +2807,17 @@ const API_KEY = "BTQ_SECURE_2026";
 
 // Helper utama untuk memproses semua Request ke Backend
 // Otomatis menambahkan apikey ke URL
-async function apiRequest(action, extraParams = "", options = {}) {
+async function apiRequest(action, extraParams = "", options = {}, retry = 2) {
   const url = `${API_URL}?action=${action}&apikey=${API_KEY}${extraParams}`;
   
   try {
     const res = await fetch(url, options);
-    if (!res.ok) {
-      throw new Error("Server tidak merespon");
-    }
+    if (!res.ok) throw new Error("Server error");
     return await res.json();
   } catch (err) {
+    if (retry > 0) {
+      return apiRequest(action, extraParams, options, retry - 1);
+    }
     console.error(`API Error (${action}):`, err);
     throw err;
   }
@@ -3010,7 +3011,13 @@ function updateBadges() {
 function init() {
   populateDropdowns();
   if(!DB.obj('settings').tahunAjaran) DB.sobj('settings',{tahunAjaran:'2024/2025',semester:'Ganjil'});
-  if(DB.get('santri').length===0) loadSample();
+  
+  if(!isDataLoaded){
+     console.warn("Data belum load dari server");
+  }else if(DB.get('santri').length===0){
+     loadSample();
+  }
+  
   updateBadges();
   renderDashboard();
   renderSantri();
