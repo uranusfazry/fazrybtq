@@ -2397,6 +2397,62 @@ FIX LIGHT MODE MOBILE
   }
 }
 
+/* ======================================
+SAAS LIGHT MODE MOBILE FIX (NEW)
+====================================== */
+@media (max-width: 768px) {
+  /* Perbaiki background halaman */
+  html[data-theme="light"] body {
+    background: #f8fafc !important;
+  }
+  html[data-theme="light"] main {
+    background: #f8fafc !important;
+  }
+  html[data-theme="light"] .page {
+    background: #f8fafc !important;
+  }
+  
+  /* Perbaiki input filter agar sesuai light theme */
+  html[data-theme="light"] input,
+  html[data-theme="light"] select {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #1e293b !important;
+    border-radius: 12px !important;
+  }
+  
+  /* Perbaiki search box placeholder */
+  html[data-theme="light"] input::placeholder {
+    color: #64748b !important;
+  }
+  
+  /* Perbaiki card statistik agar lebih soft */
+  html[data-theme="light"] .stat {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05) !important;
+    border-radius: 16px !important;
+  }
+  
+  /* Perbaiki header tabel */
+  html[data-theme="light"] table {
+    background: #ffffff !important;
+  }
+  html[data-theme="light"] thead,
+  html[data-theme="light"] thead tr,
+  html[data-theme="light"] thead th {
+    background: #f1f5f9 !important;
+  }
+  
+  /* Perbaiki spacing mobile agar terlihat seperti aplikasi */
+  .content {
+    padding: 16px !important;
+  }
+  .stat {
+    padding: 14px !important;
+  }
+}
+
 </style>
 </head>
 <body>
