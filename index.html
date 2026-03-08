@@ -1365,32 +1365,68 @@ z-index:300;
 transform: translateX(0);
 }
 
-/* margin-left dihapus karena sudah tidak terpakai di flexbox desktop */
-
 }
 
 /* ===================================
-TOPBAR MOBILE
+TOPBAR MOBILE & PROFESIONAL UI
 =================================== */
 
 @media (max-width:768px){
 
+/* 1. PERBAIKAN HEADER MOBILE */
 .topbar{
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 10px;
-  padding: 12px 16px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  height: 60px !important;
+  padding: 0 16px !important;
+  background: #0b1c34 !important;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
+  border-bottom: none !important;
 }
 
 .page-title-wrap {
-  grid-column: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#mobileMenu {
+  width: 32px !important;
+  height: 32px !important;
+  font-size: 18px !important;
+  background: transparent !important;
+  border: none !important;
+  color: #fff !important;
+}
+
+.page-title {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
 }
 
 .topbar-actions {
-  grid-column: 2;
   display: flex;
-  gap: 8px;
-  justify-content: flex-end;
+  gap: 12px !important;
+  align-items: center;
+}
+
+.topbar-actions .topbar-btn, .topbar-actions .user-badge {
+  width: 32px !important;
+  height: 32px !important;
+  font-size: 16px !important;
+  border-radius: 8px !important;
+  background: rgba(255,255,255,0.05) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+}
+
+.topbar-divider { display: none !important; }
+
+.logout-btn {
+  padding: 6px 10px !important;
+  font-size: 11px !important;
+  border-radius: 8px !important;
 }
 
 }
@@ -1401,15 +1437,25 @@ FILTER MOBILE
 
 @media (max-width:768px){
 
+/* 2. PERBAIKAN FILTER MOBILE (VERTICAL STACK) */
 .filter-bar{
-flex-direction:column;
-gap:10px;
+  flex-direction: column !important;
+  gap: 10px !important;
+  width: 100% !important;
+  margin-bottom: 12px !important;
+  border-radius: 12px !important;
+  padding: 12px !important;
+  background: rgba(15, 37, 71, 0.6) !important; /* Dark card */
+  border: 1px solid rgba(255,255,255,0.05) !important;
 }
 
 .filter-bar .inp,
 .filter-bar select{
-width:100% !important;
-max-width:100% !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 44px !important;
+  border-radius: 10px !important;
+  background: rgba(0,0,0,0.2) !important;
 }
 
 }
@@ -1443,18 +1489,6 @@ height:260px;
 height:220px;
 }
 
-}
-
-/* ===================================
-CALENDAR MOBILE
-=================================== */
-
-#calGrid{
-overflow-x:auto;
-}
-
-.cal-cell{
-min-width:80px;
 }
 
 /* ===================================
@@ -1828,13 +1862,15 @@ RADAR CHART KOMPETENSI SANTRI
 }
 
 /* ====================================
-MOBILE ABSENSI FIX
+MOBILE ABSENSI FIX (TERMASUK GURU)
 ==================================== */
 @media (max-width: 768px) {
-  /* Container Padding Fix */
+  /* 9. SPACING SISTEM PROFESIONAL */
   .content {
-    padding-left: 16px;
-    padding-right: 16px;
+    padding: 16px !important;
+  }
+  .page {
+    padding: 0 !important; /* Resetting so content padding handles it */
   }
 
   /* Spacing Adjustments */
@@ -1848,7 +1884,7 @@ MOBILE ABSENSI FIX
   #page-absensi-guru .page-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
+    gap: 4px;
     margin-bottom: 16px;
   }
   
@@ -1856,119 +1892,274 @@ MOBILE ABSENSI FIX
   #page-absensi-santri .page-header h2,
   #page-absensi-guru .page-header h2 {
     font-size: 20px !important;
-    margin-bottom: 2px;
+    margin-bottom: 0;
   }
   #page-absensi-santri .page-header p,
   #page-absensi-guru .page-header p {
-    font-size: 14px;
+    font-size: 13px;
+    color: var(--t2);
   }
 
-  /* Catat Absensi Button Fix */
-  #page-absensi-santri .page-header .btn,
-  #page-absensi-guru .page-header .btn {
-    display: inline-flex;
-    width: auto;
-    min-height: 44px;
-    margin-bottom: 8px;
+  /* 4. FAB BUTTON (CATAT ABSENSI GURU & SANTRI) */
+  #page-absensi-guru .page-header .btn-p,
+  #page-absensi-santri .page-header .btn-p {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    width: 56px !important;
+    height: 56px !important;
+    min-height: unset !important;
+    border-radius: 50% !important;
+    background: #22c55e !important; /* Hijau modern */
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 999;
+    font-size: 0 !important; /* Sembunyikan text */
+    padding: 0 !important;
+    transition: transform 0.25s ease !important;
+  }
+  
+  #page-absensi-guru .page-header .btn-p:active,
+  #page-absensi-santri .page-header .btn-p:active {
+    transform: scale(0.9);
   }
 
-  /* Vertical Stack for Filters */
-  #page-absensi-santri .filter-bar,
-  #page-absensi-guru .filter-bar {
+  #page-absensi-guru .page-header .btn-p::after,
+  #page-absensi-santri .page-header .btn-p::after {
+    content: '+';
+    font-size: 32px;
+    font-weight: 300;
+    color: white;
+    margin-top: -2px;
+  }
+
+  /* 3. PERBAIKAN CARD STATISTIK ABSENSI GURU (GRID 3) */
+  #guruAbsSummary {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 10px !important;
+    margin-bottom: 16px !important;
+  }
+  #guruAbsSummary .stat {
+    padding: 12px !important;
+    border-radius: 14px !important;
+    background: #0f2547 !important;
+    border: 1px solid rgba(255,255,255,0.04) !important;
+    text-align: center;
+    display: flex;
     flex-direction: column;
-    align-items: stretch;
-    padding: 16px;
-    border-radius: 12px; /* Smaller, more compact border radius */
-    gap: 12px;
-  }
-  
-  /* Full width inputs in filter */
-  #page-absensi-santri .filter-bar .inp,
-  #page-absensi-guru .filter-bar .inp,
-  #page-absensi-santri .filter-bar select,
-  #page-absensi-guru .filter-bar select {
-    max-width: 100% !important;
-    width: 100%;
-    min-height: 44px; /* Touch friendly */
-  }
-
-  /* ------------------------------------------------ */
-  /* TABLE TO CARD LAYOUT CONVERSION FOR MOBILE     */
-  /* ------------------------------------------------ */
-  
-  /* Absensi Santri Card Layout */
-  #page-absensi-santri thead { display: none; }
-  #tbAbsensiSantri { display: block; }
-  #tbAbsensiSantri tr {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 6px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    margin-bottom: 10px;
-    padding: 12px;
-    background: var(--card2);
-  }
-  #tbAbsensiSantri td {
-    padding: 0; 
-    border: none; 
-    display: flex; 
     align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
   }
-  /* Empty state fallback */
-  #tbAbsensiSantri td[colspan] { display: block; grid-column: 1 / -1; text-align: center; justify-content: center; }
+  #guruAbsSummary .stat-icon {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 12px !important;
+    margin-bottom: 6px !important;
+    background: transparent !important;
+    border: none !important;
+  }
+  #guruAbsSummary .stat-value {
+    font-size: 22px !important;
+    font-weight: bold !important;
+    margin-bottom: 2px !important;
+  }
+  #guruAbsSummary .stat-label {
+    font-size: 11px !important;
+    color: var(--t2) !important;
+    letter-spacing: 0 !important;
+  }
 
-  /* Map columns to grid areas */
-  #tbAbsensiSantri td:nth-child(1) { grid-column: 1 / -1; font-size: 11px !important; } /* Tanggal */
-  #tbAbsensiSantri td:nth-child(3) { grid-column: 1 / 2; font-size: 14px; font-weight: 600; } /* Nama Santri */
-  #tbAbsensiSantri td:nth-child(2) { grid-column: 2 / 3; justify-content: flex-end; } /* Kelas Badge */
-  #tbAbsensiSantri td:nth-child(4) { grid-column: 1 / 2; } /* Status Kehadiran */
-  #tbAbsensiSantri td:nth-child(5) { grid-column: 1 / -1; font-size: 12px !important; margin-top: 2px; } /* Keterangan */
-  #tbAbsensiSantri td:nth-child(6) { grid-column: 2 / 3; justify-content: flex-end; align-self: end; } /* Action Button */
-
-
-  /* Absensi Guru Card Layout */
+  /* ------------------------------------------------ */
+  /* 5. TABLE TO CARD LAYOUT (ABSENSI GURU MOBILE)  */
+  /* ------------------------------------------------ */
   #page-absensi-guru thead { display: none; }
-  #tbAbsensiGuru { display: block; }
+  #tbAbsensiGuru { display: flex; flex-direction: column; gap: 12px; }
+  
   #tbAbsensiGuru tr {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 6px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    margin-bottom: 10px;
-    padding: 12px;
-    background: var(--card2);
+    display: flex !important;
+    flex-direction: column !important;
+    background: #0f2547 !important; /* Dark card modern */
+    border-radius: 16px !important;
+    padding: 16px !important;
+    margin-bottom: 0 !important;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25) !important;
+    border: 1px solid rgba(255,255,255,0.03) !important;
+    transition: all 0.25s ease !important; /* 8. ANIMASI HALUS */
   }
+  
+  #tbAbsensiGuru tr:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3) !important;
+  }
+
   #tbAbsensiGuru td {
-    padding: 0; 
-    border: none; 
+    padding: 0 !important; 
+    border: none !important; 
     display: flex; 
     align-items: center;
+    font-size: 13px !important;
+    margin-bottom: 6px;
+    background: transparent !important;
   }
   /* Empty state fallback */
-  #tbAbsensiGuru td[colspan] { display: block; grid-column: 1 / -1; text-align: center; justify-content: center; }
+  #tbAbsensiGuru td[colspan] { text-align: center; justify-content: center; padding: 24px !important; color: var(--t2); font-size: 14px !important; }
 
-  /* Map columns to grid areas */
-  #tbAbsensiGuru td:nth-child(1) { grid-column: 1 / -1; font-size: 11px !important; } /* Tanggal */
-  #tbAbsensiGuru td:nth-child(2) { grid-column: 1 / -1; font-size: 14px; font-weight: 600; } /* Nama Guru */
-  #tbAbsensiGuru td:nth-child(3) { grid-column: 1 / 2; font-size: 12px !important; } /* Jam Mengajar */
-  #tbAbsensiGuru td:nth-child(4) { grid-column: 2 / 3; justify-content: flex-end; } /* Kelas */
-  #tbAbsensiGuru td:nth-child(5) { grid-column: 1 / 2; } /* Status */
-  #tbAbsensiGuru td:nth-child(6) { grid-column: 1 / -1; font-size: 12px !important; margin-top: 2px; } /* Keterangan */
-  #tbAbsensiGuru td:nth-child(7) { grid-column: 2 / 3; justify-content: flex-end; align-self: end; } /* Action Button */
+  /* Map columns manually using pseudo-elements */
+  #tbAbsensiGuru td:nth-child(1) { font-size: 12px !important; color: var(--t2); margin-bottom: 8px; }
+  #tbAbsensiGuru td:nth-child(1)::before { content: '📅 '; margin-right: 6px; }
+  
+  #tbAbsensiGuru td:nth-child(2) { font-size: 16px !important; font-weight: 700; color: var(--t1); margin-bottom: 8px; }
+  #tbAbsensiGuru td:nth-child(2)::before { content: '👨‍🏫 '; margin-right: 6px; }
+  
+  #tbAbsensiGuru td:nth-child(3)::before { content: '⏰ Jam: '; margin-right: 6px; color: var(--t3); font-weight: 500; }
+  #tbAbsensiGuru td:nth-child(4)::before { content: '🏫 Kelas: '; margin-right: 6px; color: var(--t3); font-weight: 500; }
+  
+  /* Status Badge Styling */
+  #tbAbsensiGuru td:nth-child(5) { margin-top: 6px; margin-bottom: 12px; }
+  #tbAbsensiGuru td:nth-child(5)::before { content: 'Status: '; margin-right: 10px; color: var(--t3); font-weight: 500; }
+  #tbAbsensiGuru td:nth-child(5) .badge {
+    padding: 6px 14px !important;
+    border-radius: 20px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  
+  /* Keterangan */
+  #tbAbsensiGuru td:nth-child(6) { display: none; } /* Disembunyikan agar lebih clean di mobile */
+  
+  /* Action Buttons Container */
+  #tbAbsensiGuru td:nth-child(7) { 
+    margin-top: 8px;
+    padding-top: 12px !important;
+    border-top: 1px solid rgba(255,255,255,0.06) !important;
+    justify-content: flex-start;
+  }
+  
+  #tbAbsensiGuru td:nth-child(7) > div {
+    display: flex;
+    width: 100%;
+    gap: 8px;
+  }
+  
+  #tbAbsensiGuru td:nth-child(7) .btn {
+    flex: 1;
+    justify-content: center;
+    border-radius: 10px !important;
+    font-size: 13px !important;
+    padding: 10px !important;
+  }
 
-  /* Modal Adjustments specifically for Absensi */
-  .modal { max-height: 90vh !important; }
-  #modalAbsensiSantri .modal,
+  /* Sama Untuk Absensi Santri (Card list) */
+  #page-absensi-santri thead { display: none; }
+  #tbAbsensiSantri { display: flex; flex-direction: column; gap: 12px; }
+  #tbAbsensiSantri tr {
+    display: flex !important; flex-direction: column !important;
+    background: #0f2547 !important; border-radius: 16px !important;
+    padding: 16px !important; margin-bottom: 0 !important;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25) !important;
+    border: 1px solid rgba(255,255,255,0.03) !important;
+    transition: all 0.25s ease !important;
+  }
+  #tbAbsensiSantri tr:hover { transform: translateY(-3px); }
+  #tbAbsensiSantri td { padding: 0 !important; border: none !important; display: flex; align-items: center; margin-bottom: 6px; background: transparent !important; }
+  #tbAbsensiSantri td:nth-child(1) { font-size: 12px !important; color: var(--t2); margin-bottom: 8px; }
+  #tbAbsensiSantri td:nth-child(1)::before { content: '📅 '; margin-right: 6px; }
+  #tbAbsensiSantri td:nth-child(3) { font-size: 16px !important; font-weight: 700; margin-bottom: 8px; }
+  #tbAbsensiSantri td:nth-child(3)::before { content: '👤 '; margin-right: 6px; }
+  #tbAbsensiSantri td:nth-child(2)::before { content: '🏫 Kelas: '; margin-right: 6px; color: var(--t3); }
+  #tbAbsensiSantri td:nth-child(4) { margin-top: 6px; margin-bottom: 12px; }
+  #tbAbsensiSantri td:nth-child(4)::before { content: 'Status: '; margin-right: 10px; color: var(--t3); }
+  #tbAbsensiSantri td:nth-child(4) .badge { padding: 6px 14px !important; border-radius: 20px !important; }
+  #tbAbsensiSantri td:nth-child(5) { display: none; }
+  #tbAbsensiSantri td:nth-child(6) { margin-top: 8px; padding-top: 12px !important; border-top: 1px solid rgba(255,255,255,0.06) !important; }
+  #tbAbsensiSantri td:nth-child(6) .btn { width: 100%; justify-content: center; border-radius: 10px !important; padding: 10px !important; }
+
+  /* 6. STYLE FORM ABSENSI GURU (RADIO BUTTON BESAR) */
   #modalAbsensiGuru .modal {
-    width: 95vw !important;
-    padding: 16px !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 20px 16px !important;
   }
-  #modalAbsensiSantri .inp,
-  #modalAbsensiGuru .inp {
-    min-height: 44px; /* Ensured touch friendly inside modal */
+  #absListGuru {
+    padding-bottom: 80px; /* Space for bottom fixed button */
+    max-height: calc(100vh - 180px) !important;
   }
+  .teacher-abs-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .teacher-abs-card .t-name {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .t-radio-group {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+  }
+  .t-radio-wrap {
+    flex: 1;
+    position: relative;
+  }
+  .t-radio-wrap input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 10;
+  }
+  .t-radio-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 4px;
+    border-radius: 10px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.05);
+    color: var(--t2);
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    text-align: center;
+  }
+  
+  /* Modern styling states for radio */
+  .t-radio-wrap input[value="Hadir"]:checked + .t-radio-box {
+    background: rgba(52,211,153,0.15);
+    color: var(--acc3);
+    border-color: rgba(52,211,153,0.4);
+    box-shadow: 0 0 12px rgba(52,211,153,0.1);
+  }
+  .t-radio-wrap input[value="Izin"]:checked + .t-radio-box {
+    background: rgba(56,189,248,0.15);
+    color: var(--acc);
+    border-color: rgba(56,189,248,0.4);
+    box-shadow: 0 0 12px rgba(56,189,248,0.1);
+  }
+  .t-radio-wrap input[value="Tidak Hadir"]:checked + .t-radio-box {
+    background: rgba(248,113,113,0.15);
+    color: var(--red);
+    border-color: rgba(248,113,113,0.4);
+    box-shadow: 0 0 12px rgba(248,113,113,0.1);
+  }
+
 }
 
 /* ==================================================== */
@@ -3782,9 +3973,42 @@ function loadAbsensiGuru() {
   const guru=DB.get('guru').filter(g=>g.status==='Aktif');
   const existing=DB.get('absensi_guru').filter(a=>a.tanggal===tgl);
   
-  document.getElementById('absListGuru').innerHTML = guru.length===0
-    ? '<div style="text-align:center;padding:20px;color:var(--t2)">Tidak ada data guru aktif</div>'
-    : `<div style="display:flex; justify-content:space-between; padding: 0 8px 8px; font-size:11px; font-weight:700; color:var(--t2); text-transform:uppercase; border-bottom:1px solid var(--border); margin-bottom:8px;">
+  if (guru.length === 0) {
+    document.getElementById('absListGuru').innerHTML = '<div style="text-align:center;padding:20px;color:var(--t2)">Tidak ada data guru aktif</div>';
+    return;
+  }
+
+  // 6. PERBAIKAN FORM ABSENSI (RADIO BUTTON BESAR)
+  const isMobile = window.innerWidth <= 768;
+  
+  if (isMobile) {
+    document.getElementById('absListGuru').innerHTML = guru.map(g => {
+      const ex = existing.find(a => a.guruId === g.id);
+      const status = ex ? ex.status : 'Hadir'; 
+      return `
+        <div class="teacher-abs-card">
+          <div class="t-name">👨‍🏫 ${g.nama}</div>
+          <div class="t-radio-group">
+            <label class="t-radio-wrap">
+              <input type="radio" name="absg_${g.id}" value="Hadir" ${status === 'Hadir' ? 'checked' : ''}>
+              <div class="t-radio-box">✔ Hadir</div>
+            </label>
+            <label class="t-radio-wrap">
+              <input type="radio" name="absg_${g.id}" value="Izin" ${status === 'Izin' ? 'checked' : ''}>
+              <div class="t-radio-box">📄 Izin</div>
+            </label>
+            <label class="t-radio-wrap">
+              <input type="radio" name="absg_${g.id}" value="Tidak Hadir" ${status === 'Tidak Hadir' ? 'checked' : ''}>
+              <div class="t-radio-box">❌ Tidak</div>
+            </label>
+          </div>
+        </div>
+      `;
+    }).join('');
+  } else {
+    // Tampilan Desktop (Checkbox default)
+    document.getElementById('absListGuru').innerHTML = `
+       <div style="display:flex; justify-content:space-between; padding: 0 8px 8px; font-size:11px; font-weight:700; color:var(--t2); text-transform:uppercase; border-bottom:1px solid var(--border); margin-bottom:8px;">
          <span>Nama Guru</span><span style="padding-right:4px">Hadir</span>
        </div>
        <div style="display:flex; flex-direction:column; gap:4px;">
@@ -3797,6 +4021,7 @@ function loadAbsensiGuru() {
            </label>`;
          }).join('')}
        </div>`;
+  }
 }
 
 function saveAbsensiGuru() {
@@ -3813,9 +4038,19 @@ function saveAbsensiGuru() {
      list = list.filter(a => !(a.tanggal === tgl && a.guruId === g.id));
   });
 
+  const isMobile = window.innerWidth <= 768;
+
   guru.forEach(g=>{
-    const cb=document.getElementById(`absg_${g.id}`);
-    const status = cb && cb.checked ? 'Hadir' : 'Tidak Hadir';
+    let status = 'Tidak Hadir';
+    if (isMobile) {
+      // Logic untuk mobile (Radio Buttons)
+      const radio = document.querySelector(`input[name="absg_${g.id}"]:checked`);
+      if (radio) status = radio.value;
+    } else {
+      // Logic untuk desktop (Checkbox)
+      const cb=document.getElementById(`absg_${g.id}`);
+      status = cb && cb.checked ? 'Hadir' : 'Tidak Hadir';
+    }
     list.push({id:gid(),guruId:g.id,guruNama:g.nama,tanggal:tgl,jam:jam,kelas:kelas,status:status,ket:''});
   });
   
