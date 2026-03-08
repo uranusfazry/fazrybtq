@@ -2707,23 +2707,20 @@ MOBILE ABSENSI FIX
 
 <!-- Absensi Guru Modal -->
 <div class="modal-overlay" id="modalAbsensiGuru" style="display:none">
-  <div class="modal">
+  <div class="modal" style="max-width:680px">
     <div class="modal-header">
       <div class="modal-title" id="mAbsGuruTitle">Catat Absensi Guru</div>
       <button class="modal-close" onclick="closeM('modalAbsensiGuru')">✕</button>
     </div>
-    <input type="hidden" id="eAbsGuruId">
-    <div class="form2">
-      <div><label>Guru *</label><select class="inp" id="agGuru"><option value="">-- Pilih Guru --</option></select></div>
-      <div><label>Tanggal *</label><input type="date" class="inp" id="agTgl"></div>
-      <div><label>Jam Mengajar</label><input type="text" class="inp" id="agJam" placeholder="12:30 – 13:30"></div>
+    <div class="form2" style="margin-bottom:14px">
+      <div><label>Tanggal *</label><input type="date" class="inp" id="agTgl" onchange="loadAbsensiGuru()"></div>
+      <div><label>Jam Mengajar</label><input type="text" class="inp" id="agJam" placeholder="Opsional (mis. 12:30)"></div>
       <div><label>Kelas</label><select class="inp" id="agKelas"><option value="">-</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
-      <div><label>Status *</label><select class="inp" id="agStatus"><option>Hadir</option><option>Izin</option><option>Tidak Hadir</option></select></div>
-      <div><label>Keterangan</label><input type="text" class="inp" id="agKet" placeholder="Opsional"></div>
     </div>
+    <div id="absListGuru" style="max-height:360px;overflow-y:auto"></div>
     <div style="display:flex;gap:8px;margin-top:20px;justify-content:flex-end">
       <button class="btn btn-s" onclick="closeM('modalAbsensiGuru')">Batal</button>
-      <button class="btn btn-p" onclick="saveAbsensiGuru()">💾 Simpan</button>
+      <button class="btn btn-p" onclick="saveAbsensiGuru()">💾 Simpan Absensi</button>
     </div>
   </div>
 </div>
@@ -3683,17 +3680,26 @@ function loadAbsensiSantri() {
   const existing=DB.get('absensi_santri').filter(a=>a.tanggal===tgl&&a.kelas===kelas);
   document.getElementById('absListSantri').innerHTML = santri.length===0
     ? '<div style="text-align:center;padding:20px;color:var(--t2)">Tidak ada santri di kelas ini</div>'
-    : `<div style="font-size:10px;font-weight:700;color:var(--t2);margin-bottom:10px;letter-spacing:0.8px;text-transform:uppercase;">DAFTAR SANTRI KELAS ${kelas}</div>`+santri.map(s=>{
-        const ex=existing.find(a=>a.santriId===s.id);
-        return `<div class="abs-row">
-          <span style="flex:1;font-weight:600;font-size:13px">${s.nama}</span>
-          ${['Hadir','Izin','Sakit','Alpha'].map(st=>`
-            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:11px;color:var(--t2);margin-bottom:0;text-transform:none;letter-spacing:0;font-weight:500">
-              <input type="radio" name="abs_${s.id}" value="${st}" ${(ex?.status||'Hadir')===st?'checked':''} style="accent-color:var(--acc)">${st}
-            </label>`).join('')}
-          <input type="text" placeholder="Ket..." id="ket_${s.id}" value="${ex?.ket||''}" class="inp" style="max-width:90px;padding:5px 8px;font-size:11px">
-        </div>`;
-      }).join('');
+    : `<table style="width:100%; border-collapse:collapse;">
+         <thead>
+           <tr>
+             <th style="padding:12px 16px; text-align:left; color:var(--t2); border-bottom:1px solid var(--border);">Nama Santri</th>
+             <th style="padding:12px 16px; text-align:center; color:var(--t2); border-bottom:1px solid var(--border); width:100px;">Hadir</th>
+           </tr>
+         </thead>
+         <tbody>
+           ${santri.map(s=>{
+             const ex=existing.find(a=>a.santriId===s.id);
+             const isChecked = ex ? (ex.status === 'Hadir') : true; 
+             return `<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+               <td style="padding:12px 16px; font-weight:600; font-size:13px;">${s.nama}</td>
+               <td style="padding:12px 16px; text-align:center;">
+                 <input type="checkbox" id="abs_${s.id}" ${isChecked ? 'checked' : ''} style="transform: scale(1.4); accent-color: var(--acc3); cursor: pointer;">
+               </td>
+             </tr>`;
+           }).join('')}
+         </tbody>
+       </table>`;
 }
 
 function saveAbsensiSantri() {
@@ -3705,9 +3711,9 @@ function saveAbsensiSantri() {
   if(santri.length===0){toast('⚠️','Tidak ada santri');return;}
   let abs=DB.get('absensi_santri').filter(a=>!(a.tanggal===tgl&&a.kelas===kelas));
   santri.forEach(s=>{
-    const r=document.querySelector(`input[name="abs_${s.id}"]:checked`);
-    const ket=document.getElementById(`ket_${s.id}`)?.value||'';
-    if(r) abs.push({id:gid(),santriId:s.id,santriNama:s.nama,kelas,tanggal:tgl,status:r.value,ket});
+    const cb=document.getElementById(`abs_${s.id}`);
+    const status = cb && cb.checked ? 'Hadir' : 'Alpha';
+    abs.push({id:gid(),santriId:s.id,santriNama:s.nama,kelas,tanggal:tgl,status:status,ket:''});
   });
   DB.set('absensi_santri',abs);
   closeM('modalAbsensiSantri');
@@ -3757,44 +3763,75 @@ function renderAbsensiGuru() {
 
 function openAbsensiGuruModal(id=null) {
   if(!isAdmin())return;
-  const guru=DB.get('guru').filter(g=>g.status==='Aktif');
-  const sel=document.getElementById('agGuru');
-  sel.innerHTML='<option value="">-- Pilih Guru --</option>'+guru.map(g=>`<option value="${g.id}">${g.nama}</option>`).join('');
   document.getElementById('mAbsGuruTitle').textContent = id?'Edit Absensi Guru':'Catat Absensi Guru';
   if(id){
     const a=DB.get('absensi_guru').find(x=>x.id===id);
-    if(!a)return;
-    document.getElementById('eAbsGuruId').value=a.id;
-    sel.value=a.guruId;
-    document.getElementById('agTgl').value=a.tanggal;
-    document.getElementById('agJam').value=a.jam||'';
-    document.getElementById('agKelas').value=a.kelas||'';
-    document.getElementById('agStatus').value=a.status;
-    document.getElementById('agKet').value=a.ket||'';
+    if(a){
+      document.getElementById('agTgl').value=a.tanggal;
+      document.getElementById('agJam').value=a.jam||'';
+      document.getElementById('agKelas').value=a.kelas||'';
+    }
   } else {
-    document.getElementById('eAbsGuruId').value='';
     document.getElementById('agTgl').value=today();
     document.getElementById('agJam').value='';
     document.getElementById('agKelas').value='';
-    document.getElementById('agStatus').value='Hadir';
-    document.getElementById('agKet').value='';
   }
+  loadAbsensiGuru();
   show('modalAbsensiGuru');
 }
 
 function editAbsGuru(id){ if(!isAdmin())return; openAbsensiGuruModal(id); }
 
+function loadAbsensiGuru() {
+  const tgl=document.getElementById('agTgl').value;
+  if(!tgl){document.getElementById('absListGuru').innerHTML='';return;}
+  const guru=DB.get('guru').filter(g=>g.status==='Aktif');
+  const existing=DB.get('absensi_guru').filter(a=>a.tanggal===tgl);
+  
+  document.getElementById('absListGuru').innerHTML = guru.length===0
+    ? '<div style="text-align:center;padding:20px;color:var(--t2)">Tidak ada data guru aktif</div>'
+    : `<table style="width:100%; border-collapse:collapse;">
+         <thead>
+           <tr>
+             <th style="padding:12px 16px; text-align:left; color:var(--t2); border-bottom:1px solid var(--border);">Nama Guru</th>
+             <th style="padding:12px 16px; text-align:center; color:var(--t2); border-bottom:1px solid var(--border); width:100px;">Hadir</th>
+           </tr>
+         </thead>
+         <tbody>
+           ${guru.map(g=>{
+             const ex=existing.find(a=>a.guruId===g.id);
+             const isChecked = ex ? (ex.status === 'Hadir') : true; 
+             return `<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+               <td style="padding:12px 16px; font-weight:600; font-size:13px;">${g.nama}</td>
+               <td style="padding:12px 16px; text-align:center;">
+                 <input type="checkbox" id="absg_${g.id}" ${isChecked ? 'checked' : ''} style="transform: scale(1.4); accent-color: var(--acc3); cursor: pointer;">
+               </td>
+             </tr>`;
+           }).join('')}
+         </tbody>
+       </table>`;
+}
+
 function saveAbsensiGuru() {
   if(!isAdmin())return;
-  const guruId=document.getElementById('agGuru').value;
   const tgl=document.getElementById('agTgl').value;
-  if(!guruId||!tgl){toast('❌','Guru dan tanggal wajib diisi');return;}
-  const guruNama=(DB.get('guru').find(g=>g.id===guruId)||{}).nama||'';
-  const eid=document.getElementById('eAbsGuruId').value;
-  const obj={guruId,guruNama,tanggal:tgl,jam:document.getElementById('agJam').value,kelas:document.getElementById('agKelas').value,status:document.getElementById('agStatus').value,ket:document.getElementById('agKet').value};
+  const jam=document.getElementById('agJam').value;
+  const kelas=document.getElementById('agKelas').value;
+  if(!tgl){toast('❌','Pilih tanggal');return;}
+  const guru=DB.get('guru').filter(g=>g.status==='Aktif');
+  if(guru.length===0){toast('⚠️','Tidak ada guru aktif');return;}
+  
   let list=DB.get('absensi_guru');
-  if(eid){ const idx=list.findIndex(a=>a.id===eid); if(idx!==-1)list[idx]={...list[idx],...obj}; }
-  else list.push({id:gid(),...obj});
+  guru.forEach(g => {
+     list = list.filter(a => !(a.tanggal === tgl && a.guruId === g.id));
+  });
+
+  guru.forEach(g=>{
+    const cb=document.getElementById(`absg_${g.id}`);
+    const status = cb && cb.checked ? 'Hadir' : 'Tidak Hadir';
+    list.push({id:gid(),guruId:g.id,guruNama:g.nama,tanggal:tgl,jam:jam,kelas:kelas,status:status,ket:''});
+  });
+  
   DB.set('absensi_guru',list);
   closeM('modalAbsensiGuru');
   renderAbsensiGuru();
@@ -4503,3 +4540,5 @@ apiDelete("santri");
 */
 
 </script>
+</body>
+</html>
