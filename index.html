@@ -2806,9 +2806,19 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxxrq1QdhUt3zOU47X6pCS7
 
 // ambil semua data
 async function apiGetAll(){
-  const res = await fetch(API_URL + "?action=getAll");
-  const data = await res.json();
-  return data;
+  const res = await fetch(API_URL + "?action=getAll",{
+    method:"GET",
+    mode:"cors"
+  });
+
+  if(!res.ok){
+    throw new Error("Server tidak merespon");
+  }
+
+  const json = await res.json();
+  
+  // Jika backend memakai struktur {status,data} atau langsung object
+  return json.data || json;
 }
 
 // ambil data berdasarkan key
@@ -2927,23 +2937,24 @@ function checkAuth() {
 async function startApp() {
   document.getElementById('login-wrap').style.display='none';
   document.getElementById('app').style.display='flex';
+
   const r = role();
   document.getElementById('roleLabel').textContent = r==='admin'?'Administrator':'Mode Tamu';
   document.getElementById('userBadge').textContent = r==='admin'?'👑':'👁️';
-  
+
   if (!isDataLoaded) {
-    // Meminta semua data dari API Google Apps Script sekaligus
-    toast('⏳', 'Menghubungkan & Memuat dari Server...', 60000);
-    try {
+    toast('⏳','Menghubungkan ke server...',60000);
+    try{
       const data = await apiGetAll();
       serverDB = data || {};
       isDataLoaded = true;
       init();
-      toast('✅', 'Sistem berhasil disinkronisasi!');
-    } catch (err) {
-      toast('❌', 'Gagal memuat data dari Spreadsheet');
+      toast('✅','Sistem berhasil tersambung!');
+    }catch(err){
+      console.error(err);
+      toast('❌','Gagal memuat data dari Spreadsheet');
     }
-  } else {
+  }else{
     init();
   }
 }
@@ -2966,6 +2977,7 @@ function updateBadges() {
 }
 
 function init() {
+  populateDropdowns();
   if(!DB.obj('settings').tahunAjaran) DB.sobj('settings',{tahunAjaran:'2024/2025',semester:'Ganjil'});
   if(DB.get('santri').length===0) loadSample();
   updateBadges();
@@ -3123,7 +3135,7 @@ function renderAll() {
   renderJadwal();
   renderAbsensiSantri();
   renderAbsensiGuru();
-  renderProgressCards();
+  renderProgress();
   renderHafalan();
   renderAlumni();
   renderRiwayat();
