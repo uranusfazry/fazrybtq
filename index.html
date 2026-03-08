@@ -1929,6 +1929,49 @@ RADAR CHART KOMPETENSI SANTRI
   }
 }
 
+/* ====================================================
+   PERBAIKAN MOBILE ABSENSI GURU (STABIL & PROFESIONAL)
+==================================================== */
+.teacher-abs-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 10px;
+}
+
+.t-name {
+  font-weight: 700;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.t-radio-group {
+  display: flex;
+  gap: 8px;
+}
+
+.t-radio-wrap input {
+  display: none;
+}
+
+.t-radio-box {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  text-align: center;
+  font-size: 13px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+}
+
+.t-radio-wrap input:checked + .t-radio-box {
+  background: var(--acc);
+  color: white;
+  border-color: var(--acc);
+}
+
 /* ====================================
 MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
 ==================================== */
@@ -4789,15 +4832,20 @@ function checkMobile() {
 }
 window.addEventListener('resize',checkMobile);
 
-document.querySelectorAll('.modal-overlay').forEach(ov=>{
-  ov.addEventListener('click',e=>{ if(e.target===ov) ov.style.display='none'; });
+document.querySelectorAll('.modal-overlay').forEach(function(ov){
+  ov.addEventListener('click',function(e){
+    if(e.target===ov){
+      ov.style.display='none';
+    }
+  });
 });
 
 // ====================================================
 // START
 // ====================================================
-checkMobile();
-checkAuth();
+// Eksekusi langsung dimatikan, dipindah ke DOMContentLoaded di bawah
+// checkMobile();
+// checkAuth();
 
 // FIX MOBILE RESPONSIVE
 function fixMobileLayout(){
@@ -4871,6 +4919,22 @@ apiSave("santri",{
 // Hapus data
 apiDelete("santri");
 */
+
+// ====================================================
+// FIX SCRIPT EXECUTION
+// ====================================================
+document.addEventListener("DOMContentLoaded", function(){
+  try{
+    checkMobile();
+    checkAuth();
+    fixMobileLayout();
+    improveMobileCalendar();
+    fixPageHeight();
+    fixSidebarScroll();
+  }catch(err){
+    console.error("Startup error:", err);
+  }
+});
 
 </script>
 </body>
