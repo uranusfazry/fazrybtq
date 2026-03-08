@@ -2798,7 +2798,7 @@ const JUZ30 = ['An-Naba',"An-Nazi'at",'Abasa','At-Takwir','Al-Infitar','Al-Mutaf
 // ======================================================
 // BACKEND API CONFIG
 // ======================================================
-const API_URL = "https://script.google.com/macros/s/AKfycbxxrq1QdhUt3zOU47X6pCS7-KXM1vi74Ocjr40PN4Mu_MpLx5XkQwR6PjpxXJkSUfzQeg/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyLpLeEChHjO54fGSpsQZfwGHEvVpdgQgCOtKhPO9m8yF24fpwnPHJSa_WlxZ0Y8an9LQ/exec";
 
 // ======================================================
 // API HELPER FUNCTIONS
@@ -2806,19 +2806,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxxrq1QdhUt3zOU47X6pCS7
 
 // ambil semua data
 async function apiGetAll(){
-  const res = await fetch(API_URL + "?action=getAll",{
-    method:"GET",
-    mode:"cors"
-  });
-
-  if(!res.ok){
-    throw new Error("Server tidak merespon");
-  }
-
-  const json = await res.json();
-  
-  // Jika backend memakai struktur {status,data} atau langsung object
-  return json.data || json;
+  const res = await fetch(API_URL + "?action=getAll");
+  const data = await res.json();
+  return data;
 }
 
 // ambil data berdasarkan key
@@ -2937,24 +2927,23 @@ function checkAuth() {
 async function startApp() {
   document.getElementById('login-wrap').style.display='none';
   document.getElementById('app').style.display='flex';
-
   const r = role();
   document.getElementById('roleLabel').textContent = r==='admin'?'Administrator':'Mode Tamu';
   document.getElementById('userBadge').textContent = r==='admin'?'👑':'👁️';
-
+  
   if (!isDataLoaded) {
-    toast('⏳','Menghubungkan ke server...',60000);
-    try{
+    // Meminta semua data dari API Google Apps Script sekaligus
+    toast('⏳', 'Menghubungkan & Memuat dari Server...', 60000);
+    try {
       const data = await apiGetAll();
       serverDB = data || {};
       isDataLoaded = true;
       init();
-      toast('✅','Sistem berhasil tersambung!');
-    }catch(err){
-      console.error(err);
-      toast('❌','Gagal memuat data dari Spreadsheet');
+      toast('✅', 'Sistem berhasil disinkronisasi!');
+    } catch (err) {
+      toast('❌', 'Gagal memuat data dari Spreadsheet');
     }
-  }else{
+  } else {
     init();
   }
 }
@@ -2977,7 +2966,6 @@ function updateBadges() {
 }
 
 function init() {
-  populateDropdowns();
   if(!DB.obj('settings').tahunAjaran) DB.sobj('settings',{tahunAjaran:'2024/2025',semester:'Ganjil'});
   if(DB.get('santri').length===0) loadSample();
   updateBadges();
@@ -3135,7 +3123,7 @@ function renderAll() {
   renderJadwal();
   renderAbsensiSantri();
   renderAbsensiGuru();
-  renderProgress();
+  renderProgressCards();
   renderHafalan();
   renderAlumni();
   renderRiwayat();
