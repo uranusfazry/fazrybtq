@@ -2333,48 +2333,54 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
 }
 
 /* ======================================
-FIX LIGHT MODE MOBILE
+SAAS LIGHT MODE MOBILE FIX (NEW)
 ====================================== */
 @media (max-width: 768px) {
-  /* Perbaiki background halaman pada mobile light mode */
-  html[data-theme="light"] body,
-  html[data-theme="light"] main,
-  html[data-theme="light"] .page,
+  /* Perbaiki background halaman agar sama dengan desktop */
+  html[data-theme="light"] body {
+    background: #f1f5f9 !important;
+  }
+  html[data-theme="light"] main {
+    background: #f1f5f9 !important;
+  }
+  html[data-theme="light"] .page {
+    background: #f1f5f9 !important;
+  }
   html[data-theme="light"] .content {
     background: #f1f5f9 !important;
-    color: #0f172a !important; /* Penyesuaian agar teks tetap terbaca */
   }
-
-  /* Perbaiki card statistik agar tidak terlalu putih dan lebih modern */
-  html[data-theme="light"] .card,
-  html[data-theme="light"] .stat,
-  html[data-theme="light"] .filter-bar {
+  
+  /* Perbaiki card statistik agar sama dengan desktop */
+  html[data-theme="light"] .stat {
     background: #ffffff !important;
     border: 1px solid #e2e8f0 !important;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06) !important;
-    border-radius: 16px !important;
+    border-radius: 18px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06) !important;
   }
-
-  /* Perbaiki input filter agar terlihat clean */
+  
+  /* Perbaiki filter box agar putih seperti desktop */
   html[data-theme="light"] input,
   html[data-theme="light"] select {
     background: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
+    border: 1px solid #e2e8f0 !important;
     color: #1e293b !important;
     border-radius: 12px !important;
-    padding: 10px !important;
   }
-
-  /* Perbaiki tabel agar lebih soft */
+  
+  /* Perbaiki placeholder search */
+  html[data-theme="light"] input::placeholder {
+    color: #64748b !important;
+  }
+  
+  /* Perbaiki tabel agar sama dengan desktop */
   html[data-theme="light"] table {
     background: #ffffff !important;
+    border-radius: 16px !important;
   }
   html[data-theme="light"] thead,
   html[data-theme="light"] thead tr,
   html[data-theme="light"] thead th {
     background: #f8fafc !important;
-    border-bottom: 1px solid #e2e8f0 !important;
-    color: #475569 !important;
   }
   html[data-theme="light"] tbody tr {
     background: #ffffff !important;
@@ -2382,74 +2388,13 @@ FIX LIGHT MODE MOBILE
   html[data-theme="light"] tbody td {
     border-bottom: 1px solid #e2e8f0 !important;
   }
-
-  /* Perbaiki proporsi statistik card agar lebih rapi di mobile (berlaku universal) */
-  .stat {
-    padding: 14px !important;
-  }
-  .stat-value {
-    font-size: 20px !important;
-    font-weight: 700 !important;
-  }
-  .stat-label {
-    font-size: 12px !important;
-    opacity: 0.7 !important;
-  }
-}
-
-/* ======================================
-SAAS LIGHT MODE MOBILE FIX (NEW)
-====================================== */
-@media (max-width: 768px) {
-  /* Perbaiki background halaman */
-  html[data-theme="light"] body {
-    background: #f8fafc !important;
-  }
-  html[data-theme="light"] main {
-    background: #f8fafc !important;
-  }
-  html[data-theme="light"] .page {
-    background: #f8fafc !important;
-  }
   
-  /* Perbaiki input filter agar sesuai light theme */
-  html[data-theme="light"] input,
-  html[data-theme="light"] select {
-    background: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
-    color: #1e293b !important;
-    border-radius: 12px !important;
-  }
-  
-  /* Perbaiki search box placeholder */
-  html[data-theme="light"] input::placeholder {
-    color: #64748b !important;
-  }
-  
-  /* Perbaiki card statistik agar lebih soft */
-  html[data-theme="light"] .stat {
-    background: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05) !important;
-    border-radius: 16px !important;
-  }
-  
-  /* Perbaiki header tabel */
-  html[data-theme="light"] table {
-    background: #ffffff !important;
-  }
-  html[data-theme="light"] thead,
-  html[data-theme="light"] thead tr,
-  html[data-theme="light"] thead th {
-    background: #f1f5f9 !important;
-  }
-  
-  /* Perbaiki spacing mobile agar terlihat seperti aplikasi */
+  /* Perbaiki spacing agar mobile terlihat seperti aplikasi */
   .content {
-    padding: 16px !important;
+    padding: 18px !important;
   }
   .stat {
-    padding: 14px !important;
+    padding: 18px !important;
   }
 }
 
