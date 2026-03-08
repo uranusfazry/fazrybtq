@@ -1902,11 +1902,11 @@ MOBILE ABSENSI FIX
   #tbAbsensiSantri tr {
     display: grid;
     grid-template-columns: 1fr auto;
-    gap: 8px;
+    gap: 6px;
     border: 1px solid var(--border);
-    border-radius: 12px;
-    margin-bottom: 12px;
-    padding: 14px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 12px;
     background: var(--card2);
   }
   #tbAbsensiSantri td {
@@ -1920,10 +1920,10 @@ MOBILE ABSENSI FIX
 
   /* Map columns to grid areas */
   #tbAbsensiSantri td:nth-child(1) { grid-column: 1 / -1; font-size: 11px !important; } /* Tanggal */
-  #tbAbsensiSantri td:nth-child(3) { grid-column: 1 / 2; font-size: 15px; } /* Nama Santri */
+  #tbAbsensiSantri td:nth-child(3) { grid-column: 1 / 2; font-size: 14px; font-weight: 600; } /* Nama Santri */
   #tbAbsensiSantri td:nth-child(2) { grid-column: 2 / 3; justify-content: flex-end; } /* Kelas Badge */
   #tbAbsensiSantri td:nth-child(4) { grid-column: 1 / 2; } /* Status Kehadiran */
-  #tbAbsensiSantri td:nth-child(5) { grid-column: 1 / -1; font-size: 12px !important; margin-top: 4px; } /* Keterangan */
+  #tbAbsensiSantri td:nth-child(5) { grid-column: 1 / -1; font-size: 12px !important; margin-top: 2px; } /* Keterangan */
   #tbAbsensiSantri td:nth-child(6) { grid-column: 2 / 3; justify-content: flex-end; align-self: end; } /* Action Button */
 
 
@@ -1933,11 +1933,11 @@ MOBILE ABSENSI FIX
   #tbAbsensiGuru tr {
     display: grid;
     grid-template-columns: 1fr auto;
-    gap: 8px;
+    gap: 6px;
     border: 1px solid var(--border);
-    border-radius: 12px;
-    margin-bottom: 12px;
-    padding: 14px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 12px;
     background: var(--card2);
   }
   #tbAbsensiGuru td {
@@ -1951,11 +1951,11 @@ MOBILE ABSENSI FIX
 
   /* Map columns to grid areas */
   #tbAbsensiGuru td:nth-child(1) { grid-column: 1 / -1; font-size: 11px !important; } /* Tanggal */
-  #tbAbsensiGuru td:nth-child(2) { grid-column: 1 / -1; font-size: 15px; } /* Nama Guru */
+  #tbAbsensiGuru td:nth-child(2) { grid-column: 1 / -1; font-size: 14px; font-weight: 600; } /* Nama Guru */
   #tbAbsensiGuru td:nth-child(3) { grid-column: 1 / 2; font-size: 12px !important; } /* Jam Mengajar */
   #tbAbsensiGuru td:nth-child(4) { grid-column: 2 / 3; justify-content: flex-end; } /* Kelas */
   #tbAbsensiGuru td:nth-child(5) { grid-column: 1 / 2; } /* Status */
-  #tbAbsensiGuru td:nth-child(6) { grid-column: 1 / -1; font-size: 12px !important; margin-top: 4px; } /* Keterangan */
+  #tbAbsensiGuru td:nth-child(6) { grid-column: 1 / -1; font-size: 12px !important; margin-top: 2px; } /* Keterangan */
   #tbAbsensiGuru td:nth-child(7) { grid-column: 2 / 3; justify-content: flex-end; align-self: end; } /* Action Button */
 
   /* Modal Adjustments specifically for Absensi */
@@ -3678,28 +3678,22 @@ function loadAbsensiSantri() {
   if(!kelas){document.getElementById('absListSantri').innerHTML='';return;}
   const santri=DB.get('santri').filter(s=>s.kelas===kelas&&s.status==='Aktif');
   const existing=DB.get('absensi_santri').filter(a=>a.tanggal===tgl&&a.kelas===kelas);
+  
   document.getElementById('absListSantri').innerHTML = santri.length===0
     ? '<div style="text-align:center;padding:20px;color:var(--t2)">Tidak ada santri di kelas ini</div>'
-    : `<table style="width:100%; border-collapse:collapse;">
-         <thead>
-           <tr>
-             <th style="padding:12px 16px; text-align:left; color:var(--t2); border-bottom:1px solid var(--border);">Nama Santri</th>
-             <th style="padding:12px 16px; text-align:center; color:var(--t2); border-bottom:1px solid var(--border); width:100px;">Hadir</th>
-           </tr>
-         </thead>
-         <tbody>
-           ${santri.map(s=>{
-             const ex=existing.find(a=>a.santriId===s.id);
-             const isChecked = ex ? (ex.status === 'Hadir') : true; 
-             return `<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
-               <td style="padding:12px 16px; font-weight:600; font-size:13px;">${s.nama}</td>
-               <td style="padding:12px 16px; text-align:center;">
-                 <input type="checkbox" id="abs_${s.id}" ${isChecked ? 'checked' : ''} style="transform: scale(1.4); accent-color: var(--acc3); cursor: pointer;">
-               </td>
-             </tr>`;
-           }).join('')}
-         </tbody>
-       </table>`;
+    : `<div style="display:flex; justify-content:space-between; padding: 0 8px 8px; font-size:11px; font-weight:700; color:var(--t2); text-transform:uppercase; border-bottom:1px solid var(--border); margin-bottom:8px;">
+         <span>Nama Santri</span><span style="padding-right:4px">Hadir</span>
+       </div>
+       <div style="display:flex; flex-direction:column; gap:4px;">
+         ${santri.map(s=>{
+           const ex=existing.find(a=>a.santriId===s.id);
+           const isChecked = ex ? (ex.status === 'Hadir') : true; 
+           return `<label class="abs-row" style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; padding:12px 10px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:8px;">
+             <span style="font-weight:600; font-size:14px;">${s.nama}</span>
+             <input type="checkbox" id="abs_${s.id}" ${isChecked ? 'checked' : ''} style="transform: scale(1.5); accent-color: var(--acc3); cursor: pointer; margin-right:8px;">
+           </label>`;
+         }).join('')}
+       </div>`;
 }
 
 function saveAbsensiSantri() {
@@ -3790,26 +3784,19 @@ function loadAbsensiGuru() {
   
   document.getElementById('absListGuru').innerHTML = guru.length===0
     ? '<div style="text-align:center;padding:20px;color:var(--t2)">Tidak ada data guru aktif</div>'
-    : `<table style="width:100%; border-collapse:collapse;">
-         <thead>
-           <tr>
-             <th style="padding:12px 16px; text-align:left; color:var(--t2); border-bottom:1px solid var(--border);">Nama Guru</th>
-             <th style="padding:12px 16px; text-align:center; color:var(--t2); border-bottom:1px solid var(--border); width:100px;">Hadir</th>
-           </tr>
-         </thead>
-         <tbody>
-           ${guru.map(g=>{
-             const ex=existing.find(a=>a.guruId===g.id);
-             const isChecked = ex ? (ex.status === 'Hadir') : true; 
-             return `<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
-               <td style="padding:12px 16px; font-weight:600; font-size:13px;">${g.nama}</td>
-               <td style="padding:12px 16px; text-align:center;">
-                 <input type="checkbox" id="absg_${g.id}" ${isChecked ? 'checked' : ''} style="transform: scale(1.4); accent-color: var(--acc3); cursor: pointer;">
-               </td>
-             </tr>`;
-           }).join('')}
-         </tbody>
-       </table>`;
+    : `<div style="display:flex; justify-content:space-between; padding: 0 8px 8px; font-size:11px; font-weight:700; color:var(--t2); text-transform:uppercase; border-bottom:1px solid var(--border); margin-bottom:8px;">
+         <span>Nama Guru</span><span style="padding-right:4px">Hadir</span>
+       </div>
+       <div style="display:flex; flex-direction:column; gap:4px;">
+         ${guru.map(g=>{
+           const ex=existing.find(a=>a.guruId===g.id);
+           const isChecked = ex ? (ex.status === 'Hadir') : true; 
+           return `<label class="abs-row" style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; padding:12px 10px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:8px;">
+             <span style="font-weight:600; font-size:14px;">${g.nama}</span>
+             <input type="checkbox" id="absg_${g.id}" ${isChecked ? 'checked' : ''} style="transform: scale(1.5); accent-color: var(--acc3); cursor: pointer; margin-right:8px;">
+           </label>`;
+         }).join('')}
+       </div>`;
 }
 
 function saveAbsensiGuru() {
