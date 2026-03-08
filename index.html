@@ -2875,7 +2875,6 @@ async function apiDelete(key){
 // ====================================================
 let serverDB = {}; // Variabel penampung data dari Spreadsheet
 let isDataLoaded = false; // Flag status load
-let sampleLoaded = false; // mencegah sample data reload terus
 
 // Optimistic UI: Update memory secara langsung, lalu sinkronisasi ke server di background
 const DB = {
@@ -3015,87 +3014,11 @@ function init() {
   if(!DB.obj('settings').tahunAjaran){
     DB.sobj('settings',{tahunAjaran:'2024/2025',semester:'Ganjil'});
   }
-
-  // hanya load sample jika benar-benar kosong
-  if(isDataLoaded && DB.get('santri').length === 0 && !sampleLoaded){
-      console.log("Load sample data pertama kali");
-      loadSample();
-      sampleLoaded = true;
-  }
   
   updateBadges();
   renderDashboard();
   renderSantri();
   renderPengaturan();
-}
-
-function loadSample() {
-
-  if(DB.get('santri').length > 0) return;
-
-  DB.set('santri',[
-    {id:'ID001',nama:'Ahmad Fauzi',kelas:'3',tahunAjaran:'2024/2025',semester:'Ganjil',level:'Iqro 3',hafalan:'Juz 30',status:'Aktif',hp:'081234000001',masuk:'2024-07-15'},
-    {id:'ID002',nama:'Siti Rahmah',kelas:'4',tahunAjaran:'2024/2025',semester:'Ganjil',level:'Iqro 5',hafalan:'Juz 30',status:'Aktif',hp:'081234000002',masuk:'2024-07-15'},
-    {id:'ID003',nama:'Muhammad Dani',kelas:'3',tahunAjaran:'2024/2025',semester:'Ganjil',level:'Iqro 1',hafalan:'Juz 30',status:'Aktif',hp:'081234000003',masuk:'2024-07-15'},
-    {id:'ID004',nama:'Fatimah Azzahra',kelas:'5',tahunAjaran:'2024/2025',semester:'Ganjil',level:"Qur'an",hafalan:'Juz 30',status:'Aktif',hp:'081234000004',masuk:'2024-07-15'},
-    {id:'ID005',nama:'Rizki Maulana',kelas:'2',tahunAjaran:'2024/2025',semester:'Ganjil',level:'Iqro 2',hafalan:'Juz 30',status:'Aktif',hp:'081234000005',masuk:'2024-07-15'},
-    {id:'ID006',nama:'Nur Hidayah',kelas:'1',tahunAjaran:'2024/2025',semester:'Ganjil',level:'Iqro 1',hafalan:'Juz 30',status:'Aktif',hp:'081234000006',masuk:'2024-07-15'},
-    {id:'ID007',nama:'Bagas Saputra',kelas:'4',tahunAjaran:'2024/2025',semester:'Ganjil',level:'Iqro 6',hafalan:'Juz 30',status:'Aktif',hp:'081234000007',masuk:'2024-07-15'},
-    {id:'ID008',nama:'Laila Nur',kelas:'2',tahunAjaran:'2024/2025',semester:'Ganjil',level:'Iqro 4',hafalan:'Juz 30',status:'Aktif',hp:'081234000008',masuk:'2024-07-15'},
-    {id:'ID009',nama:'Umar Faruq',kelas:'5',tahunAjaran:'2024/2025',semester:'Ganjil',level:"Qur'an",hafalan:'Juz 30',status:'Aktif',hp:'081234000009',masuk:'2024-07-15'},
-    {id:'ID010',nama:'Khadijah Putri',kelas:'5',tahunAjaran:'2024/2025',semester:'Ganjil',level:'Iqro 6',hafalan:'Juz 30',status:'Aktif',hp:'081234000010',masuk:'2024-07-15'},
-  ]);
-  DB.set('alumni',[
-    {id:'AL001',nama:'Rafi Akbar',tahunLulus:'2023/2024',levelTerakhir:"Qur'an",hafalanTerakhir:'Juz 30',kelas:'5'},
-    {id:'AL002',nama:'Dewi Safitri',tahunLulus:'2023/2024',levelTerakhir:'Iqro 6',hafalanTerakhir:'Juz 30',kelas:'5'},
-    {id:'AL003',nama:'Hasan Ali',tahunLulus:'2022/2023',levelTerakhir:"Qur'an",hafalanTerakhir:'Juz 30',kelas:'5'},
-  ]);
-  DB.set('hafalan',[
-    {id:gid(),santriId:'ID001',santriNama:'Ahmad Fauzi',surat:'An-Nas',ayat:'1-6',status:'Sudah Hafal',tanggal:'2024-09-01'},
-    {id:gid(),santriId:'ID002',santriNama:'Siti Rahmah',surat:'An-Naba',ayat:'1-10',status:'Sedang Menghafal',tanggal:'2024-10-01'},
-    {id:gid(),santriId:'ID004',santriNama:'Fatimah Azzahra',surat:'Al-Mulk',ayat:'1-30',status:'Sudah Hafal',tanggal:'2024-08-20'},
-  ]);
-  DB.set('riwayat',[
-    {id:gid(),santriId:'ID001',santriNama:'Ahmad Fauzi',tanggal:'2024-09-01',tipe:'level',dari:'Iqro 2',ke:'Iqro 3',catatan:'Naik level'},
-    {id:gid(),santriId:'ID002',santriNama:'Siti Rahmah',tanggal:'2024-09-15',tipe:'level',dari:'Iqro 4',ke:'Iqro 5',catatan:''},
-  ]);
-  DB.set('guru',[
-    {id:'GR001',nama:'Ustadz Ahmad Syarif',hp:'082100000001',kelas:'Kelas 4 & 5',jadwal:'Senin-Kamis 12:30',status:'Aktif',email:'ahmad@btq.sch'},
-    {id:'GR002',nama:'Ustadzah Sari Dewi',hp:'082100000002',kelas:'Kelas 1, 2 & 3',jadwal:'Jumat 10:00',status:'Aktif',email:'sari@btq.sch'},
-  ]);
-  DB.set('jadwal',[
-    {id:'JD001',kelas:'5',hari:'Senin',mulai:'12:30',selesai:'13:30',guru:'GR001',guruNama:'Ustadz Ahmad Syarif',lokasi:'Kelas 5A'},
-    {id:'JD002',kelas:'5',hari:'Selasa',mulai:'12:30',selesai:'13:30',guru:'GR001',guruNama:'Ustadz Ahmad Syarif',lokasi:'Kelas 5A'},
-    {id:'JD003',kelas:'5',hari:'Rabu',mulai:'12:30',selesai:'13:30',guru:'GR001',guruNama:'Ustadz Ahmad Syarif',lokasi:'Kelas 5A'},
-    {id:'JD004',kelas:'5',hari:'Kamis',mulai:'12:30',selesai:'13:30',guru:'GR001',guruNama:'Ustadz Ahmad Syarif',lokasi:'Kelas 5A'},
-    {id:'JD005',kelas:'4',hari:'Jumat',mulai:'10:00',selesai:'11:00',guru:'GR001',guruNama:'Ustadz Ahmad Syarif',lokasi:'Kelas 4B'},
-    {id:'JD006',kelas:'1',hari:'Jumat',mulai:'10:00',selesai:'11:00',guru:'GR002',guruNama:'Ustadzah Sari Dewi',lokasi:'Mushola'},
-    {id:'JD007',kelas:'2',hari:'Senin',mulai:'10:00',selesai:'11:00',guru:'GR002',guruNama:'Ustadzah Sari Dewi',lokasi:'Mushola'},
-    {id:'JD008',kelas:'3',hari:'Selasa',mulai:'10:00',selesai:'11:00',guru:'GR002',guruNama:'Ustadzah Sari Dewi',lokasi:'Mushola'},
-  ]);
-  const sampleAbs = [];
-  const allSantri = ['ID001','ID002','ID003','ID004','ID005','ID006','ID007','ID008','ID009','ID010'];
-  const statuses = ['Hadir','Hadir','Hadir','Izin','Sakit'];
-  for(let i=0;i<5;i++){
-    const d = new Date(); d.setDate(d.getDate()-i);
-    const tgl = d.toISOString().split('T')[0];
-    allSantri.forEach(sid=>{
-      const s = DB.get('santri').find(x=>x.id===sid);
-      if(s) sampleAbs.push({id:gid(),santriId:sid,santriNama:s.nama,kelas:s.kelas,tanggal:tgl,status:statuses[Math.floor(Math.random()*statuses.length)],ket:''});
-    });
-  }
-  DB.set('absensi_santri',sampleAbs);
-  DB.set('absensi_guru',[
-    {id:gid(),guruId:'GR001',guruNama:'Ustadz Ahmad Syarif',tanggal:today(),jam:'12:30-13:30',kelas:'5',status:'Hadir',ket:''},
-    {id:gid(),guruId:'GR002',guruNama:'Ustadzah Sari Dewi',tanggal:today(),jam:'10:00-11:00',kelas:'1',status:'Hadir',ket:''},
-  ]);
-  const juz30data = {};
-  ['ID004','ID009','ID010'].forEach(sid=>{
-    const progress = {};
-    JUZ30.forEach((s,i)=>{ progress[s] = i<20?'Sudah Hafal':i<30?'Sedang Menghafal':'Belum Hafal'; });
-    juz30data[sid] = progress;
-  });
-  DB.sobj('juz30',juz30data);
 }
 
 function showPage(page){
@@ -4540,5 +4463,3 @@ apiDelete("santri");
 */
 
 </script>
-</body>
-</html>
