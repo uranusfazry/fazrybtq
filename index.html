@@ -2312,6 +2312,9 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
   #page-santri .filter-bar .inp,
   #page-santri .filter-bar select {
     width: 100% !important;
+  }
+}
+
 /* Mobile Responsive Fix */
 @media(max-width: 768px) {
   body, main, .page, .content {
@@ -2333,32 +2336,86 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
 }
 
 /* ======================================
+FIX LIGHT MODE MOBILE
+====================================== */
+@media (max-width: 768px) {
+  /* Perbaiki background halaman pada mobile light mode */
+  html[data-theme="light"] body,
+  html[data-theme="light"] main,
+  html[data-theme="light"] .page,
+  html[data-theme="light"] .content {
+    background: #f1f5f9 !important;
+    color: #0f172a !important; /* Penyesuaian agar teks tetap terbaca */
+  }
+
+  /* Perbaiki card statistik agar tidak terlalu putih dan lebih modern */
+  html[data-theme="light"] .card,
+  html[data-theme="light"] .stat,
+  html[data-theme="light"] .filter-bar {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06) !important;
+    border-radius: 16px !important;
+  }
+
+  /* Perbaiki input filter agar terlihat clean */
+  html[data-theme="light"] input,
+  html[data-theme="light"] select {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #1e293b !important;
+    border-radius: 12px !important;
+    padding: 10px !important;
+  }
+
+  /* Perbaiki tabel agar lebih soft */
+  html[data-theme="light"] table {
+    background: #ffffff !important;
+  }
+  html[data-theme="light"] thead,
+  html[data-theme="light"] thead tr,
+  html[data-theme="light"] thead th {
+    background: #f8fafc !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    color: #475569 !important;
+  }
+  html[data-theme="light"] tbody tr {
+    background: #ffffff !important;
+  }
+  html[data-theme="light"] tbody td {
+    border-bottom: 1px solid #e2e8f0 !important;
+  }
+
+  /* Perbaiki proporsi statistik card agar lebih rapi di mobile (berlaku universal) */
+  .stat {
+    padding: 14px !important;
+  }
+  .stat-value {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+  }
+  .stat-label {
+    font-size: 12px !important;
+    opacity: 0.7 !important;
+  }
+}
+
+/* ======================================
 SAAS LIGHT MODE MOBILE FIX (NEW)
 ====================================== */
 @media (max-width: 768px) {
-  /* Perbaiki background halaman agar sama dengan desktop */
+  /* Perbaiki background halaman */
   html[data-theme="light"] body {
-    background: #f1f5f9 !important;
+    background: #f8fafc !important;
   }
   html[data-theme="light"] main {
-    background: #f1f5f9 !important;
+    background: #f8fafc !important;
   }
   html[data-theme="light"] .page {
-    background: #f1f5f9 !important;
-  }
-  html[data-theme="light"] .content {
-    background: #f1f5f9 !important;
+    background: #f8fafc !important;
   }
   
-  /* Perbaiki card statistik agar sama dengan desktop */
-  html[data-theme="light"] .stat {
-    background: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 18px !important;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06) !important;
-  }
-  
-  /* Perbaiki filter box agar putih seperti desktop */
+  /* Perbaiki input filter agar sesuai light theme */
   html[data-theme="light"] input,
   html[data-theme="light"] select {
     background: #ffffff !important;
@@ -2367,34 +2424,90 @@ SAAS LIGHT MODE MOBILE FIX (NEW)
     border-radius: 12px !important;
   }
   
-  /* Perbaiki placeholder search */
+  /* Perbaiki search box placeholder */
   html[data-theme="light"] input::placeholder {
     color: #64748b !important;
   }
   
-  /* Perbaiki tabel agar sama dengan desktop */
+  /* Perbaiki card statistik agar lebih soft */
+  html[data-theme="light"] .stat {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05) !important;
+    border-radius: 16px !important;
+  }
+  
+  /* Perbaiki header tabel */
   html[data-theme="light"] table {
     background: #ffffff !important;
-    border-radius: 16px !important;
   }
   html[data-theme="light"] thead,
   html[data-theme="light"] thead tr,
   html[data-theme="light"] thead th {
-    background: #f8fafc !important;
-  }
-  html[data-theme="light"] tbody tr {
-    background: #ffffff !important;
-  }
-  html[data-theme="light"] tbody td {
-    border-bottom: 1px solid #e2e8f0 !important;
+    background: #f1f5f9 !important;
   }
   
-  /* Perbaiki spacing agar mobile terlihat seperti aplikasi */
+  /* Perbaiki spacing mobile agar terlihat seperti aplikasi */
   .content {
-    padding: 18px !important;
+    padding: 16px !important;
   }
   .stat {
-    padding: 18px !important;
+    padding: 14px !important;
+  }
+}
+
+/* ======================================
+FINAL OVERRIDE: MOBILE LIGHT MODE FIX 
+====================================== */
+@media (max-width:768px){
+  /* Background halaman */
+  html[data-theme="light"] body{
+    background:#f8fafc !important;
+  }
+  /* Container utama */
+  html[data-theme="light"] .card,
+  html[data-theme="light"] .content,
+  html[data-theme="light"] .page{
+    background:#ffffff !important;
+    border:1px solid #e2e8f0 !important;
+  }
+  /* Filter bar */
+  html[data-theme="light"] .filter-bar{
+    background:#ffffff !important;
+    border:1px solid #e2e8f0 !important;
+  }
+  /* Input dan select */
+  html[data-theme="light"] input,
+  html[data-theme="light"] select,
+  html[data-theme="light"] .inp{
+    background:#ffffff !important;
+    border:1px solid #e2e8f0 !important;
+    color:#1e293b !important;
+  }
+  /* Statistik card */
+  html[data-theme="light"] .stat{
+    background:#ffffff !important;
+    border:1px solid #e2e8f0 !important;
+    box-shadow:0 6px 20px rgba(0,0,0,0.05) !important;
+  }
+  /* Table */
+  html[data-theme="light"] table{
+    background:#ffffff !important;
+  }
+  html[data-theme="light"] thead th{
+    background:#f1f5f9 !important;
+    color:#64748b !important;
+  }
+  html[data-theme="light"] tbody tr{
+    background:#ffffff !important;
+  }
+  html[data-theme="light"] tbody td{
+    border-bottom:1px solid #e2e8f0 !important;
+  }
+  /* Absensi mobile row */
+  html[data-theme="light"] .abs-row{
+    background:#ffffff !important;
+    border:1px solid #e2e8f0 !important;
   }
 }
 
@@ -4726,113 +4839,136 @@ function confirmReset() {
 // EXPORT / IMPORT
 // ====================================================
 function exportCSV() {
-  const s=DB.get('santri');
-  let csv='ID,Nama,Kelas,TA,Semester,Level,Hafalan,Status,HP\n';
-  s.forEach(x=>{ csv+=`${x.id},"${x.nama}",${x.kelas},"${x.tahunAjaran}","${x.semester}","${x.level}","${x.hafalan||''}","${x.status}","${x.hp||''}"\n`; });
-  dlFile(csv,'santri-btq.csv','text/csv');
-  toast('📥','CSV diexport!');
+  const s = DB.get('santri');
+  let csv = 'ID,Nama,Kelas,TA,Semester,Level,Hafalan,Status,HP\n';
+  s.forEach(x => { 
+    csv += `${x.id},"${x.nama}",${x.kelas},"${x.tahunAjaran}","${x.semester}","${x.level}","${x.hafalan || ''}","${x.status}","${x.hp || ''}"\n`; 
+  });
+  dlFile(csv, 'santri-btq.csv', 'text/csv'); 
+  toast('📥', 'CSV diexport!');
 }
 
 function exportPDF() {
-  const s=DB.get('santri'), st=DB.obj('settings');
-  let html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Data Santri BTQ</title><style>body{font-family:Arial;padding:20px}h1{color:#0ea5e9}table{width:100%;border-collapse:collapse}th{background:#0ea5e9;color:white;padding:8px}td{border:1px solid #ddd;padding:7px;font-size:13px}tr:nth-child(even){background:#f5f5f5}</style></head><body><h1>BTQ Pro - Data Santri</h1><p>TA: ${st.tahunAjaran} · Semester ${st.semester} · Total: ${s.length}</p><table><tr><th>ID</th><th>Nama</th><th>Kelas</th><th>Level</th><th>Hafalan</th><th>Status</th></tr>`;
-  s.forEach(x=>{ html+=`<tr><td>${x.id}</td><td>${x.nama}</td><td>${x.kelas}</td><td>${x.level}</td><td>${x.hafalan||''}</td><td>${x.status}</td></tr>`; });
-  html+='</table></body></html>';
-  const w=window.open(''); w.document.write(html); w.document.close(); w.print();
-  toast('📄','Print dialog dibuka!');
+  const s = DB.get('santri'), st = DB.obj('settings');
+  let html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Data Santri BTQ</title><style>body{font-family:Arial;padding:20px}h1{color:#0ea5e9}table{width:100%;border-collapse:collapse}th{background:#0ea5e9;color:white;padding:8px}td{border:1px solid #ddd;padding:7px;font-size:13px}tr:nth-child(even){background:#f5f5f5}</style></head><body><h1>BTQ Pro - Data Santri</h1><p>TA: ${st.tahunAjaran} · Semester ${st.semester} · Total: ${s.length}</p><table><tr><th>ID</th><th>Nama</th><th>Kelas</th><th>Level</th><th>Hafalan</th><th>Status</th></tr>`;
+  s.forEach(x => { 
+    html += `<tr><td>${x.id}</td><td>${x.nama}</td><td>${x.kelas}</td><td>${x.level}</td><td>${x.hafalan || ''}</td><td>${x.status}</td></tr>`; 
+  });
+  html += '</table></body></html>'; 
+  const w = window.open(''); 
+  w.document.write(html); 
+  w.document.close(); 
+  w.print(); 
+  toast('📄', 'Print dialog dibuka!');
 }
 
 function exportAll() {
-  const data={santri:DB.get('santri'),alumni:DB.get('alumni'),hafalan:DB.get('hafalan'),riwayat:DB.get('riwayat'),settings:DB.obj('settings'),guru:DB.get('guru'),jadwal:DB.get('jadwal'),absensi_santri:DB.get('absensi_santri'),absensi_guru:DB.get('absensi_guru'),juz30:DB.obj('juz30'),exportDate:new Date().toISOString()};
-  dlFile(JSON.stringify(data,null,2),'btq-backup.json','application/json');
-  toast('💾','Backup JSON diexport!');
+  const data = {
+    santri: DB.get('santri'),
+    alumni: DB.get('alumni'),
+    hafalan: DB.get('hafalan'),
+    riwayat: DB.get('riwayat'),
+    settings: DB.obj('settings'),
+    guru: DB.get('guru'),
+    jadwal: DB.get('jadwal'),
+    absensi_santri: DB.get('absensi_santri'),
+    absensi_guru: DB.get('absensi_guru'),
+    juz30: DB.obj('juz30'),
+    exportDate: new Date().toISOString()
+  };
+  dlFile(JSON.stringify(data, null, 2), 'btq-backup.json', 'application/json'); 
+  toast('💾', 'Backup JSON diexport!');
 }
 
 function importData(e) {
-  if(!isAdmin())return;
-  const f=e.target.files[0]; if(!f)return;
-  const r=new FileReader();
-  r.onload=ev=>{
+  if (!isAdmin()) return;
+  const f = e.target.files[0]; 
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => {
     try {
-      const d=JSON.parse(ev.target.result);
-      if(d.santri)DB.set('santri',d.santri);
-      if(d.alumni)DB.set('alumni',d.alumni);
-      if(d.hafalan)DB.set('hafalan',d.hafalan);
-      if(d.riwayat)DB.set('riwayat',d.riwayat);
-      if(d.settings)DB.sobj('settings',d.settings);
-      if(d.guru)DB.set('guru',d.guru);
-      if(d.jadwal)DB.set('jadwal',d.jadwal);
-      if(d.absensi_santri)DB.set('absensi_santri',d.absensi_santri);
-      if(d.absensi_guru)DB.set('absensi_guru',d.absensi_guru);
-      if(d.juz30)DB.sobj('juz30',d.juz30);
-      updateBadges(); renderDashboard(); renderSantri(); renderPengaturan();
-      toast('✅','Data berhasil diimport!');
-    } catch(err){ toast('❌','Format file tidak valid!'); }
+      const d = JSON.parse(ev.target.result);
+      if (d.santri) DB.set('santri', d.santri); 
+      if (d.alumni) DB.set('alumni', d.alumni); 
+      if (d.hafalan) DB.set('hafalan', d.hafalan); 
+      if (d.riwayat) DB.set('riwayat', d.riwayat); 
+      if (d.settings) DB.sobj('settings', d.settings); 
+      if (d.guru) DB.set('guru', d.guru); 
+      if (d.jadwal) DB.set('jadwal', d.jadwal); 
+      if (d.absensi_santri) DB.set('absensi_santri', d.absensi_santri); 
+      if (d.absensi_guru) DB.set('absensi_guru', d.absensi_guru); 
+      if (d.juz30) DB.sobj('juz30', d.juz30);
+      updateBadges(); 
+      renderDashboard(); 
+      renderSantri(); 
+      renderPengaturan(); 
+      toast('✅', 'Data berhasil diimport!');
+    } catch(err) { 
+      toast('❌', 'Format file tidak valid!'); 
+    }
   };
   r.readAsText(f);
 }
 
 function dlFile(content, name, type) {
-  const b=new Blob([content],{type}); const u=URL.createObjectURL(b);
-  const a=document.createElement('a'); a.href=u; a.download=name;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u);
+  const b = new Blob([content], {type}), u = URL.createObjectURL(b), a = document.createElement('a'); 
+  a.href = u; 
+  a.download = name; 
+  document.body.appendChild(a); 
+  a.click(); 
+  document.body.removeChild(a); 
+  URL.revokeObjectURL(u);
 }
 
 // ====================================================
 // UI HELPERS
 // ====================================================
 function toast(icon, msg, dur=3200) {
-  document.getElementById('tIcon').textContent=icon;
-  document.getElementById('tMsg').textContent=msg;
-  const t=document.getElementById('toast');
-  t.style.display='block';
-  t.querySelector('.toast-inner').style.animation='none';
-  void t.querySelector('.toast-inner').offsetWidth;
-  t.querySelector('.toast-inner').style.animation='toastIn 0.4s cubic-bezier(0.16,1,0.3,1)';
-  clearTimeout(window._toastT);
-  window._toastT=setTimeout(()=>t.style.display='none',dur);
+  document.getElementById('tIcon').textContent = icon; 
+  document.getElementById('tMsg').textContent = msg;
+  const t = document.getElementById('toast'); 
+  t.style.display = 'block'; 
+  t.querySelector('.toast-inner').style.animation = 'none'; 
+  void t.querySelector('.toast-inner').offsetWidth; 
+  t.querySelector('.toast-inner').style.animation = 'toastIn 0.4s cubic-bezier(0.16,1,0.3,1)';
+  clearTimeout(window._toastT); 
+  window._toastT = setTimeout(() => t.style.display = 'none', dur);
 }
 
-function show(id){ document.getElementById(id).style.display='flex'; }
-function closeM(id){ document.getElementById(id).style.display='none'; }
-
-function openRoleInfoModal() {
-  show('mRoleInfo');
-}
+function show(id){ document.getElementById(id).style.display = 'flex'; }
+function closeM(id){ document.getElementById(id).style.display = 'none'; }
+function openRoleInfoModal() { show('mRoleInfo'); }
 
 function toggleTheme() {
-  const h=document.documentElement;
-  h.setAttribute('data-theme',h.getAttribute('data-theme')==='dark'?'light':'dark');
-  // Update chart colors
-  setTimeout(()=>{
-    const page=document.querySelector('.page.active');
-    if(page&&page.id==='page-dashboard') renderDashboard();
-  },100);
+  const h = document.documentElement; 
+  h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  setTimeout(() => { 
+    const page = document.querySelector('.page.active'); 
+    if(page && page.id === 'page-dashboard') renderDashboard(); 
+  }, 100);
 }
 
-// PERBAIKI JAVASCRIPT TOGGLE
 let sidebarCollapsed = false;
-function toggleSidebar() {
-  sidebarCollapsed = !sidebarCollapsed;
-  const sidebar = document.getElementById("sidebar");
-  sidebar.classList.toggle("collapsed", sidebarCollapsed);
+function toggleSidebar() { 
+  sidebarCollapsed = !sidebarCollapsed; 
+  document.getElementById("sidebar").classList.toggle("collapsed", sidebarCollapsed); 
 }
 
-function openSidebar() {
-  document.getElementById('sidebar').classList.add('open');
-  document.getElementById('sidebarOv').classList.add('show');
+function openSidebar() { 
+  document.getElementById('sidebar').classList.add('open'); 
+  document.getElementById('sidebarOv').classList.add('show'); 
 }
-function closeSidebar() {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('sidebarOv').classList.remove('show');
+function closeSidebar() { 
+  document.getElementById('sidebar').classList.remove('open'); 
+  document.getElementById('sidebarOv').classList.remove('show'); 
 }
 
 function checkMobile() {
-  const mm=document.getElementById('mobileMenu');
-  if(window.innerWidth<=768) { mm.style.display='flex'; }
-  else { mm.style.display='none'; }
+  const mm = document.getElementById('mobileMenu');
+  if(window.innerWidth <= 768) { mm.style.display = 'flex'; }
+  else { mm.style.display = 'none'; }
 }
-window.addEventListener('resize',checkMobile);
+window.addEventListener('resize', checkMobile);
 
 document.querySelectorAll('.modal-overlay').forEach(function(ov){
   ov.addEventListener('click',function(e){
@@ -4843,97 +4979,61 @@ document.querySelectorAll('.modal-overlay').forEach(function(ov){
 });
 
 // ====================================================
-// START
+// START & FIXES
 // ====================================================
-// Eksekusi langsung dimatikan, dipindah ke DOMContentLoaded di bawah
-// checkMobile();
-// checkAuth();
 
-// FIX MOBILE RESPONSIVE
 function fixMobileLayout(){
-  document.querySelectorAll("table").forEach(t=>{
-    t.parentElement.style.overflowX="auto";
-  });
+  document.querySelectorAll("table").forEach(t=>{ t.parentElement.style.overflowX="auto"; });
   document.body.style.overflowX="hidden";
 }
-
-window.addEventListener("load",fixMobileLayout);
+window.addEventListener("load",fixMobileLayout); 
 window.addEventListener("resize",fixMobileLayout);
 
 function improveMobileCalendar(){
   const grid = document.getElementById("calGrid");
   if(!grid) return;
   if(window.innerWidth <= 768){
-    grid.style.minWidth = "600px";
+    grid.style.minWidth = "600px"; 
     let wrapper = grid.parentElement;
     if(!wrapper.classList.contains("calendar-wrapper")){
-      const w = document.createElement("div");
-      w.className = "calendar-wrapper";
-      w.style.overflowX = "auto";
+      const w = document.createElement("div"); 
+      w.className = "calendar-wrapper"; 
+      w.style.overflowX = "auto"; 
       w.style.width = "100%";
-      grid.parentElement.insertBefore(w, grid);
+      grid.parentElement.insertBefore(w, grid); 
       w.appendChild(grid);
     }
   }
 }
-
-window.addEventListener("load", improveMobileCalendar);
+window.addEventListener("load", improveMobileCalendar); 
 window.addEventListener("resize", improveMobileCalendar);
 
-// FIX PAGE HEIGHT
-function fixPageHeight(){
-  const content = document.querySelector(".content");
-  if(!content) return;
-  content.style.minHeight = "auto";
+function fixPageHeight(){ 
+  const content = document.querySelector(".content"); 
+  if(!content) return; 
+  content.style.minHeight = "auto"; 
 }
-window.addEventListener("load", fixPageHeight);
+window.addEventListener("load", fixPageHeight); 
 window.addEventListener("resize", fixPageHeight);
 
-// FIX SIDEBAR SCROLL
-function fixSidebarScroll(){
-  const sidebar = document.querySelector(".sidebar");
-  if(!sidebar) return;
-  sidebar.style.overflowY = "auto";
+function fixSidebarScroll(){ 
+  const sidebar = document.querySelector(".sidebar"); 
+  if(!sidebar) return; 
+  sidebar.style.overflowY = "auto"; 
 }
-window.addEventListener("load", fixSidebarScroll);
+window.addEventListener("load", fixSidebarScroll); 
 window.addEventListener("resize", fixSidebarScroll);
 
-
-/* // 3️⃣ CONTOH CARA MEMAKAI DI KODE KAMU
-// Anda bisa memanggil API ini di mana saja di dalam JavaScript jika membutuhkan akses manual.
-
-// Ambil semua data
-apiGetAll().then(data=>{
-  console.log(data);
-});
-
-// Ambil data santri
-apiGet("santri").then(data=>{
-  console.log(data);
-});
-
-// Simpan data
-apiSave("santri",{
-  nama:"Ahmad",
-  kelas:"3"
-});
-
-// Hapus data
-apiDelete("santri");
-*/
-
-// ====================================================
 // FIX SCRIPT EXECUTION
-// ====================================================
 document.addEventListener("DOMContentLoaded", function(){
-  try{
+  try {
     checkMobile();
     checkAuth();
     fixMobileLayout();
     improveMobileCalendar();
     fixPageHeight();
     fixSidebarScroll();
-  }catch(err){
+  } catch(err) {
     console.error("Startup error:", err);
   }
 });
