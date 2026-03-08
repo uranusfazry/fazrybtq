@@ -2622,6 +2622,65 @@ FINAL OVERRIDE 2: MOBILE LIGHT MODE FIX
   }
 }
 
+/* ============================= */
+/* FIX MOBILE LIGHT MODE */
+/* ============================= */
+
+@media (max-width:768px){
+
+/* HEADER */
+html[data-theme="light"] .header,
+html[data-theme="light"] .topbar,
+html[data-theme="light"] .navbar{
+background:#ffffff !important;
+border-bottom:1px solid #e2e8f0 !important;
+color:#0f172a !important;
+}
+
+/* PAGE ABSENSI */
+html[data-theme="light"] #page-absensi-santri,
+html[data-theme="light"] #page-absensi-guru{
+background:#f8fafc !important;
+}
+
+/* CARD ABSENSI */
+html[data-theme="light"] #page-absensi-santri .card,
+html[data-theme="light"] #page-absensi-guru .card{
+background:#ffffff !important;
+border:1px solid #e2e8f0 !important;
+}
+
+/* FILTER ABSENSI */
+html[data-theme="light"] #page-absensi-santri input,
+html[data-theme="light"] #page-absensi-santri select,
+html[data-theme="light"] #page-absensi-guru input,
+html[data-theme="light"] #page-absensi-guru select{
+background:#ffffff !important;
+border:1px solid #e2e8f0 !important;
+color:#0f172a !important;
+}
+
+/* STAT CARD */
+html[data-theme="light"] #absensiSummary .stat,
+html[data-theme="light"] #guruAbsSummary .stat{
+background:#ffffff !important;
+border:1px solid #e2e8f0 !important;
+}
+
+/* TABLE */
+html[data-theme="light"] #page-absensi-santri table,
+html[data-theme="light"] #page-absensi-guru table{
+background:#ffffff !important;
+}
+
+html[data-theme="light"] #page-absensi-santri thead th,
+html[data-theme="light"] #page-absensi-guru thead th{
+background:#f1f5f9 !important;
+color:#64748b !important;
+}
+
+}
+
 </style>
 </head>
 <body>
