@@ -446,40 +446,6 @@ SIDEBAR ACTIVE FIX
 .page-title-wrap { display: flex; align-items: center; gap: 12px; }
 .page-title { font-weight: 800; font-size: 16px; letter-spacing: -0.3px; }
 
-.search-wrap {
-  position: relative;
-}
-
-.search-icon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--t2);
-  font-size: 13px;
-  pointer-events: none;
-}
-
-.topbar-search {
-  background: var(--glass);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 8px 14px 8px 36px;
-  color: var(--t1);
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 13px;
-  outline: none;
-  transition: all var(--transition);
-  width: 220px;
-}
-
-.topbar-search:focus {
-  border-color: rgba(56,189,248,0.4);
-  background: var(--glass2);
-  box-shadow: 0 0 0 3px rgba(56,189,248,0.08), var(--glow-blue);
-  width: 260px;
-}
-
 .topbar-actions { display: flex; align-items: center; gap: 8px; }
 
 .topbar-btn {
@@ -511,16 +477,41 @@ SIDEBAR ACTIVE FIX
   margin: 0 4px;
 }
 
+/* ─── KUSTOMISASI TOMBOL MODE ADMIN (MAHKOTA) ─── */
 .user-badge {
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: linear-gradient(135deg, var(--acc), var(--acc2));
+  background: #0f172a;
+  color: #f1f5f9;
+  border: 1px solid #334155;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 16px;
-  box-shadow: 0 0 16px rgba(56,189,248,0.25);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.user-badge:hover {
+  transform: translateY(-2px);
+  border-color: var(--acc);
+  box-shadow: 0 6px 16px rgba(56, 189, 248, 0.2);
+}
+
+/* Kustomisasi Mode Terang (Light Mode) */
+[data-theme="light"] .user-badge {
+  background: #f1f5f9;
+  color: #1e293b;
+  border: 1px solid #cbd5f5;
+  box-shadow: 0 2px 8px rgba(0, 30, 80, 0.05);
+}
+
+[data-theme="light"] .user-badge:hover {
+  background: #ffffff;
+  border-color: var(--acc);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
 }
 
 .logout-btn {
@@ -846,12 +837,41 @@ label {
   box-shadow: 0 0 0 3px rgba(56,189,248,0.08);
 }
 
-.inp option { background: #0a1428; }
+/* ─── DROPDOWN SELECT STYLING (DARK MODE) ─── */
+select.inp, select {
+  background: #0f172a;
+  color: #e2e8f0;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 8px 12px;
+  outline: none;
+}
+
+select.inp:focus, select:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 2px rgba(56,189,248,.25);
+}
+
+select.inp option, select option {
+  background: #0f172a;
+  color: #e2e8f0;
+}
 
 [data-theme="light"] .inp {
   background: rgba(0,0,0,0.03);
 }
-[data-theme="light"] .inp option { background: #fff; }
+
+/* LIGHT MODE OVERRIDES FOR SELECT */
+[data-theme="light"] select.inp, [data-theme="light"] select {
+  background: #ffffff;
+  color: #0f172a;
+  border-color: rgba(0,60,140,0.15);
+}
+
+[data-theme="light"] select.inp option, [data-theme="light"] select option { 
+  background: #ffffff; 
+  color: #0f172a;
+}
 
 /* ─── BADGES ─────────────────────────────────────── */
 .badge {
@@ -1371,16 +1391,6 @@ TOPBAR MOBILE
   display: flex;
   gap: 8px;
   justify-content: flex-end;
-}
-
-.search-wrap {
-  grid-column: 1 / -1;
-  width: 100%;
-  margin-top: 8px;
-}
-
-.topbar-search{
-width:100% !important;
 }
 
 }
@@ -2232,13 +2242,9 @@ MOBILE ABSENSI FIX
         <div id="pageTitle" class="page-title">Dashboard</div>
       </div>
       <div class="topbar-actions">
-        <div class="search-wrap">
-          <span class="search-icon">🔍</span>
-          <input type="text" id="gSearch" class="topbar-search" placeholder="Cari santri..." oninput="globalSearch()">
-        </div>
         <button class="topbar-btn" onclick="toggleTheme()" title="Toggle theme">🌓</button>
         <div class="topbar-divider"></div>
-        <div id="userBadge" class="user-badge">👑</div>
+        <div id="userBadge" class="user-badge" onclick="openRoleInfoModal()" title="Info Mode Akses">👑</div>
         <button class="logout-btn" onclick="logout()">🚪 Keluar</button>
       </div>
     </div>
@@ -2774,6 +2780,47 @@ MOBILE ABSENSI FIX
     <div style="display:flex;gap:8px;justify-content:center">
       <button class="btn btn-s" onclick="closeM('mKonfirm')">Batal</button>
       <button class="btn btn-d" id="kBtn">Hapus</button>
+    </div>
+  </div>
+</div>
+
+<!-- Role Info Modal -->
+<div class="modal-overlay" id="mRoleInfo" style="display:none">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <div class="modal-title">ℹ️ Informasi Mode Akses</div>
+      <button class="modal-close" onclick="closeM('mRoleInfo')">✕</button>
+    </div>
+    
+    <div style="margin-bottom:16px; font-size:13px; line-height:1.6; color:var(--t1);">
+      Sistem ini memiliki dua mode akses yang berbeda untuk menjaga keamanan dan integritas data:
+    </div>
+
+    <div style="background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.2); border-radius:12px; padding:16px; margin-bottom:12px;">
+      <div style="font-weight:800; font-size:15px; color:var(--acc); margin-bottom:8px; display:flex; align-items:center; gap:8px;">
+        <span>👑</span> Mode Admin
+      </div>
+      <ul style="font-size:13px; color:var(--t2); padding-left:20px; margin:0; line-height:1.6;">
+        <li>Dapat menambah, mengedit, dan menghapus data.</li>
+        <li>Dapat mengelola santri, guru, jadwal, hafalan, dan absensi.</li>
+        <li>Dapat melihat laporan dan statistik lengkap.</li>
+        <li>Memiliki akses penuh ke semua fitur sistem.</li>
+      </ul>
+    </div>
+
+    <div style="background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.2); border-radius:12px; padding:16px;">
+      <div style="font-weight:800; font-size:15px; color:var(--gold); margin-bottom:8px; display:flex; align-items:center; gap:8px;">
+        <span>👁️</span> Mode Publik
+      </div>
+      <ul style="font-size:13px; color:var(--t2); padding-left:20px; margin:0; line-height:1.6;">
+        <li>Hanya dapat melihat informasi.</li>
+        <li>Tidak dapat mengubah atau menghapus data.</li>
+        <li>Cocok untuk wali santri atau pengunjung.</li>
+      </ul>
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; margin-top:24px;">
+      <button class="btn btn-s" onclick="closeM('mRoleInfo')">Tutup</button>
     </div>
   </div>
 </div>
@@ -4317,17 +4364,6 @@ function dlFile(content, name, type) {
 }
 
 // ====================================================
-// GLOBAL SEARCH
-// ====================================================
-function globalSearch() {
-  const q=document.getElementById('gSearch').value.trim();
-  if(q.length<2)return;
-  showPage('santri');
-  document.getElementById('srchSantri').value=q;
-  renderSantri();
-}
-
-// ====================================================
 // UI HELPERS
 // ====================================================
 function toast(icon, msg, dur=3200) {
@@ -4344,6 +4380,10 @@ function toast(icon, msg, dur=3200) {
 
 function show(id){ document.getElementById(id).style.display='flex'; }
 function closeM(id){ document.getElementById(id).style.display='none'; }
+
+function openRoleInfoModal() {
+  show('mRoleInfo');
+}
 
 function toggleTheme() {
   const h=document.documentElement;
