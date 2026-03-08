@@ -4321,6 +4321,10 @@ function loadAbsensiSantri() {
   const santri=DB.get('santri').filter(s=>s.kelas===kelas&&s.status==='Aktif');
   const existing=DB.get('absensi_santri').filter(a=>a.tanggal===tgl&&a.kelas===kelas);
   
+  const isLight = document.documentElement.getAttribute("data-theme") === "light";
+  const rowBg = isLight ? "#ffffff" : "rgba(255,255,255,0.02)";
+  const rowBorder = isLight ? "#e5e7eb" : "rgba(255,255,255,0.05)";
+
   document.getElementById('absListSantri').innerHTML = santri.length===0
     ? '<div style="text-align:center;padding:20px;color:var(--t2)">Tidak ada santri di kelas ini</div>'
     : `<div style="display:flex; justify-content:space-between; padding: 0 8px 8px; font-size:11px; font-weight:700; color:var(--t2); text-transform:uppercase; border-bottom:1px solid var(--border); margin-bottom:8px;">
@@ -4330,7 +4334,7 @@ function loadAbsensiSantri() {
          ${santri.map(s=>{
            const ex=existing.find(a=>a.santriId===s.id);
            const isChecked = ex ? (ex.status === 'Hadir') : true; 
-           return `<label class="abs-row" style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; padding:12px 10px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:8px;">
+           return `<label class="abs-row" style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; padding:12px 10px; background:${rowBg}; border:1px solid ${rowBorder}; border-radius:8px;">
              <span style="font-weight:600; font-size:14px;">${s.nama}</span>
              <input type="checkbox" id="abs_${s.id}" ${isChecked ? 'checked' : ''} style="transform: scale(1.5); accent-color: var(--acc3); cursor: pointer; margin-right:8px;">
            </label>`;
@@ -4432,6 +4436,10 @@ function loadAbsensiGuru() {
   // 6. PERBAIKAN FORM ABSENSI (RADIO BUTTON BESAR)
   const isMobile = window.innerWidth <= 768;
   
+  const isLight = document.documentElement.getAttribute("data-theme") === "light";
+  const rowBg = isLight ? "#ffffff" : "rgba(255,255,255,0.02)";
+  const rowBorder = isLight ? "#e5e7eb" : "rgba(255,255,255,0.05)";
+  
   if (isMobile) {
     document.getElementById('absListGuru').innerHTML = guru.map(g => {
       const ex = existing.find(a => a.guruId === g.id);
@@ -4466,7 +4474,7 @@ function loadAbsensiGuru() {
          ${guru.map(g=>{
            const ex=existing.find(a=>a.guruId===g.id);
            const isChecked = ex ? (ex.status === 'Hadir') : true; 
-           return `<label class="abs-row" style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; padding:12px 10px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:8px;">
+           return `<label class="abs-row" style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; padding:12px 10px; background:${rowBg}; border:1px solid ${rowBorder}; border-radius:8px;">
              <span style="font-weight:600; font-size:14px;">${g.nama}</span>
              <input type="checkbox" id="absg_${g.id}" ${isChecked ? 'checked' : ''} style="transform: scale(1.5); accent-color: var(--acc3); cursor: pointer; margin-right:8px;">
            </label>`;
