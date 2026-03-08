@@ -189,7 +189,7 @@ body::after {
 
 @keyframes logoFloat {
   0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-6px); }
+  50%        { transform: translateY(-6px); }
 }
 
 /* ─── APP LAYOUT ─────────────────────────────────── */
@@ -2384,7 +2384,7 @@ MOBILE ABSENSI FIX
       </div>
 
       <!-- ═══════════════════════════════════════════ -->
-      <!--  ABSENSI SANTRI                             -->
+      <!--  ABSENSI SANTRI                               -->
       <!-- ═══════════════════════════════════════════ -->
       <div id="page-absensi-santri" class="page">
         <div class="page-header">
@@ -2435,7 +2435,7 @@ MOBILE ABSENSI FIX
       </div>
 
       <!-- ═══════════════════════════════════════════ -->
-      <!--  PROGRESS MEMBACA                           -->
+      <!--  PROGRESS MEMBACA                             -->
       <!-- ═══════════════════════════════════════════ -->
       <div id="page-progress" class="page">
         <div class="page-header">
@@ -2446,7 +2446,7 @@ MOBILE ABSENSI FIX
       </div>
 
       <!-- ═══════════════════════════════════════════ -->
-      <!--  HAFALAN QUR'AN                             -->
+      <!--  HAFALAN QUR'AN                               -->
       <!-- ═══════════════════════════════════════════ -->
       <div id="page-hafalan" class="page">
         <div class="page-header">
@@ -2468,7 +2468,7 @@ MOBILE ABSENSI FIX
       </div>
 
       <!-- ═══════════════════════════════════════════ -->
-      <!--  JUZ 30                                     -->
+      <!--  JUZ 30                                       -->
       <!-- ═══════════════════════════════════════════ -->
       <div id="page-juz30" class="page">
         <div class="page-header">
@@ -2494,7 +2494,7 @@ MOBILE ABSENSI FIX
       </div>
 
       <!-- ═══════════════════════════════════════════ -->
-      <!--  ALUMNI                                     -->
+      <!--  ALUMNI                                       -->
       <!-- ═══════════════════════════════════════════ -->
       <div id="page-alumni" class="page">
         <div class="page-header">
@@ -2504,7 +2504,7 @@ MOBILE ABSENSI FIX
       </div>
 
       <!-- ═══════════════════════════════════════════ -->
-      <!--  RIWAYAT                                    -->
+      <!--  RIWAYAT                                      -->
       <!-- ═══════════════════════════════════════════ -->
       <div id="page-riwayat" class="page">
         <div class="page-header">
@@ -2517,7 +2517,7 @@ MOBILE ABSENSI FIX
       </div>
 
       <!-- ═══════════════════════════════════════════ -->
-      <!--  LAPORAN                                    -->
+      <!--  LAPORAN                                      -->
       <!-- ═══════════════════════════════════════════ -->
       <div id="page-laporan" class="page">
         <div class="page-header">
@@ -2559,7 +2559,7 @@ MOBILE ABSENSI FIX
       </div>
 
       <!-- ═══════════════════════════════════════════ -->
-      <!--  PENGATURAN                                 -->
+      <!--  PENGATURAN                                   -->
       <!-- ═══════════════════════════════════════════ -->
       <div id="page-pengaturan" class="page">
         <div class="page-header">
@@ -2795,12 +2795,84 @@ const LCOLORS = ['#38bdf8','#818cf8','#34d399','#fb923c','#f472b6','#fbbf24','#1
 const DAYS = ['Senin','Selasa','Rabu','Kamis','Jumat'];
 const JUZ30 = ['An-Naba',"An-Nazi'at",'Abasa','At-Takwir','Al-Infitar','Al-Mutaffifin','Al-Insyiqaq','Al-Buruj','At-Tariq',"Al-A'la",'Al-Ghasiyah','Al-Fajr','Al-Balad','Asy-Syams','Al-Lail','Ad-Duha','Asy-Syarh','At-Tin','Al-Alaq','Al-Qadr','Al-Bayyinah','Az-Zalzalah',"Al-Adiyat","Al-Qari'ah",'At-Takatsur','Al-Asr','Al-Humazah','Al-Fil','Quraisy',"Al-Ma'un",'Al-Kautsar','Al-Kafirun','An-Nasr','Al-Lahab','Al-Ikhlas','Al-Falaq','An-Nas'];
 
+// ======================================================
+// BACKEND API CONFIG
+// ======================================================
+const API_URL = "https://script.google.com/macros/s/AKfycbxxrq1QdhUt3zOU47X6pCS7-KXM1vi74Ocjr40PN4Mu_MpLx5XkQwR6PjpxXJkSUfzQeg/exec";
+
+// ======================================================
+// API HELPER FUNCTIONS
+// ======================================================
+
+// ambil semua data
+async function apiGetAll(){
+  const res = await fetch(API_URL + "?action=getAll");
+  const data = await res.json();
+  return data;
+}
+
+// ambil data berdasarkan key
+async function apiGet(key){
+  const res = await fetch(API_URL + "?action=get&key=" + key);
+  const data = await res.json();
+  return data;
+}
+
+// simpan data
+async function apiSave(key,data){
+  const res = await fetch(API_URL + "?action=save",{
+    method:"POST",
+    headers:{
+      // Menggunakan text/plain sangat disarankan untuk Google Apps Script 
+      // agar terhindar dari pemblokiran CORS Preflight dari Vercel
+      "Content-Type":"text/plain"
+    },
+    body:JSON.stringify({
+      key:key,
+      data:data
+    })
+  });
+  return await res.json();
+}
+
+// hapus data
+async function apiDelete(key){
+  const res = await fetch(API_URL + "?action=delete",{
+    method:"POST",
+    headers:{
+      "Content-Type":"text/plain"
+    },
+    body:JSON.stringify({
+      key:key
+    })
+  });
+  return await res.json();
+}
+
+// ====================================================
+// DATABASE MEMORY & API SYNC
+// ====================================================
+let serverDB = {}; // Variabel penampung data dari Spreadsheet
+let isDataLoaded = false; // Flag status load
+
+// Optimistic UI: Update memory secara langsung, lalu sinkronisasi ke server di background
 const DB = {
-  get: k => JSON.parse(localStorage.getItem('btq_'+k)||'[]'),
-  set: (k,v) => localStorage.setItem('btq_'+k,JSON.stringify(v)),
-  obj: (k,d={}) => JSON.parse(localStorage.getItem('btq_'+k)||JSON.stringify(d)),
-  sobj: (k,v) => localStorage.setItem('btq_'+k,JSON.stringify(v))
+  get: k => serverDB[k] || [],
+  set: (k,v) => {
+    serverDB[k] = v;
+    if(role() === 'admin') {
+      apiSave(k, v).catch(err => toast('❌', 'Gagal sinkronisasi data ke server!'));
+    }
+  },
+  obj: (k,d={}) => serverDB[k] || d,
+  sobj: (k,v) => {
+    serverDB[k] = v;
+    if(role() === 'admin') {
+      apiSave(k, v).catch(err => toast('❌', 'Gagal sinkronisasi data ke server!'));
+    }
+  }
 };
+
 const gid = () => 'ID'+Date.now().toString(36).toUpperCase();
 const today = () => new Date().toISOString().split('T')[0];
 
@@ -2842,6 +2914,7 @@ function isAdmin() {
   if(role()!=='admin'){ toast('⚠️','Fitur ini hanya untuk admin'); return false; }
   return true;
 }
+
 function checkAuth() {
   const r = role();
   if(r) { startApp(); }
@@ -2851,13 +2924,28 @@ function checkAuth() {
   }
 }
 
-function startApp() {
+async function startApp() {
   document.getElementById('login-wrap').style.display='none';
   document.getElementById('app').style.display='flex';
   const r = role();
   document.getElementById('roleLabel').textContent = r==='admin'?'Administrator':'Mode Tamu';
   document.getElementById('userBadge').textContent = r==='admin'?'👑':'👁️';
-  init();
+  
+  if (!isDataLoaded) {
+    // Meminta semua data dari API Google Apps Script sekaligus
+    toast('⏳', 'Menghubungkan & Memuat dari Server...', 60000);
+    try {
+      const data = await apiGetAll();
+      serverDB = data || {};
+      isDataLoaded = true;
+      init();
+      toast('✅', 'Sistem berhasil disinkronisasi!');
+    } catch (err) {
+      toast('❌', 'Gagal memuat data dari Spreadsheet');
+    }
+  } else {
+    init();
+  }
 }
 
 // ====================================================
@@ -4017,7 +4105,7 @@ function renderLaporan() {
     </div>`;
   if(type==='santri') {
     let data=santri; if(lapKelas) data=data.filter(s=>s.kelas===lapKelas); if(sel) data=data.filter(s=>s.id===sel);
-    const abs=DB.get('absensi'); const hafalan=DB.get('hafalan'); const juz30=DB.obj('juz30');
+    const abs=DB.get('absensi_santri'); const hafalan=DB.get('hafalan'); const juz30=DB.obj('juz30');
     if(sel && data.length===1) {
       const s=data[0];
       const sAbs=abs.filter(a=>a.santriId===s.id);
@@ -4066,7 +4154,7 @@ function renderLaporan() {
       </tbody></table>`;
     }
   } else if(type==='absensi') {
-    let abs=DB.get('absensi'); if(lapKelas) abs=abs.filter(a=>a.kelas===lapKelas);
+    let abs=DB.get('absensi_santri'); if(lapKelas) abs=abs.filter(a=>a.kelas===lapKelas);
     const total=abs.length, h=abs.filter(a=>a.status==='Hadir').length, al=abs.filter(a=>a.status==='Alpha').length;
     html+=`<div class="grid-4" style="margin-bottom:18px">
       <div class="stat s-blue" style="padding:16px"><div class="stat-value num" style="font-size:22px;color:var(--acc)">${total}</div><div class="stat-label">Total Catatan</div></div>
@@ -4095,7 +4183,7 @@ function exportLaporanCSV() {
     DB.get('santri').forEach(s=>{ csv+=`"${s.nama}",${s.kelas},"${s.level}","${s.status}"\n`; });
   } else if(type==='absensi') {
     csv='Tanggal,Kelas,Santri,Status,Keterangan\n';
-    DB.get('absensi').forEach(a=>{ csv+=`${a.tanggal},${a.kelas},"${a.santriNama}","${a.status}","${a.ket||''}"\n`; });
+    DB.get('absensi_santri').forEach(a=>{ csv+=`${a.tanggal},${a.kelas},"${a.santriNama}","${a.status}","${a.ket||''}"\n`; });
   } else {
     csv='Santri,Surat,Ayat,Status,Tanggal\n';
     DB.get('hafalan').forEach(h=>{ csv+=`"${h.santriNama}","${h.surat}","${h.ayat}","${h.status}",${h.tanggal}\n`; });
@@ -4126,8 +4214,8 @@ function renderPengaturan() {
       ['Guru Aktif',guru.filter(g=>g.status==='Aktif').length,'var(--t1)'],
       ['Alumni',alumni.length,'var(--t1)'],
       ['Riwayat',riwayat.length,'var(--t1)'],
-      ['Absensi',DB.get('absensi').length,'var(--t1)'],
-      ['Storage','LocalStorage','var(--acc3)'],
+      ['Absensi',DB.get('absensi_santri').length,'var(--t1)'],
+      ['Storage','Google Spreadsheet','var(--acc3)'],
     ].map(([l,v,c])=>`<div class="info-row"><span class="label">${l}</span><span style="font-weight:700;color:${c}">${v}</span></div>`).join('');
   }
 }
@@ -4172,9 +4260,21 @@ function confirmReset() {
   document.getElementById('kTitle').textContent='Reset Semua Data';
   document.getElementById('kMsg').textContent='Semua data akan dihapus permanen! Tidak bisa dibatalkan.';
   document.getElementById('kBtn').textContent='Reset';
-  document.getElementById('kBtn').onclick=()=>{
-    ['santri','alumni','hafalan','riwayat','settings','guru','jadwal','absensi','absensi_guru','juz30'].forEach(k=>localStorage.removeItem('btq_'+k));
-    closeM('mKonfirm'); init(); toast('🔄','Data direset!');
+  document.getElementById('kBtn').onclick = async () => {
+    const keys = ['santri','alumni','hafalan','riwayat','settings','guru','jadwal','absensi_santri','absensi_guru','juz30'];
+    toast('⏳', 'Sedang mereset data...', 60000);
+    
+    try {
+      for (const k of keys) {
+        serverDB[k] = (k === 'settings' || k === 'juz30') ? {} : []; 
+        await apiDelete(k); // Panggil endpoint delete
+      }
+      closeM('mKonfirm'); 
+      init(); 
+      toast('🔄','Data berhasil direset!');
+    } catch (error) {
+      toast('❌','Gagal mereset data dari server!');
+    }
   };
   show('mKonfirm');
 }
@@ -4310,48 +4410,30 @@ checkAuth();
 
 // FIX MOBILE RESPONSIVE
 function fixMobileLayout(){
-
-document.querySelectorAll("table").forEach(t=>{
-t.parentElement.style.overflowX="auto";
-});
-
-document.body.style.overflowX="hidden";
-
+  document.querySelectorAll("table").forEach(t=>{
+    t.parentElement.style.overflowX="auto";
+  });
+  document.body.style.overflowX="hidden";
 }
 
 window.addEventListener("load",fixMobileLayout);
 window.addEventListener("resize",fixMobileLayout);
 
 function improveMobileCalendar(){
-
-const grid = document.getElementById("calGrid");
-
-if(!grid) return;
-
-if(window.innerWidth <= 768){
-
-grid.style.minWidth = "600px";
-
-let wrapper = grid.parentElement;
-
-if(!wrapper.classList.contains("calendar-wrapper")){
-
-const w = document.createElement("div");
-
-w.className = "calendar-wrapper";
-
-w.style.overflowX = "auto";
-
-w.style.width = "100%";
-
-grid.parentElement.insertBefore(w, grid);
-
-w.appendChild(grid);
-
-}
-
-}
-
+  const grid = document.getElementById("calGrid");
+  if(!grid) return;
+  if(window.innerWidth <= 768){
+    grid.style.minWidth = "600px";
+    let wrapper = grid.parentElement;
+    if(!wrapper.classList.contains("calendar-wrapper")){
+      const w = document.createElement("div");
+      w.className = "calendar-wrapper";
+      w.style.overflowX = "auto";
+      w.style.width = "100%";
+      grid.parentElement.insertBefore(w, grid);
+      w.appendChild(grid);
+    }
+  }
 }
 
 window.addEventListener("load", improveMobileCalendar);
@@ -4374,6 +4456,30 @@ function fixSidebarScroll(){
 }
 window.addEventListener("load", fixSidebarScroll);
 window.addEventListener("resize", fixSidebarScroll);
+
+
+/* // 3️⃣ CONTOH CARA MEMAKAI DI KODE KAMU
+// Anda bisa memanggil API ini di mana saja di dalam JavaScript jika membutuhkan akses manual.
+
+// Ambil semua data
+apiGetAll().then(data=>{
+  console.log(data);
+});
+
+// Ambil data santri
+apiGet("santri").then(data=>{
+  console.log(data);
+});
+
+// Simpan data
+apiSave("santri",{
+  nama:"Ahmad",
+  kelas:"3"
+});
+
+// Hapus data
+apiDelete("santri");
+*/
 
 </script>
 </body>
