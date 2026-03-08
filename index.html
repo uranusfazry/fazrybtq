@@ -2798,7 +2798,7 @@ const JUZ30 = ['An-Naba',"An-Nazi'at",'Abasa','At-Takwir','Al-Infitar','Al-Mutaf
 // ======================================================
 // BACKEND API CONFIG
 // ======================================================
-const API_URL = "https://script.google.com/macros/s/AKfycbyLpLeEChHjO54fGSpsQZfwGHEvVpdgQgCOtKhPO9m8yF24fpwnPHJSa_WlxZ0Y8an9LQ/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxxrq1QdhUt3zOU47X6pCS7-KXM1vi74Ocjr40PN4Mu_MpLx5XkQwR6PjpxXJkSUfzQeg/exec";
 
 // ======================================================
 // API HELPER FUNCTIONS
@@ -2806,9 +2806,19 @@ const API_URL = "https://script.google.com/macros/s/AKfycbyLpLeEChHjO54fGSpsQZfw
 
 // ambil semua data
 async function apiGetAll(){
-  const res = await fetch(API_URL + "?action=getAll");
-  const data = await res.json();
-  return data;
+  const res = await fetch(API_URL + "?action=getAll",{
+    method:"GET",
+    mode:"cors"
+  });
+
+  if(!res.ok){
+    throw new Error("Server tidak merespon");
+  }
+
+  const json = await res.json();
+  
+  // Jika backend memakai struktur {status,data} atau langsung object
+  return json.data || json;
 }
 
 // ambil data berdasarkan key
@@ -2886,15 +2896,38 @@ Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
 // ====================================================
 // AUTH
 // ====================================================
-function handleLogin(e) {
+async function handleLogin(e) {
   e.preventDefault();
-  const u = document.getElementById('lu').value;
-  const p = document.getElementById('lp').value;
-  if(u==='fazry' && p==='uranusfazry123') {
-    sessionStorage.setItem('role','admin');
-    toast('✅','Login berhasil. Selamat datang Admin!');
-    startApp();
-  } else { toast('❌','Username atau password salah'); }
+  const username = document.getElementById('lu').value;
+  const password = document.getElementById('lp').value;
+
+  toast('⏳', 'Memverifikasi data...', 60000);
+
+  try {
+    const res = await fetch(API_URL + "?action=login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain"
+      },
+      body: JSON.stringify({
+        username: username,
+        password: password
+      })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      sessionStorage.setItem('role', 'admin');
+      toast('✅', 'Login berhasil. Selamat datang Admin!');
+      startApp();
+    } else {
+      toast('❌', data.message || 'Username atau password salah');
+    }
+  } catch (err) {
+    console.error("Login API Error:", err);
+    toast('❌', 'Gagal terhubung ke server login');
+  }
 }
 function guestLogin() {
   sessionStorage.setItem('role','guest');
@@ -2927,23 +2960,24 @@ function checkAuth() {
 async function startApp() {
   document.getElementById('login-wrap').style.display='none';
   document.getElementById('app').style.display='flex';
+
   const r = role();
   document.getElementById('roleLabel').textContent = r==='admin'?'Administrator':'Mode Tamu';
   document.getElementById('userBadge').textContent = r==='admin'?'👑':'👁️';
-  
+
   if (!isDataLoaded) {
-    // Meminta semua data dari API Google Apps Script sekaligus
-    toast('⏳', 'Menghubungkan & Memuat dari Server...', 60000);
-    try {
+    toast('⏳','Menghubungkan ke server...',60000);
+    try{
       const data = await apiGetAll();
       serverDB = data || {};
       isDataLoaded = true;
       init();
-      toast('✅', 'Sistem berhasil disinkronisasi!');
-    } catch (err) {
-      toast('❌', 'Gagal memuat data dari Spreadsheet');
+      toast('✅','Sistem berhasil tersambung!');
+    }catch(err){
+      console.error(err);
+      toast('❌','Gagal memuat data dari Spreadsheet');
     }
-  } else {
+  }else{
     init();
   }
 }
@@ -2966,6 +3000,7 @@ function updateBadges() {
 }
 
 function init() {
+  populateDropdowns();
   if(!DB.obj('settings').tahunAjaran) DB.sobj('settings',{tahunAjaran:'2024/2025',semester:'Ganjil'});
   if(DB.get('santri').length===0) loadSample();
   updateBadges();
@@ -3123,7 +3158,7 @@ function renderAll() {
   renderJadwal();
   renderAbsensiSantri();
   renderAbsensiGuru();
-  renderProgressCards();
+  renderProgress();
   renderHafalan();
   renderAlumni();
   renderRiwayat();
