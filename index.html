@@ -2312,181 +2312,89 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
   #page-santri .filter-bar .inp,
   #page-santri .filter-bar select {
     width: 100% !important;
-    max-width: 100% !important;
-  }
-
-  #page-santri .tw {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  #page-santri table td, 
-  #page-santri table th {
-    font-size: 11px !important;
-    padding: 10px 8px !important;
-    white-space: nowrap;
-  }
-
-  /* 3. HAFALAN QUR'AN MOBILE FIXES */
-  #page-hafalan .filter-bar {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 16px;
-  }
-  #page-hafalan .filter-bar .inp,
-  #page-hafalan .filter-bar select {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-
-  #page-hafalan .tw {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  #page-hafalan table td, 
-  #page-hafalan table th {
-    font-size: 11px !important;
-    padding: 10px 8px !important;
-    white-space: nowrap;
-  }
-  #page-hafalan .badge {
-    font-size: 9px !important;
-    padding: 3px 6px !important;
-  }
-
-  /* 4. JADWAL BTQ MOBILE FIXES */
-  #page-jadwal .card.p-card:nth-of-type(1) {
-    /* Wrapper kalender */
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 16px 12px;
-  }
-  #page-jadwal .cal-grid {
-    /* Paksa grid melewati batas layar agar bisa di-scroll horizontal */
-    min-width: 500px;
-    gap: 2px;
-  }
-  #page-jadwal .cal-hdr {
-    font-size: 9px !important;
-    padding: 6px !important;
-  }
-  #page-jadwal .cal-time {
-    font-size: 9px !important;
-    padding: 6px !important;
-  }
-  #page-jadwal .cal-cell {
-    min-height: 50px;
-    padding: 2px;
-  }
-  #page-jadwal .cal-event {
-    font-size: 9px !important;
-    padding: 4px !important;
-    line-height: 1.2;
-    margin: 1px;
+/* Mobile Responsive Fix */
+@media(max-width: 768px) {
+  body, main, .page, .content {
+    background: #020617 !important;
   }
   
-  #page-jadwal .tw {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+  table {
+    font-size: 13px !important;
   }
-  #page-jadwal table td,
-  #page-jadwal table th {
-    font-size: 11px !important;
-    padding: 10px 8px !important;
-    white-space: nowrap;
+  
+  .stat {
+    border-radius: 14px !important;
+  }
+  
+  /* Pastikan elemen grid tetap proporsional */
+  #guruAbsSummary, #absensiSummary {
+    gap: 8px !important;
   }
 }
 
 /* ======================================
-FIX DARK MODE MOBILE
+FIX LIGHT MODE MOBILE
 ====================================== */
-
-:root{
-  color-scheme: dark;
-}
-
-*{
-  background-clip:padding-box;
-}
-
-body,
-html{
-  background:#020617 !important;
-  color:#e2e8f0;
-}
-
-/* container utama */
-main,
-.content,
-.page{
-  background:#020617 !important;
-}
-
-/* card dashboard */
-.card,
-.stat{
-  background:#0f172a !important;
-  border:1px solid rgba(255,255,255,0.06);
-}
-
-/* tabel */
-table{
-  background:#0f172a !important;
-}
-
-thead{
-  background:#111827 !important;
-}
-
-tbody tr{
-  background:#0f172a !important;
-}
-
-/* input form */
-input,
-select{
-  background:#1e293b !important;
-  border:1px solid #334155 !important;
-  color:#e2e8f0 !important;
-}
-
-/* placeholder */
-input::placeholder{
-  color:#94a3b8;
-}
-
-/* search box */
-input[type="search"]{
-  background:#1e293b !important;
-}
-
-/* mobile filter box */
-.filter,
-.filter-box{
-  background:#0f172a !important;
-}
-
-/* statistik card */
-.stat{
-  box-shadow:0 8px 20px rgba(0,0,0,.35);
-  border-radius:16px;
-}
-
-/* table wrapper mobile */
-@media(max-width:768px){
-
-  body{
-    background:#020617 !important;
+@media (max-width: 768px) {
+  /* Perbaiki background halaman pada mobile light mode */
+  html[data-theme="light"] body,
+  html[data-theme="light"] main,
+  html[data-theme="light"] .page,
+  html[data-theme="light"] .content {
+    background: #f1f5f9 !important;
+    color: #0f172a !important; /* Penyesuaian agar teks tetap terbaca */
   }
 
-  .page{
-    background:#020617 !important;
+  /* Perbaiki card statistik agar tidak terlalu putih dan lebih modern */
+  html[data-theme="light"] .card,
+  html[data-theme="light"] .stat,
+  html[data-theme="light"] .filter-bar {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06) !important;
+    border-radius: 16px !important;
   }
 
-  .content{
-    background:#020617 !important;
+  /* Perbaiki input filter agar terlihat clean */
+  html[data-theme="light"] input,
+  html[data-theme="light"] select {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #1e293b !important;
+    border-radius: 12px !important;
+    padding: 10px !important;
   }
 
+  /* Perbaiki tabel agar lebih soft */
+  html[data-theme="light"] table {
+    background: #ffffff !important;
+  }
+  html[data-theme="light"] thead,
+  html[data-theme="light"] thead tr,
+  html[data-theme="light"] thead th {
+    background: #f8fafc !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    color: #475569 !important;
+  }
+  html[data-theme="light"] tbody tr {
+    background: #ffffff !important;
+  }
+  html[data-theme="light"] tbody td {
+    border-bottom: 1px solid #e2e8f0 !important;
+  }
+
+  /* Perbaiki proporsi statistik card agar lebih rapi di mobile (berlaku universal) */
+  .stat {
+    padding: 14px !important;
+  }
+  .stat-value {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+  }
+  .stat-label {
+    font-size: 12px !important;
+    opacity: 0.7 !important;
+  }
 }
 
 </style>
