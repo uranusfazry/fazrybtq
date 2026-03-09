@@ -414,6 +414,11 @@ body.custom-theme .stat-value {
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--t3); }
 
+/* ─── FULLSCREEN MODE ────────────────────────────── */
+body.fullscreen-mode {
+  overflow: hidden;
+}
+
 /* ─── LOGIN PAGE ─────────────────────────────────── */
 .login-wrap {
   display: none;
@@ -1764,11 +1769,13 @@ TOPBAR MOBILE & PROFESIONAL UI
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  height: 60px !important;
-  padding: 0 16px !important;
-  background: var(--card) !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
-  border-bottom: 1px solid var(--border) !important;
+  min-height: 60px !important;
+  height: auto !important;
+  padding: 13px 16px !important;
+  padding-top: max(13px, env(safe-area-inset-top)) !important; /* Area aman untuk Notch */
+  background: transparent !important; /* Menyatu utuh dengan background tanpa garis */
+  box-shadow: none !important;
+  border-bottom: none !important;
 }
 
 .page-title-wrap {
@@ -2908,7 +2915,9 @@ TAMBAHAN OVERRIDE: MOBILE LIGHT MODE FIX
   html[data-theme="light"] .navbar,
   html[data-theme="light"] header,
   html[data-theme="light"] .topbar {
-    background: var(--card) !important;
+    background: transparent !important;
+    border-bottom: none !important;
+    box-shadow: none !important;
   }
   /* Filter bar */
   html[data-theme="light"] .filter-bar{
@@ -2966,8 +2975,9 @@ FIX HEADER LIGHT MODE MOBILE
 
 html[data-theme="light"] .header,
 html[data-theme="light"] .topbar{
-background:#ffffff !important;
-border-bottom:1px solid #e2e8f0 !important;
+background:transparent !important;
+border-bottom:none !important;
+box-shadow:none !important;
 }
 
 /* TEXT HEADER */
@@ -3613,6 +3623,14 @@ background:transparent !important;
               <div><label>Semester</label><select class="inp" id="setSem"><option>Ganjil</option><option>Genap</option></select></div>
               <button class="btn btn-p" onclick="saveSetting()" style="width:100%;justify-content:center">💾 Simpan</button>
             </div>
+          </div>
+
+          <div class="card settings-card">
+            <div class="section-title">📺 Tampilan Layar</div>
+            <p style="color:var(--t2);font-size:12px;margin-bottom:14px;line-height:1.7">Gunakan mode layar penuh untuk pengalaman penggunaan yang lebih fokus (menghilangkan UI browser).</p>
+            <button class="btn btn-p" onclick="toggleFullscreen()" style="width:100%;justify-content:center">
+              <span id="fsIcon">🔲</span> &nbsp;Aktifkan Layar Penuh
+            </button>
           </div>
 
           <div class="card settings-card">
@@ -6118,6 +6136,54 @@ document.addEventListener("contextmenu", function(e) {
 window.addEventListener("resize", function(){
   applyPageWallpaper();
 });
+
+// ====================================================
+// FULLSCREEN MODE
+// ====================================================
+
+function toggleFullscreen() {
+  const elem = document.documentElement;
+  if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
+    // Masuk Fullscreen
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) { // Safari & Chrome Mobile
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { // IE11
+      elem.msRequestFullscreen();
+    }
+  } else {
+    // Keluar Fullscreen
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) { // Safari & Chrome Mobile
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) { // IE11
+      document.msExitFullscreen();
+    }
+  }
+}
+
+function updateFullscreenUI() {
+  const isFs = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+  const fsBtn = document.querySelector("button[onclick='toggleFullscreen()']");
+  
+  if (isFs) {
+    document.body.classList.add("fullscreen-mode");
+  } else {
+    document.body.classList.remove("fullscreen-mode");
+  }
+
+  if (fsBtn) {
+    fsBtn.innerHTML = isFs 
+      ? `<span id="fsIcon">🔳</span> &nbsp;Keluar Layar Penuh` 
+      : `<span id="fsIcon">🔲</span> &nbsp;Aktifkan Layar Penuh`;
+  }
+}
+
+document.addEventListener("fullscreenchange", updateFullscreenUI);
+document.addEventListener("webkitfullscreenchange", updateFullscreenUI);
+document.addEventListener("msfullscreenchange", updateFullscreenUI);
 
 // ====================================================
 // PRE-LOAD SETTINGS & INIT LOGIN PAGE
