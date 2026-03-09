@@ -1519,9 +1519,9 @@ GLOBAL MOBILE FIX
 =================================== */
 
 html, body {
-  max-width: 100%;
-  overflow-x: hidden;
-  /* overflow-y: auto; -> Dihapus untuk mencegah double scroll */
+/* PASTIKAN CONTAINER UTAMA TIDAK MENUTUPI BACKGROUND */
+#app, .app, .main, #main, .content {
+  background: transparent !important;
 }
 
 * {
@@ -1537,7 +1537,7 @@ html, body {
 .main, #main {
   overflow-x: hidden;
   flex: 1;
-  background: var(--bg);
+  background: transparent !important;
   transition: all .3s cubic-bezier(.4,0,.2,1);
   position: relative;
   display: flex;
@@ -3938,9 +3938,10 @@ function init() {
     DB.sobj('settings',{tahunAjaran:'2024/2025',semester:'Ganjil'});
   }
   
-  const s = DB.obj('settings');
-  if(s.themeImage) {
-    setThemeBackground(s.themeImage);
+  let settings = DB.obj('settings') || {};
+  if(settings.themeImage) {
+    applyTheme(settings.themeImage);
+    if(settings.themeColor) applyDynamicColor(settings.themeColor);
   }
 
   updateBadges();
@@ -5230,13 +5231,12 @@ function saveSetting() {
 // ====================================================
 // CUSTOM BACKGROUND THEME
 // ====================================================
-function setThemeBackground(url) {
+function applyTheme(url){
   document.body.classList.add("theme-background");
   document.body.style.backgroundImage = `url('${url}')`;
   document.body.style.backgroundSize = "cover";
   document.body.style.backgroundPosition = "center";
   document.body.style.backgroundRepeat = "no-repeat";
-  document.body.style.backgroundAttachment = "fixed";
 }
 
 async function extractColorFromImage(url) {
@@ -5419,21 +5419,23 @@ function addWallpaper() {
 
 async function useWallpaper(id) {
   if(!isAdmin()) return;
-  const settings = DB.obj("settings");
+  let settings = DB.obj("settings") || {};
   const wallpapers = settings.wallpapers || [];
   const wp = wallpapers.find(w => w.id === id);
   
   if(!wp) return;
 
   toast("⏳", "Menerapkan tema...", 2000);
-  setThemeBackground(wp.url);
   
+  // Langsung simpan ke database pengaturan agar permanen
   settings.themeImage = wp.url;
+  DB.sobj("settings", settings);
   
-  // Render seketika untuk memindahkan badge "Aktif"
+  // Terapkan tema ke body
+  applyTheme(wp.url);
+  
   renderWallpapers();
   
-  // Ekstrak warna dominan untuk Dynamic Theme
   const dominantColor = await extractColorFromImage(wp.url);
   if (dominantColor) {
     settings.themeColor = dominantColor;
@@ -5443,8 +5445,9 @@ async function useWallpaper(id) {
     document.body.classList.remove("custom-theme");
   }
   
+  // Simpan ekstraksi warna
   DB.sobj("settings", settings);
-  toast("🎨", `Tema ${wp.name} diterapkan!`);
+  toast("🎨", `Tema ${wp.name} diterapkan secara global!`);
 }
 
 function deleteWallpaper(id, name) {
@@ -5718,14 +5721,13 @@ document.addEventListener("contextmenu", function(e) {
 });
 
 // Otomatis terapkan background saat HTML dimuat
-document.addEventListener("DOMContentLoaded", function() {
-  const settings = DB.obj("settings");
-  if(settings.themeImage) {
-    setThemeBackground(settings.themeImage);
+document.addEventListener("DOMContentLoaded", function(){
+  let settings = DB.obj("settings") || {};
+  if(settings.themeImage){
+    applyTheme(settings.themeImage);
     if(settings.themeColor) {
       applyDynamicColor(settings.themeColor);
     } else {
-      // Jika warna belum pernah diekstrak, lakukan ekstraksi di background
       extractColorFromImage(settings.themeImage).then(color => {
         if(color) {
           settings.themeColor = color;
