@@ -2,7 +2,10 @@
 <html lang="id" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<!-- Menambahkan viewport-fit=cover untuk menembus area notch/kamera -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<!-- Tambahkan warna status bar agar menyatu dan tidak hitam bawaan browser -->
+<meta name="theme-color" id="themeColorMeta" content="#04080f">
 <title>BTQ Pro – Manajemen BTQ Sekolah</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -75,6 +78,8 @@ body {
   font-family: 'Plus Jakarta Sans', sans-serif;
   background-color: var(--bg);
   color: var(--t1);
+  min-height: 100vh;
+  min-height: 100dvh; /* Menggunakan tinggi dinamis layar mobile */
   overflow: hidden; /* Menghindari scroll dari body */
   -webkit-font-smoothing: antialiased;
   transition: background-color var(--transition), color var(--transition), opacity 0.3s ease;
@@ -441,6 +446,7 @@ body.custom-theme .stat-value {
 body.fullscreen-mode {
   width: 100vw;
   height: 100vh;
+  height: 100dvh; /* Fullscreen sejati anti kepotong address bar */
   overflow: hidden;
 }
 
@@ -542,6 +548,7 @@ body.app-ready .login-wrap {
 #app { 
   display: none; /* Akan diubah menjadi flex oleh JavaScript saat login */
   min-height: 100vh; 
+  min-height: 100dvh; /* Menggunakan tinggi dinamis layar mobile */
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -1686,6 +1693,7 @@ html, body {
   overflow-x: hidden;
   flex: 1;
   min-height: 100vh;
+  min-height: 100dvh; /* Menggunakan tinggi dinamis layar mobile */
   width: 100%;
   background: transparent !important;
   transition: all .3s cubic-bezier(.4,0,.2,1);
@@ -1841,7 +1849,7 @@ TOPBAR MOBILE & PROFESIONAL UI
   min-height: 60px !important;
   height: auto !important;
   padding: 13px 16px !important;
-  padding-top: calc(10px + env(safe-area-inset-top)) !important; /* Area aman untuk Notch */
+  padding-top: calc(12px + env(safe-area-inset-top)) !important; /* Area aman untuk Notch disesuaikan (12px) */
   background: transparent !important; /* Menyatu utuh dengan background tanpa garis */
   box-shadow: none !important;
   border-bottom: none !important;
@@ -6124,6 +6132,12 @@ function openRoleInfoModal() { show('mRoleInfo'); }
 function applyColorTheme(theme) {
   if (theme) {
     document.documentElement.setAttribute("data-theme", theme);
+    
+    // Ubah theme-color meta tag agar status bar OS mengikuti warna mode (Dark/Light)
+    const metaThemeColor = document.getElementById("themeColorMeta");
+    if (metaThemeColor) {
+      metaThemeColor.content = theme === 'light' ? '#f8fafc' : '#04080f';
+    }
   }
 }
 
