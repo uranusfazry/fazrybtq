@@ -65,12 +65,12 @@ html { scroll-behavior: smooth; }
 /* FIX PAGE HEIGHT */
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  background: var(--bg);
+  background-color: var(--bg);
   color: var(--t1);
   height: 100vh;
   overflow: hidden; /* Menghindari scroll dari body */
   -webkit-font-smoothing: antialiased;
-  transition: background var(--transition), color var(--transition);
+  transition: background-color var(--transition), color var(--transition);
 }
 
 /* subtle noise texture overlay */
@@ -98,6 +98,203 @@ body::after {
   z-index: 0;
 }
 
+/* ─── CUSTOM BACKGROUND THEME ────────────────────── */
+body.theme-background {
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+  transition: background 0.6s ease;
+}
+
+body.theme-background::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  z-index: -1;
+}
+
+[data-theme="light"] body.theme-background::before {
+  background: rgba(255, 255, 255, 0.75); /* Overlay terang untuk light mode */
+}
+
+/* ─── DYNAMIC THEME (FROM IMAGE) ─────────────────── */
+body.custom-theme .card {
+  background: rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+body.custom-theme .topbar {
+  background: rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+
+body.custom-theme .sidebar {
+  background: rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+body.custom-theme .stat-value {
+  color: var(--acc) !important;
+}
+
+/* Light mode adjustments for Dynamic Theme */
+[data-theme="light"] body.custom-theme .card {
+  background: rgba(255, 255, 255, 0.45) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+[data-theme="light"] body.custom-theme .topbar {
+  background: rgba(255, 255, 255, 0.4) !important;
+}
+[data-theme="light"] body.custom-theme .sidebar {
+  background: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* ─── WALLPAPER MANAGER (SAAS UPGRADE) ──────────────────────────── */
+.wallpaper-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  max-height: 480px;
+  overflow-y: auto;
+  padding-right: 4px;
+  padding-bottom: 10px;
+}
+.wallpaper-card {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: grab;
+}
+.wallpaper-card:active {
+  cursor: grabbing;
+}
+.wallpaper-card:hover {
+  border-color: var(--acc);
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+}
+
+/* Indikator Wallpaper Aktif */
+.wallpaper-card.active {
+  border: 2px solid var(--acc) !important;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.15), 0 8px 24px rgba(0,0,0,0.25) !important;
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+.wp-active-badge {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: var(--acc);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  z-index: 2;
+  pointer-events: none;
+}
+
+[data-theme="light"] .wallpaper-card {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(0, 60, 140, 0.1);
+}
+[data-theme="light"] .wallpaper-card:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: var(--acc);
+}
+[data-theme="light"] .wallpaper-card.active {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2), 0 8px 24px rgba(0,30,80,0.15) !important;
+}
+
+.wallpaper-preview {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border);
+  transition: opacity 0.3s;
+  
+  /* Anti Drag & Selection Protection */
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.wallpaper-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  z-index: 2;
+  cursor: default;
+}
+.wallpaper-btn-download {
+  background: rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+.wallpaper-btn-download:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.wallpaper-name {
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  color: var(--t1);
+  padding: 0 4px;
+}
+.wallpaper-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Saat di-drag */
+.wallpaper-card.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+  box-shadow: none;
+}
+.wallpaper-card.drag-over {
+  border-top: 3px solid var(--acc);
+}
+
 /* ─── SCROLLBAR ──────────────────────────────────── */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -111,7 +308,7 @@ body::after {
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: var(--bg);
+  background: transparent;
   position: relative;
   overflow: hidden;
 }
@@ -200,6 +397,7 @@ body::after {
   flex-direction: row; 
   position: relative; 
   z-index: 1; 
+  background: transparent;
 }
 
 /* ─── SIDEBAR NORMAL ────────────────────────────────────── */
@@ -408,7 +606,7 @@ SIDEBAR ACTIVE FIX
   display: flex;
   flex-direction: column;
   overflow: hidden; /* Mengunci main area agar tidak memicu scroll luar */
-  background: var(--bg);
+  background: transparent !important;
   position: relative;
 }
 
@@ -544,6 +742,7 @@ SIDEBAR ACTIVE FIX
   flex: 1;
   overflow-y: auto; /* Satu-satunya area yang boleh di-scroll vertikal */
   overflow-x: hidden;
+  background: transparent !important;
 }
 
 /* ─── PAGE ANIMATIONS ────────────────────────────── */
@@ -2335,17 +2534,17 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
   }
 }
 
-/* ======================================
-FIX LIGHT MODE MOBILE
-====================================== */
+/* GLOBAL MOBILE FIX */
 @media (max-width: 768px) {
   /* Perbaiki background halaman pada mobile light mode */
-  html[data-theme="light"] body,
+  html[data-theme="light"] body {
+    background-color: #f1f5f9 !important;
+  }
   html[data-theme="light"] main,
   html[data-theme="light"] .page,
   html[data-theme="light"] .content {
-    background: #f1f5f9 !important;
-    color: #0f172a !important; /* Penyesuaian agar teks tetap terbaca */
+    background: transparent !important;
+    color: #0f172a !important;
   }
 
   /* Perbaiki card statistik agar tidak terlalu putih dan lebih modern */
@@ -2402,17 +2601,17 @@ FIX LIGHT MODE MOBILE
 
 /* ======================================
 SAAS LIGHT MODE MOBILE FIX (NEW)
-====================================== */
+/* SAAS LIGHT MODE MOBILE FIX (NEW) */
 @media (max-width: 768px) {
   /* Perbaiki background halaman */
   html[data-theme="light"] body {
-    background: #f8fafc !important;
+    background-color: #f8fafc !important;
   }
   html[data-theme="light"] main {
-    background: #f8fafc !important;
+    background: transparent !important;
   }
   html[data-theme="light"] .page {
-    background: #f8fafc !important;
+    background: transparent !important;
   }
   
   /* Perbaiki input filter agar sesuai light theme */
@@ -2456,18 +2655,18 @@ SAAS LIGHT MODE MOBILE FIX (NEW)
   }
 }
 
-/* ======================================
-FINAL OVERRIDE: MOBILE LIGHT MODE FIX 
-====================================== */
+/* FINAL OVERRIDE: MOBILE LIGHT MODE FIX */
 @media (max-width:768px){
   /* Background halaman */
   html[data-theme="light"] body{
-    background:#f8fafc !important;
+    background-color:#f8fafc !important;
   }
   /* Container utama */
-  html[data-theme="light"] .card,
   html[data-theme="light"] .content,
   html[data-theme="light"] .page{
+    background:transparent !important;
+  }
+  html[data-theme="light"] .card{
     background:#ffffff !important;
     border:1px solid #e2e8f0 !important;
   }
@@ -2513,16 +2712,16 @@ FINAL OVERRIDE: MOBILE LIGHT MODE FIX
 
 /* ======================================
 TAMBAHAN OVERRIDE: MOBILE LIGHT MODE FIX
-====================================== */
+/* TAMBAHAN OVERRIDE: MOBILE LIGHT MODE FIX */
 @media (max-width:768px){
   /* Background utama */
   html[data-theme="light"] body{
-    background:#f8fafc !important;
+    background-color:#f8fafc !important;
   }
   /* Container halaman */
   html[data-theme="light"] .content,
   html[data-theme="light"] .page{
-    background:#f8fafc !important;
+    background:transparent !important;
   }
   /* Navbar mobile / Topbar */
   html[data-theme="light"] .navbar,
@@ -2687,12 +2886,12 @@ FIX BACKGROUND PAGE
 
 @media (max-width:768px){
 
+/* FIX BACKGROUND PAGE */
+@media (max-width:768px){
 html[data-theme="light"] .content{
-background:#f8fafc !important;
+background:transparent !important;
 }
-
 }
-
 </style>
 </head>
 <body>
@@ -3222,6 +3421,33 @@ background:#f8fafc !important;
               <button class="btn btn-p" onclick="saveSetting()" style="width:100%;justify-content:center">💾 Simpan</button>
             </div>
           </div>
+
+          <div class="card settings-card">
+            <div class="section-title">🖼️ Background Wallpaper Manager</div>
+            <p style="color:var(--t2);font-size:12px;margin-bottom:14px;line-height:1.7">Kelola koleksi background wallpaper Anda (Maks 20). Klik "Gunakan" pada galeri untuk menerapkan tema secara instan.</p>
+            
+            <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px">
+              <div class="form2" style="margin-bottom:12px">
+                <div>
+                  <label>Nama Wallpaper</label>
+                  <input type="text" class="inp" id="wpNameInput" placeholder="Contoh: Anime Red">
+                </div>
+                <div>
+                  <label>URL Gambar</label>
+                  <input type="url" class="inp" id="wpUrlInput" placeholder="https://i.imghippo.com/...png">
+                </div>
+              </div>
+              <button class="btn btn-p" onclick="addWallpaper()" style="width:100%;justify-content:center">➕ Simpan Wallpaper</button>
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+              <div style="font-weight:700;font-size:13px">Galeri Wallpaper</div>
+              <button class="btn btn-d" onclick="removeThemeImage()" style="padding:6px 12px;font-size:11px">🔄 Reset Default</button>
+            </div>
+            
+            <div id="wallpaperGallery" class="wallpaper-grid"></div>
+          </div>
+
           <div class="card settings-card">
             <div class="section-title">🏫 Kenaikan Kelas</div>
             <p style="color:var(--t2);font-size:12px;margin-bottom:14px;line-height:1.7">Proses kenaikan kelas otomatis. Santri kelas 5 semester Genap menjadi Alumni.</p>
@@ -3701,6 +3927,11 @@ function init() {
     DB.sobj('settings',{tahunAjaran:'2024/2025',semester:'Ganjil'});
   }
   
+  const s = DB.obj('settings');
+  if(s.themeImage) {
+    setThemeBackground(s.themeImage);
+  }
+
   updateBadges();
   renderDashboard();
   renderSantri();
@@ -4084,6 +4315,7 @@ function confirmDel(type,id,nama) {
     else if(type==='jadwal')delJadwal(id);
     else if(type==='absensi-santri')delAbsensi(id);
     else if(type==='absensi-guru')delAbsensiGuru(id);
+    else if(type==='wallpaper')deleteWallpaperProcess(id);
     closeM('mKonfirm');
   };
   show('mKonfirm');
@@ -4947,6 +5179,7 @@ function renderPengaturan() {
   const sem=document.getElementById('setSem');
   if(ta) ta.value=s.tahunAjaran||'2024/2025';
   if(sem) sem.value=s.semester||'Ganjil';
+  
   const infoTA=document.getElementById('infoTA');
   const infoSem=document.getElementById('infoSem');
   if(infoTA) infoTA.textContent=s.tahunAjaran||'—';
@@ -4964,6 +5197,8 @@ function renderPengaturan() {
       ['Storage','Google Spreadsheet','var(--acc3)'],
     ].map(([l,v,c])=>`<div class="info-row"><span class="label">${l}</span><span style="font-weight:700;color:${c}">${v}</span></div>`).join('');
   }
+  
+  renderWallpapers();
 }
 
 function saveSetting() {
@@ -4971,9 +5206,290 @@ function saveSetting() {
   const ta=document.getElementById('setTA').value.trim();
   const sem=document.getElementById('setSem').value;
   if(!ta){toast('❌','TA tidak boleh kosong');return;}
-  DB.sobj('settings',{tahunAjaran:ta,semester:sem});
+  
+  const currentSettings = DB.obj('settings');
+  currentSettings.tahunAjaran = ta;
+  currentSettings.semester = sem;
+  DB.sobj('settings', currentSettings);
+  
   renderPengaturan();
   toast('✅','Pengaturan disimpan!');
+}
+
+// ====================================================
+// CUSTOM BACKGROUND THEME
+// ====================================================
+function setThemeBackground(url) {
+  document.body.classList.add("theme-background");
+  document.body.style.backgroundImage = `url('${url}')`;
+  document.body.style.backgroundSize = "cover";
+  document.body.style.backgroundPosition = "center";
+  document.body.style.backgroundRepeat = "no-repeat";
+  document.body.style.backgroundAttachment = "fixed";
+}
+
+async function extractColorFromImage(url) {
+  const img = new Image();
+  img.crossOrigin = "Anonymous";
+  return new Promise(resolve => {
+    img.onload = function() {
+      try {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        let r = 0, g = 0, b = 0, count = 0;
+        // Skip pixels to process faster (every 40th pixel)
+        for (let i = 0; i < data.length; i += 40) {
+          r += data[i];
+          g += data[i+1];
+          b += data[i+2];
+          count++;
+        }
+        if (count > 0) {
+          r = Math.floor(r / count);
+          g = Math.floor(g / count);
+          b = Math.floor(b / count);
+          resolve(`rgb(${r},${g},${b})`);
+        } else {
+          resolve(null);
+        }
+      } catch(e) {
+        console.warn("CORS/Canvas Error:", e);
+        resolve(null); // Resolve null if blocked by CORS
+      }
+    };
+    img.onerror = () => resolve(null);
+    img.src = url;
+  });
+}
+
+function applyDynamicColor(color) {
+  if (!color) return;
+  document.documentElement.style.setProperty("--acc", color);
+  document.documentElement.style.setProperty("--cardTint", color);
+  document.documentElement.style.setProperty("--highlight", color);
+  document.body.classList.add("custom-theme");
+}
+
+// === WALLPAPER MANAGER DRAG & DROP ===
+let draggedWpIndex = null;
+function wpDragStart(e, index) {
+  if(!isAdmin()) return;
+  draggedWpIndex = index;
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(() => e.target.classList.add('dragging'), 0);
+}
+function wpDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const card = e.target.closest('.wallpaper-card');
+  if(card) card.classList.add('drag-over');
+  return false;
+}
+function wpDragLeave(e) {
+  const card = e.target.closest('.wallpaper-card');
+  if(card) card.classList.remove('drag-over');
+}
+function wpDrop(e, dropIndex) {
+  e.stopPropagation();
+  const card = e.target.closest('.wallpaper-card');
+  if(card) card.classList.remove('drag-over');
+  
+  if (draggedWpIndex !== null && draggedWpIndex !== dropIndex) {
+    let settings = DB.obj("settings");
+    let wps = settings.wallpapers || [];
+    const item = wps.splice(draggedWpIndex, 1)[0];
+    wps.splice(dropIndex, 0, item);
+    DB.sobj("settings", settings);
+    renderWallpapers();
+  }
+  return false;
+}
+function wpDragEnd(e) {
+  e.target.classList.remove('dragging');
+  document.querySelectorAll('.wallpaper-card').forEach(c => c.classList.remove('drag-over'));
+  draggedWpIndex = null;
+}
+
+function renderWallpapers() {
+  const settings = DB.obj('settings');
+  const wps = settings.wallpapers || [];
+  const gallery = document.getElementById('wallpaperGallery');
+  if (!gallery) return;
+  
+  if (wps.length === 0) {
+    gallery.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--t2);border:1px dashed var(--border);border-radius:16px;background:rgba(255,255,255,0.02)">🖼️ Belum ada wallpaper tersimpan.</div>';
+    return;
+  }
+  
+  const currentActiveUrl = settings.themeImage || '';
+  
+  gallery.innerHTML = wps.map((wp, i) => {
+    const isActive = currentActiveUrl === wp.url;
+    return `
+    <div class="wallpaper-card ${isActive ? 'active' : ''}" 
+         draggable="true" 
+         ondragstart="wpDragStart(event, ${i})" 
+         ondragover="wpDragOver(event)" 
+         ondragleave="wpDragLeave(event)"
+         ondrop="wpDrop(event, ${i})" 
+         ondragend="wpDragEnd(event)">
+      
+      ${isActive ? '<div class="wp-active-badge">Active</div>' : ''}
+      
+      <div style="position: relative; width: 100%;">
+        <div class="wallpaper-overlay"></div>
+        <img src="${wp.url}" class="wallpaper-preview" alt="${wp.name}" loading="lazy" draggable="false" 
+             onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'300\\' height=\\'168\\'><rect width=\\'300\\' height=\\'168\\' fill=\\'%231e293b\\'/><text x=\\'150\\' y=\\'84\\' fill=\\'%2394a3b8\\' font-family=\\'Arial\\' font-size=\\'14\\' text-anchor=\\'middle\\' alignment-baseline=\\'middle\\'>Gambar Rusak/Tidak Valid</text></svg>'">
+      </div>
+      
+      <div class="wallpaper-name" title="${wp.name}" style="margin-top:2px">${wp.name}</div>
+      <div class="wallpaper-actions">
+        <button class="btn btn-p" onclick="useWallpaper('${wp.id}')" style="flex:1;padding:8px;font-size:12px;justify-content:center" title="Gunakan Wallpaper Ini">✨ Gunakan</button>
+        <button class="btn btn-s wallpaper-btn-download" onclick="downloadWallpaper('${wp.url}', '${wp.name}')" style="width:34px;height:34px;padding:0;display:flex;align-items:center;justify-content:center" title="Download Wallpaper">⬇️</button>
+        <button class="btn btn-d" onclick="deleteWallpaper('${wp.id}', '${wp.name}')" style="width:34px;height:34px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:10px" title="Hapus Wallpaper">🗑️</button>
+      </div>
+    </div>
+  `}).join('');
+  
+  // Tambahkan animasi fade transition saat UI dirender ulang
+  gallery.style.animation = 'none';
+  void gallery.offsetWidth; // Memicu reflow browser
+  gallery.style.animation = 'pageFade 0.3s ease';
+}
+
+function addWallpaper() {
+  if(!isAdmin()) return;
+  const name = document.getElementById('wpNameInput').value.trim();
+  const url = document.getElementById('wpUrlInput').value.trim();
+
+  if(!name || !url) {
+    toast('⚠️', 'Nama dan URL wallpaper wajib diisi!');
+    return;
+  }
+
+  const settings = DB.obj("settings");
+  if(!settings.wallpapers) settings.wallpapers = [];
+
+  if(settings.wallpapers.length >= 20) {
+    toast('⚠️', 'Maksimal 20 wallpaper tersimpan!');
+    return;
+  }
+
+  toast('⏳', 'Memvalidasi URL gambar...', 2000);
+  
+  // Pre-load validasi gambar sebelum menyimpan
+  const img = new Image();
+  img.onload = function() {
+    settings.wallpapers.push({
+      id: 'wp_' + Date.now(),
+      name: name,
+      url: url
+    });
+
+    DB.sobj("settings", settings);
+
+    document.getElementById('wpNameInput').value = '';
+    document.getElementById('wpUrlInput').value = '';
+
+    renderWallpapers();
+    toast('✅', 'Wallpaper berhasil disimpan!');
+  };
+  
+  img.onerror = function() {
+    toast('❌', 'URL gagal dimuat atau bukan gambar valid!');
+  };
+  
+  img.src = url;
+}
+
+async function useWallpaper(id) {
+  if(!isAdmin()) return;
+  const settings = DB.obj("settings");
+  const wallpapers = settings.wallpapers || [];
+  const wp = wallpapers.find(w => w.id === id);
+  
+  if(!wp) return;
+
+  toast("⏳", "Menerapkan tema...", 2000);
+  setThemeBackground(wp.url);
+  
+  settings.themeImage = wp.url;
+  
+  // Render seketika untuk memindahkan badge "Aktif"
+  renderWallpapers();
+  
+  // Ekstrak warna dominan untuk Dynamic Theme
+  const dominantColor = await extractColorFromImage(wp.url);
+  if (dominantColor) {
+    settings.themeColor = dominantColor;
+    applyDynamicColor(dominantColor);
+  } else {
+    settings.themeColor = "";
+    document.body.classList.remove("custom-theme");
+  }
+  
+  DB.sobj("settings", settings);
+  toast("🎨", `Tema ${wp.name} diterapkan!`);
+}
+
+function deleteWallpaper(id, name) {
+  if(!isAdmin()) return;
+  // Memanfaatkan modal konfirmasi yang sudah ada
+  confirmDel('wallpaper', id, `wallpaper "${name}"`);
+}
+
+function deleteWallpaperProcess(id) {
+  const settings = DB.obj("settings");
+  if(!settings.wallpapers) return;
+  
+  settings.wallpapers = settings.wallpapers.filter(w => w.id !== id);
+  DB.sobj("settings", settings);
+  renderWallpapers();
+  toast("🗑️", "Wallpaper dihapus!");
+}
+
+function downloadWallpaper(url, name) {
+  toast("⏳", "Menyiapkan unduhan...", 2000);
+  fetch(url)
+    .then(response => response.blob())
+    .then(blob => {
+      const link = document.createElement("a");
+      const objectURL = URL.createObjectURL(blob);
+      link.href = objectURL;
+      link.download = name + ".jpg";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(objectURL);
+      toast("✅", "Wallpaper berhasil diunduh");
+    })
+    .catch(err => {
+      console.warn("Download Error:", err);
+      // Fallback jika hosting gambar memblokir Fetch (CORS policy)
+      window.open(url, '_blank');
+      toast("⚠️", "Dialihkan ke tab baru karena pembatasan server");
+    });
+}
+
+function removeThemeImage() {
+  if(!isAdmin()) return;
+  let settings = DB.obj("settings");
+  settings.themeImage = "";
+  settings.themeColor = "";
+  DB.sobj("settings", settings);
+  
+  document.body.classList.remove("theme-background", "custom-theme");
+  document.body.style.backgroundImage = "";
+  document.documentElement.style.removeProperty("--acc");
+  document.documentElement.style.removeProperty("--cardTint");
+  document.documentElement.style.removeProperty("--highlight");
+  
+  renderWallpapers(); // Hilangkan badge aktif jika ada
+  toast("🧹", "Background dan Theme berhasil direset ke Default");
 }
 
 function prosesKenaikan() {
@@ -5166,6 +5682,48 @@ document.querySelectorAll('.modal-overlay').forEach(function(ov){
       ov.style.display='none';
     }
   });
+});
+
+// ====================================================
+// ANTI DRAG & ANTI RIGHT-CLICK PROTECTION (WALLPAPER)
+// ====================================================
+document.addEventListener("dragstart", function(e) {
+  if (e.target.tagName === "IMG" || e.target.classList.contains("wallpaper-overlay")) {
+    e.preventDefault();
+  }
+});
+
+document.addEventListener("mousedown", function(e) {
+  // Hanya blokir pada overlay gambar agar fungsi drag-and-drop kartu (Reorder) tetap bekerja
+  if (e.target.classList.contains("wallpaper-overlay") || e.target.classList.contains("wallpaper-preview")) {
+    e.preventDefault();
+  }
+});
+
+document.addEventListener("contextmenu", function(e) {
+  if (e.target.closest(".wallpaper-card")) {
+    e.preventDefault();
+  }
+});
+
+// Otomatis terapkan background saat HTML dimuat
+document.addEventListener("DOMContentLoaded", function() {
+  const settings = DB.obj("settings");
+  if(settings.themeImage) {
+    setThemeBackground(settings.themeImage);
+    if(settings.themeColor) {
+      applyDynamicColor(settings.themeColor);
+    } else {
+      // Jika warna belum pernah diekstrak, lakukan ekstraksi di background
+      extractColorFromImage(settings.themeImage).then(color => {
+        if(color) {
+          settings.themeColor = color;
+          DB.sobj("settings", settings);
+          applyDynamicColor(color);
+        }
+      });
+    }
+  }
 });
 
 // ====================================================
