@@ -4086,6 +4086,10 @@ Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
 // ====================================================
 async function handleLogin(e) {
   e.preventDefault();
+  
+  // Otomatis masuk ke mode layar penuh saat mulai proses login
+  enterFullscreen();
+  
   const username = document.getElementById('lu').value;
   const password = document.getElementById('lp').value;
 
@@ -4116,6 +4120,9 @@ async function handleLogin(e) {
   }
 }
 function guestLogin() {
+  // Otomatis masuk ke mode layar penuh saat masuk mode tamu
+  enterFullscreen();
+  
   sessionStorage.setItem('role','guest');
   toast('👁️','Mode tamu aktif (read-only)');
   startApp();
@@ -6140,6 +6147,21 @@ window.addEventListener("resize", function(){
 // ====================================================
 // FULLSCREEN MODE
 // ====================================================
+
+function enterFullscreen() {
+  const elem = document.documentElement;
+  try {
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) { // Safari & Chrome Mobile
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { // IE11
+      elem.msRequestFullscreen();
+    }
+  } catch(e) {
+    console.log("Fullscreen tidak didukung", e);
+  }
+}
 
 function toggleFullscreen() {
   const elem = document.documentElement;
