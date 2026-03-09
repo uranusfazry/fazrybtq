@@ -541,6 +541,86 @@ body.app-ready .login-wrap {
   50%        { transform: translateY(-6px); }
 }
 
+/* ─── NEW FORM LOGIN ELEMENTS ─── */
+.input-group {
+  margin-bottom: 16px;
+}
+
+.input-group label {
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  display: block;
+  color: var(--t2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0 14px;
+  height: 46px;
+  transition: all var(--transition);
+}
+
+[data-theme="light"] .input-wrapper {
+  background: #ffffff;
+  border-color: #cbd5e1;
+}
+
+.input-wrapper:focus-within {
+  border-color: rgba(56,189,248,0.6);
+  background: rgba(56,189,248,0.04);
+  box-shadow: 0 0 0 3px rgba(56,189,248,0.12);
+}
+
+[data-theme="light"] .input-wrapper:focus-within {
+  border-color: #38bdf8;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
+}
+
+.input-icon {
+  font-size: 16px;
+  opacity: 0.7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.input-wrapper input {
+  border: none;
+  outline: none;
+  font-size: 14px;
+  flex: 1;
+  background: transparent;
+  color: var(--t1);
+  height: 100%;
+  width: 100%;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.input-wrapper input::placeholder {
+  color: var(--t3);
+}
+
+.login-btn {
+  width: 100%;
+  height: 46px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
 /* ─── APP LAYOUT ─────────────────────────────────── */
 #app { 
   display: none; /* Akan diubah menjadi flex oleh JavaScript saat login */
@@ -1917,25 +1997,33 @@ LOGIN MOBILE RESPONSIVE
     width: 100%;
     max-width: 420px;
     margin: auto;
-    padding: 28px 20px; /* Padding dioptimalkan agar tidak sumpek */
+    padding: 28px 24px; /* Padding proporsional */
     border-radius: 20px;
   }
-  .login-card form {
-    gap: 14px !important;
+  
+  /* Form Login Mobile Fix */
+  .input-group {
+    margin-bottom: 14px;
   }
-  .login-card .inp {
-    height: 44px !important;
-    font-size: 14px !important;
-    padding: 10px 14px !important;
-    border-radius: 10px !important;
+  .input-group label {
+    font-size: 11px;
+    margin-bottom: 6px;
   }
-  .login-card .btn {
-    width: 100% !important;
-    padding: 12px !important;
-    border-radius: 12px !important;
-    min-height: 44px !important;
-    font-size: 14px !important;
+  .input-wrapper {
+    height: 44px; /* Tinggi optimal untuk touch screen */
+    padding: 0 12px;
   }
+  .input-icon {
+    font-size: 15px; /* Icon diperkecil agar tidak mendominasi */
+  }
+  .input-wrapper input {
+    font-size: 14px;
+  }
+  .login-btn {
+    height: 46px;
+    border-radius: 12px;
+  }
+  
   .login-logo {
     width: 64px;
     height: 64px;
@@ -3229,32 +3317,32 @@ background:transparent !important;
       <div style="color:var(--t2);font-size:13px;font-weight:500">Sistem Manajemen BTQ Sekolah</div>
     </div>
 
-    <form onsubmit="handleLogin(event)" style="display:flex;flex-direction:column;gap:16px">
-      <div>
+    <form onsubmit="handleLogin(event)">
+      <div class="input-group">
         <label>Username</label>
-        <div style="position:relative">
-          <span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--t2);font-size:14px">👤</span>
-          <input id="lu" type="text" class="inp" placeholder="Masukkan username" style="padding-left:40px" required>
+        <div class="input-wrapper">
+          <span class="input-icon">👤</span>
+          <input id="lu" type="text" placeholder="Masukkan username" required autocomplete="username">
         </div>
       </div>
-      <div>
+      <div class="input-group">
         <label>Password</label>
-        <div style="position:relative">
-          <span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--t2);font-size:14px">🔒</span>
-          <input id="lp" type="password" class="inp" placeholder="Masukkan password" style="padding-left:40px" required>
+        <div class="input-wrapper">
+          <span class="input-icon">🔒</span>
+          <input id="lp" type="password" placeholder="Masukkan password" required autocomplete="current-password">
         </div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
-        <button type="submit" class="btn btn-p" style="width:100%;justify-content:center;padding:13px;font-size:14px;border-radius:12px">
-          🔑 &nbsp;Login Admin
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:20px">
+        <button type="submit" class="btn btn-p login-btn">
+          🔑 Login Admin
         </button>
-        <button type="button" class="btn btn-s" onclick="guestLogin()" style="width:100%;justify-content:center;padding:13px;font-size:14px;border-radius:12px">
-          👁️ &nbsp;Masuk sebagai Tamu
+        <button type="button" class="btn btn-s login-btn" onclick="guestLogin()">
+          👁️ Masuk sebagai Tamu
         </button>
       </div>
     </form>
 
-    <div style="text-align:center;margin-top:20px;padding-top:20px;border-top:1px solid var(--border)">
+    <div style="text-align:center;margin-top:24px;padding-top:20px;border-top:1px solid var(--border)">
       <span style="font-size:11px;color:var(--t3)">Tamu hanya dapat melihat data · read-only</span>
     </div>
   </div>
