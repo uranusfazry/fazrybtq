@@ -2,10 +2,7 @@
 <html lang="id" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<!-- Menambahkan viewport-fit=cover untuk menembus area notch/kamera -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<!-- Tambahkan warna status bar agar menyatu dan tidak hitam bawaan browser -->
-<meta name="theme-color" id="themeColorMeta" content="#04080f">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>BTQ Pro – Manajemen BTQ Sekolah</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -84,21 +81,9 @@ body {
   -webkit-font-smoothing: antialiased;
   transition: background-color var(--transition), color var(--transition), opacity 0.3s ease;
   
-  /* Dukungan Safe Area (Notch / Kamera) Standar */
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
-  padding-left: env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
-}
-
-/* Dukungan ekstra untuk browser dengan @supports */
-@supports(padding: max(0px)) {
-  body {
-    padding-top: max(env(safe-area-inset-top), 0px);
-    padding-bottom: max(env(safe-area-inset-bottom), 0px);
-    padding-left: max(env(safe-area-inset-left), 0px);
-    padding-right: max(env(safe-area-inset-right), 0px);
-  }
+  /* PENTING: Padding safe-area global dihapus dari body 
+     agar background benar-benar menyentuh ujung atas layar (notch) tanpa area hitam.
+     Safe area dipindahkan langsung ke dalam .topbar, .sidebar, dan .login-wrap. */
 }
 
 /* State Loading & Premium Loader */
@@ -448,15 +433,23 @@ body.fullscreen-mode {
   height: 100vh;
   height: 100dvh; /* Fullscreen sejati anti kepotong address bar */
   overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
 
 /* ─── LOGIN PAGE ─────────────────────────────────── */
 .login-wrap {
   display: none;
   min-height: 100vh;
+  min-height: 100dvh;
   align-items: center;
   justify-content: center;
   padding: 24px;
+  /* Safe area khusus untuk layar login */
+  padding-top: max(24px, env(safe-area-inset-top));
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
   background: transparent;
   position: relative;
   overflow: hidden;
@@ -547,10 +540,7 @@ body.app-ready .login-wrap {
 /* ─── APP LAYOUT ─────────────────────────────────── */
 #app { 
   display: none; /* Akan diubah menjadi flex oleh JavaScript saat login */
-  min-height: 100vh; 
-  min-height: 100dvh; /* Menggunakan tinggi dinamis layar mobile */
-  width: 100%;
-  height: 100%;
+  height: 100vh; 
   overflow: hidden;
   flex-direction: row; 
   position: relative; 
@@ -1670,10 +1660,6 @@ GLOBAL MOBILE FIX
 =================================== */
 
 html, body {
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
 /* PASTIKAN CONTAINER UTAMA TIDAK MENUTUPI BACKGROUND */
 #app, .app, .main, #main, .content {
   background: transparent !important;
@@ -1692,9 +1678,6 @@ html, body {
 .main, #main {
   overflow-x: hidden;
   flex: 1;
-  min-height: 100vh;
-  min-height: 100dvh; /* Menggunakan tinggi dinamis layar mobile */
-  width: 100%;
   background: transparent !important;
   transition: all .3s cubic-bezier(.4,0,.2,1);
   position: relative;
@@ -1848,9 +1831,10 @@ TOPBAR MOBILE & PROFESIONAL UI
   justify-content: space-between !important;
   min-height: 60px !important;
   height: auto !important;
-  padding: 13px 16px !important;
-  padding-top: calc(12px + env(safe-area-inset-top)) !important; /* Area aman untuk Notch disesuaikan (12px) */
-  background: transparent !important; /* Menyatu utuh dengan background tanpa garis */
+  padding: 12px 16px !important;
+  /* Menerapkan safe-area langsung ke header agar menyatu dengan area notch/kamera */
+  padding-top: calc(12px + env(safe-area-inset-top)) !important; 
+  background: transparent !important; /* Menyatu utuh dengan background tanpa garis hitam */
   box-shadow: none !important;
   border-bottom: none !important;
   position: sticky !important;
@@ -1903,6 +1887,47 @@ TOPBAR MOBILE & PROFESIONAL UI
   border-radius: 8px !important;
 }
 
+}
+
+/* ===================================
+LOGIN MOBILE RESPONSIVE
+=================================== */
+
+@media (max-width: 768px) {
+  .login-wrap {
+    padding: 16px;
+    padding-top: max(16px, env(safe-area-inset-top));
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+  .login-card {
+    width: 100%;
+    max-width: 420px;
+    margin: auto;
+    padding: 28px 20px; /* Padding dioptimalkan agar tidak sumpek */
+    border-radius: 20px;
+  }
+  .login-card form {
+    gap: 14px !important;
+  }
+  .login-card .inp {
+    height: 44px !important;
+    font-size: 14px !important;
+    padding: 10px 14px !important;
+    border-radius: 10px !important;
+  }
+  .login-card .btn {
+    width: 100% !important;
+    padding: 12px !important;
+    border-radius: 12px !important;
+    min-height: 44px !important;
+    font-size: 14px !important;
+  }
+  .login-logo {
+    width: 64px;
+    height: 64px;
+    font-size: 32px;
+    margin-bottom: 16px;
+  }
 }
 
 /* ===================================
@@ -6132,12 +6157,6 @@ function openRoleInfoModal() { show('mRoleInfo'); }
 function applyColorTheme(theme) {
   if (theme) {
     document.documentElement.setAttribute("data-theme", theme);
-    
-    // Ubah theme-color meta tag agar status bar OS mengikuti warna mode (Dark/Light)
-    const metaThemeColor = document.getElementById("themeColorMeta");
-    if (metaThemeColor) {
-      metaThemeColor.content = theme === 'light' ? '#f8fafc' : '#04080f';
-    }
   }
 }
 
