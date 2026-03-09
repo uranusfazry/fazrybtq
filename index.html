@@ -123,6 +123,13 @@ body.theme-background::before {
   background: rgba(255, 255, 255, 0.75); /* Overlay terang untuk light mode */
 }
 
+/* Fallback background-attachment untuk Mobile Browser */
+@media (max-width: 768px) {
+  body.theme-background {
+    background-attachment: scroll !important;
+  }
+}
+
 /* ─── DYNAMIC THEME (FROM IMAGE) ─────────────────── */
 body.custom-theme .card {
   background: rgba(255, 255, 255, 0.08) !important;
@@ -2516,8 +2523,12 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
 
 /* Mobile Responsive Fix */
 @media(max-width: 768px) {
-  body, main, .page, .content {
-    background: #020617 !important;
+  /* Perbaikan: Pisahkan body dan pastikan menggunakan background-color agar tidak merusak background image */
+  body {
+    background-color: var(--bg) !important;
+  }
+  main, .page, .content {
+    background: transparent !important;
   }
   
   table {
