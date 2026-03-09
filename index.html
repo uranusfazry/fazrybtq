@@ -39,6 +39,8 @@
   --radius:    14px;
   --radius-lg: 20px;
   --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  --input-bg:  #0f172a;
+  --text-color:#f0f6ff;
 }
 [data-theme="light"] {
   --bg:        #f2f5fb;
@@ -58,6 +60,8 @@
   --acc3:      #10b981;
   --acc4:      #f97316;
   --acc5:      #ec4899;
+  --input-bg:  #ffffff;
+  --text-color:#0c1a33;
 }
 
 /* ─── RESET & BASE ───────────────────────────────── */
@@ -543,28 +547,25 @@ body.app-ready .login-wrap {
 
 /* ─── NEW FORM LOGIN ELEMENTS ─── */
 .input-group {
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .input-group label {
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
   margin-bottom: 6px;
   display: block;
-  color: var(--t2);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  color: #64748b;
 }
 
 .input-wrapper {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.05);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 0 14px;
-  height: 46px;
+  border-radius: 14px;
+  padding: 12px 14px;
   transition: all var(--transition);
 }
 
@@ -574,23 +575,27 @@ body.app-ready .login-wrap {
 }
 
 .input-wrapper:focus-within {
-  border-color: rgba(56,189,248,0.6);
-  background: rgba(56,189,248,0.04);
-  box-shadow: 0 0 0 3px rgba(56,189,248,0.12);
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 2px rgba(56,189,248,0.2);
 }
 
 [data-theme="light"] .input-wrapper:focus-within {
-  border-color: #38bdf8;
-  background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 3px rgba(14,165,233,0.15);
 }
 
 .input-icon {
-  font-size: 16px;
-  opacity: 0.7;
+  font-size: 18px;
+  opacity: 0.8;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Base input styling ensuring transparency */
+input {
+  background: transparent;
+  color: var(--text-color);
 }
 
 .input-wrapper input {
@@ -598,9 +603,8 @@ body.app-ready .login-wrap {
   outline: none;
   font-size: 14px;
   flex: 1;
-  background: transparent;
-  color: var(--t1);
-  height: 100%;
+  background: transparent !important;
+  color: var(--text-color);
   width: 100%;
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
@@ -609,12 +613,23 @@ body.app-ready .login-wrap {
   color: var(--t3);
 }
 
+/* OVERRIDE AUTOFILL BROWSER */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--input-bg) inset !important;
+  -webkit-text-fill-color: var(--text-color) !important;
+  transition: background-color 5000s ease-in-out 0s;
+  caret-color: var(--text-color);
+}
+
 .login-btn {
   width: 100%;
-  height: 46px;
+  padding: 12px;
   border-radius: 12px;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2006,21 +2021,22 @@ LOGIN MOBILE RESPONSIVE
     margin-bottom: 14px;
   }
   .input-group label {
-    font-size: 11px;
+    font-size: 13px;
     margin-bottom: 6px;
   }
   .input-wrapper {
-    height: 44px; /* Tinggi optimal untuk touch screen */
-    padding: 0 12px;
+    padding: 10px 14px;
+    height: auto;
   }
   .input-icon {
-    font-size: 15px; /* Icon diperkecil agar tidak mendominasi */
+    font-size: 18px; 
   }
   .input-wrapper input {
     font-size: 14px;
   }
   .login-btn {
-    height: 46px;
+    padding: 12px;
+    height: auto;
     border-radius: 12px;
   }
   
