@@ -413,6 +413,7 @@ body.custom-theme .stat-value {
   height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch; /* Smooth scroll untuk mobile */
   flex-shrink: 0;
   background: rgba(7, 14, 28, 0.96);
   backdrop-filter: blur(40px) saturate(200%);
@@ -1625,18 +1626,26 @@ SIDEBAR MOBILE
 @media (max-width:768px){
 
 .sidebar{
-position: fixed;
-left:0;
-top:0;
-height:100vh;
-width:260px;
-transform: translateX(-100%);
-transition: 0.3s;
-z-index:300;
+  position: fixed;
+  left:0;
+  top:0;
+  height:100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  width:260px;
+  transform: translateX(-100%);
+  transition: 0.3s;
+  z-index:300;
 }
 
 .sidebar.open{
-transform: translateX(0);
+  transform: translateX(0);
+}
+
+.sidebar-menu{
+  overflow-y: auto;
+  max-height: calc(100vh - 80px);
+  padding-bottom: 40px;
 }
 
 }
@@ -1749,6 +1758,23 @@ font-size:14px;
 justify-content:center;
 }
 
+/* PERBAIKI SPACING FORM MOBILE */
+.form-group {
+  margin-bottom: 14px !important;
+}
+
+.form2 {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+}
+
+.inp, select, input {
+  width: 100% !important;
+  padding: 12px !important;
+  border-radius: 10px !important;
+}
+
 }
 
 /* ===================================
@@ -1775,10 +1801,16 @@ MODAL MOBILE
 @media (max-width:768px){
 
 .modal{
-width:95vw;
-max-height:90vh;
-overflow:auto;
-border-radius:16px;
+  width: 92% !important;
+  margin: auto !important;
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+  padding: 16px !important;
+  border-radius: 16px !important;
+}
+
+.modal-content{
+  padding: 14px !important;
 }
 
 }
@@ -2403,18 +2435,18 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     display: table-cell !important;
   }
 
-  /* 6. STYLE FORM ABSENSI GURU (RADIO BUTTON BESAR) */
+  /* 6. STYLE FORM ABSENSI GURU (GRID BUTTON BESAR) */
   #modalAbsensiGuru .modal {
-    width: 100vw !important;
-    height: 100vh !important;
-    max-height: 100vh !important;
-    border-radius: 0 !important;
-    margin: 0 !important;
-    padding: 20px 16px !important;
+    width: 92% !important;
+    height: auto !important;
+    max-height: 90vh !important;
+    border-radius: 16px !important;
+    margin: auto !important;
+    padding: 16px !important;
   }
   #absListGuru {
-    padding-bottom: 80px; /* Space for bottom fixed button */
-    max-height: calc(100vh - 180px) !important;
+    padding-bottom: 20px !important; 
+    max-height: none !important;
   }
   .teacher-abs-card {
     background: var(--card);
@@ -2432,8 +2464,9 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     gap: 8px;
   }
   .t-radio-group {
-    display: flex;
-    gap: 8px;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr !important;
+    gap: 10px !important;
     width: 100%;
   }
   .t-radio-wrap {
@@ -2452,12 +2485,12 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 12px 4px;
-    border-radius: 10px;
+    padding: 12px !important;
+    border-radius: 10px !important;
     background: var(--glass);
     border: 1px solid var(--border);
     color: var(--t1);
-    font-size: 13px;
+    font-size: 14px !important;
     font-weight: 600;
     transition: all 0.2s ease;
     text-align: center;
