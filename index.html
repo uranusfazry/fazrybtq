@@ -70,7 +70,52 @@ body {
   height: 100vh;
   overflow: hidden; /* Menghindari scroll dari body */
   -webkit-font-smoothing: antialiased;
-  transition: background-color var(--transition), color var(--transition);
+  transition: background-color var(--transition), color var(--transition), opacity 0.3s ease;
+}
+
+/* State Loading & Premium Loader */
+body:not(.app-ready) {
+  overflow: hidden;
+}
+
+.app-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #020617;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  transition: opacity 0.4s ease;
+}
+
+.loader-content {
+  text-align: center;
+  color: white;
+}
+
+.loader-logo {
+  font-size: 48px;
+  margin-bottom: 12px;
+  animation: logoFloat 4s ease-in-out infinite;
+}
+
+.loader-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255,255,255,0.2);
+  border-top: 3px solid #38bdf8;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 15px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* subtle noise texture overlay */
@@ -207,21 +252,27 @@ body.custom-theme .stat-value {
   background: rgba(255, 255, 255, 0.08);
   transform: translateY(-2px);
 }
-.wp-active-badge {
+.wp-active-badge-container {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 2;
+}
+.wp-active-badge {
   background: var(--acc);
   color: #fff;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 800;
-  padding: 4px 10px;
-  border-radius: 8px;
+  padding: 4px 8px;
+  border-radius: 6px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  z-index: 2;
   pointer-events: none;
+  text-align: center;
 }
 
 [data-theme="light"] .wallpaper-card {
@@ -302,6 +353,54 @@ body.custom-theme .stat-value {
   border-top: 3px solid var(--acc);
 }
 
+.wallpaper-card.animate-in {
+  animation: cardFadeIn .3s ease forwards;
+}
+
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.btn-load-more {
+  margin: 16px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.05);
+  color: var(--t1);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all var(--transition);
+  gap: 8px;
+}
+
+.btn-load-more:hover {
+  background: var(--glass2);
+  border-color: var(--acc);
+  color: var(--acc);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(56,189,248,0.15);
+}
+
+[data-theme="light"] .btn-load-more {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  color: #1e293b;
+}
+
+[data-theme="light"] .btn-load-more:hover {
+  background: #f8fafc;
+  border-color: var(--acc);
+  color: var(--acc);
+  box-shadow: 0 4px 12px rgba(14,165,233,0.1);
+}
+
+
 /* ─── SCROLLBAR ──────────────────────────────────── */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -318,6 +417,12 @@ body.custom-theme .stat-value {
   background: transparent;
   position: relative;
   overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+body.app-ready .login-wrap {
+  opacity: 1;
 }
 
 .login-wrap::before {
@@ -2966,6 +3071,18 @@ background:transparent !important;
 <body>
 
 <!-- ═══════════════════════════════════════════════ -->
+<!--  PREMIUM LOADING SCREEN                         -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="appLoader" class="app-loader">
+  <div class="loader-content">
+    <div class="loader-logo">🕌</div>
+    <div style="font-size:22px; font-weight:800; letter-spacing:-0.5px; margin-bottom:4px">BTQ<span style="color:#38bdf8"> Pro</span></div>
+    <div style="color:#6b8ab8; font-size:13px; font-weight:500">Memuat sistem...</div>
+    <div class="loader-spinner"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
 <!--  LOGIN                                          -->
 <!-- ═══════════════════════════════════════════════ -->
 <div id="login-wrap" class="login-wrap">
@@ -3517,12 +3634,28 @@ background:transparent !important;
               <button class="btn btn-p" onclick="addWallpaper()" style="width:100%;justify-content:center">➕ Simpan Wallpaper</button>
             </div>
 
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
               <div style="font-weight:700;font-size:13px">Galeri Wallpaper</div>
-              <button class="btn btn-d" onclick="removeThemeImage()" style="padding:6px 12px;font-size:11px">🔄 Reset Default</button>
+              <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap">
+                <select id="wpTargetPage" class="inp" style="padding:8px 12px; font-size:12px; height:auto; width:auto; border-color:var(--acc)">
+                  <option value="app">🎯 Target: Dashboard / App</option>
+                  <option value="login">🎯 Target: Halaman Login</option>
+                </select>
+                <button class="btn btn-d" onclick="removeThemeImage()" style="padding:8px 14px;font-size:12px">🔄 Reset</button>
+              </div>
             </div>
             
-            <div id="wallpaperGallery" class="wallpaper-grid"></div>
+            <div style="font-weight:700; font-size:12px; color:var(--t2); margin-bottom:8px">💻 ALBUM DESKTOP (LANDSCAPE)</div>
+            <div id="wallpaperGalleryDesktop" class="wallpaper-grid"></div>
+            <button id="btnLoadMoreDesktop" class="btn-load-more no-print" onclick="loadMoreWallpapers('desktop')" style="display:none">
+              ⬇️ Tampilkan Lebih Banyak (<span id="countMoreDesktop">0</span>)
+            </button>
+
+            <div style="font-weight:700; font-size:12px; color:var(--t2); margin-top:24px; margin-bottom:8px">📱 ALBUM MOBILE (PORTRAIT)</div>
+            <div id="wallpaperGalleryMobile" class="wallpaper-grid"></div>
+            <button id="btnLoadMoreMobile" class="btn-load-more no-print" onclick="loadMoreWallpapers('mobile')" style="display:none">
+              ⬇️ Tampilkan Lebih Banyak (<span id="countMoreMobile">0</span>)
+            </button>
           </div>
 
           <div class="card settings-card">
@@ -3866,6 +3999,18 @@ async function apiDelete(key){
 // ====================================================
 let serverDB = {}; // Variabel penampung data dari Spreadsheet
 let isDataLoaded = false; // Flag status load
+window.APP_SETTINGS = null; // Global Cache untuk Settings
+
+// Fungsi khusus untuk sinkronisasi Settings ke Cache & Server
+function updateSettings(newSettings) {
+  window.APP_SETTINGS = newSettings;
+  serverDB.settings = newSettings;
+  localStorage.setItem("app_settings", JSON.stringify(newSettings));
+  
+  if (role() === 'admin') {
+    apiSave('settings', newSettings).catch(err => toast('❌', 'Gagal sinkronisasi data ke server!'));
+  }
+}
 
 // Optimistic UI: Update memory secara langsung, lalu sinkronisasi ke server di background
 const DB = {
@@ -3876,11 +4021,27 @@ const DB = {
       apiSave(k, v).catch(err => toast('❌', 'Gagal sinkronisasi data ke server!'));
     }
   },
-  obj: (k,d={}) => serverDB[k] || d,
+  obj: (k,d={}) => {
+    if(k === 'settings') {
+      if (window.APP_SETTINGS) return window.APP_SETTINGS;
+      const cached = localStorage.getItem("app_settings");
+      if (cached) {
+        try {
+          window.APP_SETTINGS = JSON.parse(cached);
+          return window.APP_SETTINGS;
+        } catch(e) {}
+      }
+    }
+    return serverDB[k] || d;
+  },
   sobj: (k,v) => {
-    serverDB[k] = v;
-    if(role() === 'admin') {
-      apiSave(k, v).catch(err => toast('❌', 'Gagal sinkronisasi data ke server!'));
+    if (k === 'settings') {
+      updateSettings(v);
+    } else {
+      serverDB[k] = v;
+      if(role() === 'admin') {
+        apiSave(k, v).catch(err => toast('❌', 'Gagal sinkronisasi data ke server!'));
+      }
     }
   }
 };
@@ -3938,6 +4099,8 @@ function logout() {
   sessionStorage.clear();
   document.getElementById('app').style.display='none';
   document.getElementById('login-wrap').style.display='flex';
+  document.body.classList.add('login-page');
+  applyPageWallpaper();
   document.getElementById('lu').value='';
   document.getElementById('lp').value='';
   toast('👋','Berhasil logout');
@@ -3950,14 +4113,20 @@ function isAdmin() {
 
 function checkAuth() {
   const r = role();
-  if(r) { startApp(); }
-  else {
+  if(r) { 
+    document.body.classList.remove('login-page');
+    startApp(); 
+  } else {
+    document.body.classList.add('login-page');
     document.getElementById('app').style.display='none';
     document.getElementById('login-wrap').style.display='flex';
+    applyPageWallpaper(); // Terapkan tema login pertama kali
   }
 }
 
 async function startApp() {
+  document.body.classList.remove('login-page');
+  applyPageWallpaper(); // Switch tema ke Dashboard mode
   document.getElementById('login-wrap').style.display='none';
   document.getElementById('app').style.display='flex';
 
@@ -3969,7 +4138,19 @@ async function startApp() {
     toast('⏳','Menghubungkan ke server...',60000);
     try{
       const data = await apiGetAll();
+      
+      // Proteksi Cache Settings agar tidak tertimpa oleh fetch apiGetAll
+      const cachedSettings = window.APP_SETTINGS || JSON.parse(localStorage.getItem("app_settings"));
+      
       serverDB = data || {};
+      
+      if (cachedSettings) {
+        serverDB.settings = cachedSettings;
+      } else if (data.settings) {
+        window.APP_SETTINGS = data.settings;
+        localStorage.setItem("app_settings", JSON.stringify(data.settings));
+      }
+      
       isDataLoaded = true;
       init();
       toast('✅','Sistem berhasil tersambung!');
@@ -4006,7 +4187,7 @@ function init() {
     DB.sobj('settings',{tahunAjaran:'2024/2025',semester:'Ganjil'});
   }
   
-  applyDeviceWallpaper();
+  applyPageWallpaper(); // Update untuk page wallpaper mode
 
   updateBadges();
   renderDashboard();
@@ -5297,6 +5478,10 @@ function saveSetting() {
 // ====================================================
 let currentAppliedThemeUrl = ""; // Menyimpan track url agar tidak update DOM berlebihan
 
+// Variable global untuk limit Load More wallpaper
+let wpLimitDesktop = 5;
+let wpLimitMobile = 5;
+
 function applyTheme(url){
   if (currentAppliedThemeUrl === url) return;
   document.body.classList.add("theme-background");
@@ -5307,33 +5492,49 @@ function applyTheme(url){
   currentAppliedThemeUrl = url;
 }
 
-function applyDeviceWallpaper() {
+function applyPageWallpaper() {
   let settings = DB.obj("settings") || {};
   const isMobile = window.innerWidth <= 768;
+  const isLoginPage = document.body.classList.contains("login-page");
   
-  // Backwards compatibility handling
-  let dUrl = settings.desktopWallpaper || settings.themeImageDesktop || settings.themeImage;
-  let mUrl = settings.mobileWallpaper || settings.themeImageMobile || settings.themeImage;
+  let url = "";
 
-  if (isMobile && mUrl) {
-    applyTheme(mUrl);
-  } else if (!isMobile && dUrl) {
-    applyTheme(dUrl);
+  // Backwards compatibility fallbacks untuk pengaturan lama
+  let legacyDesktop = settings.desktopWallpaper || settings.themeImageDesktop || settings.themeImage || "";
+  let legacyMobile = settings.mobileWallpaper || settings.themeImageMobile || settings.themeImage || "";
+
+  if(isLoginPage) {
+    url = isMobile ? settings.loginWallpaperMobile : settings.loginWallpaperDesktop;
+  } else {
+    url = isMobile 
+          ? (settings.appWallpaperMobile || legacyMobile) 
+          : (settings.appWallpaperDesktop || legacyDesktop);
   }
-  
-  const activeUrl = isMobile ? mUrl : dUrl;
-  if(activeUrl) {
-    if(settings.themeColor) {
-      applyDynamicColor(settings.themeColor);
+
+  if (url) {
+    applyTheme(url);
+    
+    // Logika warna dengan sistem Cache (lebih ringan & cepat)
+    if(!settings.cachedColors) settings.cachedColors = {};
+    if(settings.cachedColors[url]){
+      applyDynamicColor(settings.cachedColors[url]);
     } else {
-      extractColorFromImage(activeUrl).then(color => {
+      extractColorFromImage(url).then(color => {
         if(color) {
-          settings.themeColor = color;
+          settings.cachedColors[url] = color;
           DB.sobj("settings", settings);
           applyDynamicColor(color);
         }
       });
     }
+  } else {
+    // Reset ke kondisi default solid color
+    currentAppliedThemeUrl = ""; 
+    document.body.classList.remove("theme-background", "custom-theme");
+    document.body.style.backgroundImage = "";
+    document.documentElement.style.removeProperty("--acc");
+    document.documentElement.style.removeProperty("--cardTint");
+    document.documentElement.style.removeProperty("--highlight");
   }
 }
 
@@ -5384,10 +5585,10 @@ function applyDynamicColor(color) {
 }
 
 // === WALLPAPER MANAGER DRAG & DROP ===
-let draggedWpIndex = null;
-function wpDragStart(e, index) {
+let draggedWpId = null;
+function wpDragStart(e, id) {
   if(!isAdmin()) return;
-  draggedWpIndex = index;
+  draggedWpId = id;
   e.dataTransfer.effectAllowed = 'move';
   setTimeout(() => e.target.classList.add('dragging'), 0);
 }
@@ -5402,90 +5603,148 @@ function wpDragLeave(e) {
   const card = e.target.closest('.wallpaper-card');
   if(card) card.classList.remove('drag-over');
 }
-function wpDrop(e, dropIndex) {
+function wpDrop(e, targetId) {
   e.stopPropagation();
   const card = e.target.closest('.wallpaper-card');
   if(card) card.classList.remove('drag-over');
   
-  if (draggedWpIndex !== null && draggedWpIndex !== dropIndex) {
+  if (draggedWpId && draggedWpId !== targetId) {
     let settings = DB.obj("settings");
     let wps = settings.wallpapers || [];
-    const item = wps.splice(draggedWpIndex, 1)[0];
-    wps.splice(dropIndex, 0, item);
-    DB.sobj("settings", settings);
-    renderWallpapers();
+    let fromIdx = wps.findIndex(w => w.id === draggedWpId);
+    let toIdx = wps.findIndex(w => w.id === targetId);
+    
+    if (fromIdx > -1 && toIdx > -1) {
+      // Pastikan reorder hanya bekerja antar grid yg sama jenisnya agar tidak berantakan
+      if(wps[fromIdx].device === wps[toIdx].device || (!wps[fromIdx].device && !wps[toIdx].device)) {
+        const item = wps.splice(fromIdx, 1)[0];
+        wps.splice(toIdx, 0, item);
+        DB.sobj("settings", settings);
+        renderWallpapers();
+      }
+    }
   }
   return false;
 }
 function wpDragEnd(e) {
   e.target.classList.remove('dragging');
   document.querySelectorAll('.wallpaper-card').forEach(c => c.classList.remove('drag-over'));
-  draggedWpIndex = null;
+  draggedWpId = null;
 }
 
-function renderWallpapers() {
+function loadMoreWallpapers(type) {
+  if (type === 'desktop') {
+    wpLimitDesktop += 5;
+  } else {
+    wpLimitMobile += 5;
+  }
+  renderWallpapers(false); // False = jangan reset limit, pertahankan limit saat ini
+}
+
+function renderWallpapers(resetLimit = true) {
   const settings = DB.obj('settings');
   const wps = settings.wallpapers || [];
-  const gallery = document.getElementById('wallpaperGallery');
-  if (!gallery) return;
+  const galDesk = document.getElementById('wallpaperGalleryDesktop');
+  const galMob = document.getElementById('wallpaperGalleryMobile');
+  if (!galDesk || !galMob) return;
   
-  if (wps.length === 0) {
-    gallery.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--t2);border:1px dashed var(--border);border-radius:16px;background:rgba(255,255,255,0.02)">🖼️ Belum ada wallpaper tersimpan.</div>';
-    return;
+  if (resetLimit) {
+    wpLimitDesktop = 5;
+    wpLimitMobile = 5;
   }
   
-  const activeDesktop = settings.desktopWallpaper || settings.themeImageDesktop || settings.themeImage || '';
-  const activeMobile = settings.mobileWallpaper || settings.themeImageMobile || settings.themeImage || '';
+  const deskWps = wps.filter(w => w.device === 'desktop' || !w.device);
+  const mobWps = wps.filter(w => w.device === 'mobile');
   
-  gallery.innerHTML = wps.map((wp, i) => {
-    // Compatibility handling untuk data lama
-    const url = wp.url || wp.desktop || '';
-    const device = wp.device || 'desktop'; // Default ke desktop jika dari data lawas
+  // Baca status wallpaper yg sedang digunakan
+  const activeAppDesk = settings.appWallpaperDesktop || settings.desktopWallpaper || settings.themeImageDesktop || settings.themeImage || '';
+  const activeAppMob = settings.appWallpaperMobile || settings.mobileWallpaper || settings.themeImageMobile || settings.themeImage || '';
+  const activeLogDesk = settings.loginWallpaperDesktop || '';
+  const activeLogMob = settings.loginWallpaperMobile || '';
+  
+  const renderGrid = (items, type, limit) => {
+    if (items.length === 0) {
+      return '<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--t2);border:1px dashed var(--border);border-radius:16px;background:rgba(255,255,255,0.02)">🖼️ Album kosong. Silakan simpan wallpaper baru.</div>';
+    }
     
-    // Cek status aktif (Berdasarkan target device nya)
-    const isDesktopActive = device === 'desktop' && activeDesktop === url && url;
-    const isMobileActive = device === 'mobile' && activeMobile === url && url;
-    const isActive = isDesktopActive || isMobileActive;
+    const visibleItems = items.slice(0, limit);
     
-    const deviceBadge = device === 'mobile' ? '📱 Mobile' : '💻 Desktop';
-    const deviceColor = device === 'mobile' ? 'rgba(52,211,153,0.15)' : 'rgba(56,189,248,0.15)';
-    const deviceBorder = device === 'mobile' ? 'rgba(52,211,153,0.3)' : 'rgba(56,189,248,0.3)';
-    const deviceTextColor = device === 'mobile' ? '#34d399' : '#38bdf8';
-    
-    return `
-    <div class="wallpaper-card ${isActive ? 'active' : ''}" 
-         draggable="true" 
-         ondragstart="wpDragStart(event, ${i})" 
-         ondragover="wpDragOver(event)" 
-         ondragleave="wpDragLeave(event)"
-         ondrop="wpDrop(event, ${i})" 
-         ondragend="wpDragEnd(event)">
+    return visibleItems.map((wp, i) => {
+      const url = wp.url || wp.desktop || '';
       
-      ${isActive ? '<div class="wp-active-badge">Active</div>' : ''}
+      // Status Multi-Level (Login vs App)
+      const isApp = (type === 'desktop' && activeAppDesk === url) || (type === 'mobile' && activeAppMob === url);
+      const isLogin = (type === 'desktop' && activeLogDesk === url) || (type === 'mobile' && activeLogMob === url);
+      const isActive = isApp || isLogin;
       
-      <div style="position: relative; width: 100%;">
-        <div class="wallpaper-overlay"></div>
-        <img src="${url}" class="wallpaper-preview" alt="${wp.name}" loading="lazy" draggable="false" 
-             onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'300\\' height=\\'168\\'><rect width=\\'300\\' height=\\'168\\' fill=\\'%231e293b\\'/><text x=\\'150\\' y=\\'84\\' fill=\\'%2394a3b8\\' font-family=\\'Arial\\' font-size=\\'14\\' text-anchor=\\'middle\\' alignment-baseline=\\'middle\\'>Gambar Rusak/Tidak Valid</text></svg>'">
+      let badges = '';
+      if(isApp) badges += '<span class="wp-active-badge" style="background:var(--acc)">✓ App</span>';
+      if(isLogin) badges += '<span class="wp-active-badge" style="background:var(--acc2)">✓ Login</span>';
+      
+      const deviceBadge = type === 'mobile' ? '📱 Mobile' : '💻 Desktop';
+      const deviceColor = type === 'mobile' ? 'rgba(52,211,153,0.15)' : 'rgba(56,189,248,0.15)';
+      const deviceBorder = type === 'mobile' ? 'rgba(52,211,153,0.3)' : 'rgba(56,189,248,0.3)';
+      const deviceTextColor = type === 'mobile' ? '#34d399' : '#38bdf8';
+      
+      // Tambahkan class animasi ringan
+      return `
+      <div class="wallpaper-card animate-in ${isActive ? 'active' : ''}" 
+           style="animation-delay: ${i * 0.05}s"
+           draggable="true" 
+           ondragstart="wpDragStart(event, '${wp.id}')" 
+           ondragover="wpDragOver(event)" 
+           ondragleave="wpDragLeave(event)"
+           ondrop="wpDrop(event, '${wp.id}')" 
+           ondragend="wpDragEnd(event)">
         
-        <div style="position:absolute; bottom:8px; left:8px; z-index:3">
-          <span style="background:${deviceColor}; color:${deviceTextColor}; font-size:10px; font-weight:700; padding:4px 8px; border-radius:6px; border:1px solid ${deviceBorder}">${deviceBadge}</span>
+        ${isActive ? `<div class="wp-active-badge-container">${badges}</div>` : ''}
+        
+        <div style="position: relative; width: 100%;">
+          <div class="wallpaper-overlay"></div>
+          <img src="${url}" class="wallpaper-preview" alt="${wp.name}" loading="lazy" draggable="false" 
+               onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'300\\' height=\\'168\\'><rect width=\\'300\\' height=\\'168\\' fill=\\'%231e293b\\'/><text x=\\'150\\' y=\\'84\\' fill=\\'%2394a3b8\\' font-family=\\'Arial\\' font-size=\\'14\\' text-anchor=\\'middle\\' alignment-baseline=\\'middle\\'>Gambar Rusak/Tidak Valid</text></svg>'">
+          
+          <div style="position:absolute; bottom:8px; left:8px; z-index:3">
+            <span style="background:${deviceColor}; color:${deviceTextColor}; font-size:10px; font-weight:700; padding:4px 8px; border-radius:6px; border:1px solid ${deviceBorder}">${deviceBadge}</span>
+          </div>
+        </div>
+        
+        <div class="wallpaper-name" title="${wp.name}" style="margin-top:2px">${wp.name}</div>
+        <div class="wallpaper-actions">
+          <button class="btn btn-p" onclick="useWallpaper('${wp.id}')" style="flex:1;padding:8px;font-size:12px;justify-content:center" title="Gunakan Wallpaper Ini">✨ Gunakan</button>
+          <button class="btn btn-s wallpaper-btn-download" onclick="downloadWallpaper('${url}', '${wp.name}')" style="width:34px;height:34px;padding:0;display:flex;align-items:center;justify-content:center" title="Download">⬇️</button>
+          <button class="btn btn-d" onclick="deleteWallpaper('${wp.id}', '${wp.name}')" style="width:34px;height:34px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:10px" title="Hapus Wallpaper">🗑️</button>
         </div>
       </div>
-      
-      <div class="wallpaper-name" title="${wp.name}" style="margin-top:2px">${wp.name}</div>
-      <div class="wallpaper-actions">
-        <button class="btn btn-p" onclick="useWallpaper('${wp.id}')" style="flex:1;padding:8px;font-size:12px;justify-content:center" title="Gunakan Wallpaper Ini">✨ Gunakan</button>
-        <button class="btn btn-s wallpaper-btn-download" onclick="downloadWallpaper('${url}', '${wp.name}')" style="width:34px;height:34px;padding:0;display:flex;align-items:center;justify-content:center" title="Download">⬇️</button>
-        <button class="btn btn-d" onclick="deleteWallpaper('${wp.id}', '${wp.name}')" style="width:34px;height:34px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:10px" title="Hapus Wallpaper">🗑️</button>
-      </div>
-    </div>
-  `}).join('');
+    `}).join('');
+  }
   
-  // Tambahkan animasi fade transition saat UI dirender ulang
-  gallery.style.animation = 'none';
-  void gallery.offsetWidth; // Memicu reflow browser
-  gallery.style.animation = 'pageFade 0.3s ease';
+  galDesk.innerHTML = renderGrid(deskWps, 'desktop', wpLimitDesktop);
+  galMob.innerHTML = renderGrid(mobWps, 'mobile', wpLimitMobile);
+  
+  // Update tombol Load More Desktop
+  const btnDesk = document.getElementById('btnLoadMoreDesktop');
+  const cntDesk = document.getElementById('countMoreDesktop');
+  if (btnDesk && cntDesk) {
+    if (deskWps.length > wpLimitDesktop) {
+      btnDesk.style.display = 'flex';
+      cntDesk.textContent = deskWps.length - wpLimitDesktop;
+    } else {
+      btnDesk.style.display = 'none';
+    }
+  }
+  
+  // Update tombol Load More Mobile
+  const btnMob = document.getElementById('btnLoadMoreMobile');
+  const cntMob = document.getElementById('countMoreMobile');
+  if (btnMob && cntMob) {
+    if (mobWps.length > wpLimitMobile) {
+      btnMob.style.display = 'flex';
+      cntMob.textContent = mobWps.length - wpLimitMobile;
+    } else {
+      btnMob.style.display = 'none';
+    }
+  }
 }
 
 function addWallpaper() {
@@ -5548,34 +5807,31 @@ async function useWallpaper(id) {
 
   toast("⏳", "Menerapkan tema...", 2000);
   
+  const target = document.getElementById("wpTargetPage").value; // "app" atau "login"
   const url = wp.url || wp.desktop;
-  const device = wp.device || 'desktop';
+  const device = wp.device === "mobile" ? "Mobile" : "Desktop";
 
-  if(device === "mobile") {
-    settings.mobileWallpaper = url;
-  } else if (device === "desktop") {
-    settings.desktopWallpaper = url;
+  if(target === "login") {
+    if(device === "Mobile") settings.loginWallpaperMobile = url;
+    else settings.loginWallpaperDesktop = url;
+  } else {
+    if(device === "Mobile") settings.appWallpaperMobile = url;
+    else settings.appWallpaperDesktop = url;
   }
   
+  // Hapus properti lama jika ada (Auto-migration data lawas)
+  if(settings.desktopWallpaper) delete settings.desktopWallpaper;
+  if(settings.mobileWallpaper) delete settings.mobileWallpaper;
+  if(settings.themeImageDesktop) delete settings.themeImageDesktop;
+  if(settings.themeImageMobile) delete settings.themeImageMobile;
+  if(settings.themeImage) delete settings.themeImage;
+
   DB.sobj("settings", settings);
   
-  // Terapkan tema sesuai ukuran layar aktif saat ini
-  applyDeviceWallpaper();
-  
+  applyPageWallpaper();
   renderWallpapers();
   
-  // Ambil warna dinamis untuk target wallpaper
-  const dominantColor = await extractColorFromImage(url);
-  if (dominantColor) {
-    settings.themeColor = dominantColor;
-    applyDynamicColor(dominantColor);
-  } else {
-    settings.themeColor = "";
-    document.body.classList.remove("custom-theme");
-  }
-  
-  DB.sobj("settings", settings);
-  toast("🎨", `Tema ${wp.name} diterapkan untuk ${device}!`);
+  toast("🎨", `Tema ${wp.name} diterapkan untuk ${target === 'login' ? 'Halaman Login' : 'Dashboard App'} (${device})!`);
 }
 
 function deleteWallpaper(id, name) {
@@ -5621,22 +5877,24 @@ function removeThemeImage() {
   if(!isAdmin()) return;
   let settings = DB.obj("settings");
   
+  // Reset seluruh registry wallpaper target
+  settings.appWallpaperDesktop = "";
+  settings.appWallpaperMobile = "";
+  settings.loginWallpaperDesktop = "";
+  settings.loginWallpaperMobile = "";
+  
+  // Reset registry lama
   settings.themeImage = "";
   settings.themeImageDesktop = "";
   settings.themeImageMobile = "";
   settings.desktopWallpaper = "";
   settings.mobileWallpaper = "";
   settings.themeColor = "";
+  settings.cachedColors = {};
   
   DB.sobj("settings", settings);
   
-  currentAppliedThemeUrl = ""; // Reset tracker
-  document.body.classList.remove("theme-background", "custom-theme");
-  document.body.style.backgroundImage = "";
-  document.documentElement.style.removeProperty("--acc");
-  document.documentElement.style.removeProperty("--cardTint");
-  document.documentElement.style.removeProperty("--highlight");
-  
+  applyPageWallpaper();
   renderWallpapers(); 
   toast("🧹", "Background dan Theme berhasil direset ke Default");
 }
@@ -5776,7 +6034,7 @@ function dlFile(content, name, type) {
 }
 
 // ====================================================
-// UI HELPERS
+// UI HELPERS & THEME MANAGER
 // ====================================================
 function toast(icon, msg, dur=3200) {
   document.getElementById('tIcon').textContent = icon; 
@@ -5794,9 +6052,25 @@ function show(id){ document.getElementById(id).style.display = 'flex'; }
 function closeM(id){ document.getElementById(id).style.display = 'none'; }
 function openRoleInfoModal() { show('mRoleInfo'); }
 
+function applyColorTheme(theme) {
+  if (theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+  }
+}
+
 function toggleTheme() {
   const h = document.documentElement; 
-  h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  const currentTheme = h.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  
+  // Terapkan ke DOM
+  applyColorTheme(newTheme);
+  
+  // Simpan secara permanen ke Settings & LocalStorage
+  let settings = DB.obj("settings") || {};
+  settings.theme = newTheme;
+  DB.sobj("settings", settings);
+  
   setTimeout(() => { 
     const page = document.querySelector('.page.active'); 
     if(page && page.id === 'page-dashboard') renderDashboard(); 
@@ -5857,13 +6131,99 @@ document.addEventListener("contextmenu", function(e) {
 
 // Listener saat window resize: Otomatis Switch Mobile/Desktop Background
 window.addEventListener("resize", function(){
-  applyDeviceWallpaper();
+  applyPageWallpaper();
 });
 
-// Otomatis terapkan background saat HTML dimuat
-document.addEventListener("DOMContentLoaded", function(){
-  applyDeviceWallpaper();
-});
+// ====================================================
+// PRE-LOAD SETTINGS & INIT LOGIN PAGE
+// ====================================================
+
+async function loadSettings() {
+  // 1. Cek dari variabel memory terlebih dahulu
+  if (window.APP_SETTINGS) {
+    return window.APP_SETTINGS;
+  }
+  
+  // 2. Cek dari LocalStorage Browser
+  const cached = localStorage.getItem("app_settings");
+  if (cached) {
+    try {
+      window.APP_SETTINGS = JSON.parse(cached);
+      serverDB.settings = window.APP_SETTINGS;
+      return window.APP_SETTINGS;
+    } catch(e) {}
+  }
+  
+  // 3. Jika belum ada cache sama sekali, fetch dari backend
+  try {
+    const settings = await apiGet("settings");
+    window.APP_SETTINGS = settings || {};
+    serverDB.settings = window.APP_SETTINGS;
+    localStorage.setItem("app_settings", JSON.stringify(window.APP_SETTINGS));
+    return window.APP_SETTINGS;
+  } catch (err) {
+    console.warn("Gagal load settings dari backend:", err);
+    window.APP_SETTINGS = DB.obj("settings");
+    return window.APP_SETTINGS;
+  }
+}
+
+function applyLoginTheme(settings) {
+  const isMobile = window.innerWidth <= 768;
+  let url = "";
+  
+  if(isMobile && settings.loginWallpaperMobile) {
+    url = settings.loginWallpaperMobile;
+  } else if(!isMobile && settings.loginWallpaperDesktop) {
+    url = settings.loginWallpaperDesktop;
+  }
+  
+  if (url) {
+    applyTheme(url);
+    if(settings.cachedColors && settings.cachedColors[url]) {
+      applyDynamicColor(settings.cachedColors[url]);
+    } else {
+      extractColorFromImage(url).then(color => {
+        if(color) {
+          if(!settings.cachedColors) settings.cachedColors = {};
+          settings.cachedColors[url] = color;
+          DB.sobj("settings", settings);
+          applyDynamicColor(color);
+        }
+      });
+    }
+  }
+}
+
+function hideLoader() {
+  const loader = document.getElementById("appLoader");
+  if(loader) {
+    loader.style.opacity = "0";
+    setTimeout(() => {
+      loader.style.display = "none";
+    }, 400); // Tunggu animasi fade out selesai
+  }
+  document.body.classList.add("app-ready");
+}
+
+async function initLoginPage() {
+  const settings = await loadSettings();
+  
+  // Terapkan Tema Warna (Dark/Light) dari cache sebelum UI muncul
+  if (settings && settings.theme) {
+    applyColorTheme(settings.theme);
+  }
+  
+  // Jika user belum login, setup UI untuk login
+  if (!role()) {
+    document.body.classList.add("login-page");
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('login-wrap').style.display = 'flex';
+    applyLoginTheme(settings);
+  }
+  
+  hideLoader();
+}
 
 // ====================================================
 // START & FIXES
@@ -5912,8 +6272,9 @@ window.addEventListener("load", fixSidebarScroll);
 window.addEventListener("resize", fixSidebarScroll);
 
 // FIX SCRIPT EXECUTION
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", async function(){
   try {
+    await initLoginPage();
     checkMobile();
     checkAuth();
     fixMobileLayout();
@@ -5922,6 +6283,7 @@ document.addEventListener("DOMContentLoaded", function(){
     fixSidebarScroll();
   } catch(err) {
     console.error("Startup error:", err);
+    hideLoader(); // Fallback hilangkan loader jika terjadi error ekstrim agar UI tetap muncul
   }
 });
 
