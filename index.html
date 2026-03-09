@@ -1654,9 +1654,9 @@ TOPBAR MOBILE & PROFESIONAL UI
   justify-content: space-between !important;
   height: 60px !important;
   padding: 0 16px !important;
-  background: #0b1f3a !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
-  border-bottom: none !important;
+  background: var(--card) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+  border-bottom: 1px solid var(--border) !important;
 }
 
 .page-title-wrap {
@@ -1671,7 +1671,7 @@ TOPBAR MOBILE & PROFESIONAL UI
   font-size: 18px !important;
   background: transparent !important;
   border: none !important;
-  color: #fff !important;
+  color: var(--t1) !important;
 }
 
 .page-title {
@@ -1691,8 +1691,9 @@ TOPBAR MOBILE & PROFESIONAL UI
   height: 32px !important;
   font-size: 16px !important;
   border-radius: 8px !important;
-  background: rgba(255,255,255,0.05) !important;
-  border: 1px solid rgba(255,255,255,0.1) !important;
+  background: var(--glass) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--t1) !important;
 }
 
 .topbar-divider { display: none !important; }
@@ -1719,8 +1720,8 @@ FILTER MOBILE
   margin-bottom: 12px !important;
   border-radius: 12px !important;
   padding: 12px !important;
-  background: rgba(15, 37, 71, 0.6) !important; /* Dark card */
-  border: 1px solid rgba(255,255,255,0.05) !important;
+  background: var(--card) !important; 
+  border: 1px solid var(--border) !important;
 }
 
 .filter-bar .inp,
@@ -1729,7 +1730,9 @@ FILTER MOBILE
   max-width: 100% !important;
   height: 44px !important;
   border-radius: 10px !important;
-  background: rgba(0,0,0,0.2) !important;
+  background: var(--glass) !important;
+  color: var(--t1) !important;
+  border: 1px solid var(--border) !important;
 }
 
 }
@@ -2165,7 +2168,8 @@ RADAR CHART KOMPETENSI SANTRI
   flex: 1;
   padding: 10px;
   border-radius: 8px;
-  background: rgba(255,255,255,0.04);
+  background: var(--glass);
+  color: var(--t1);
   text-align: center;
   font-size: 13px;
   cursor: pointer;
@@ -2209,16 +2213,17 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
   #page-absensi-santri .filter-bar select,
   #page-absensi-guru .filter-bar select {
     flex: 1 1 120px !important;
-    background: #0f2747 !important;
+    background: var(--card2) !important;
+    color: var(--t1) !important;
     border-radius: 10px !important;
     padding: 10px !important;
     height: 42px !important;
-    border: 1px solid rgba(255,255,255,0.05) !important;
+    border: 1px solid var(--border) !important;
     max-width: none !important;
   }
 
   /* 4. CARD STATISTIK MOBILE (TETAP 3 KOLOM COMPACT) */
-  #guruAbsSummary, #absensiSummary {
+  #guruAbsSummary .stat, #absensiSummary .stat {
     display: grid !important;
     grid-template-columns: repeat(3, 1fr) !important;
     gap: 10px !important;
@@ -2226,15 +2231,15 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     margin-bottom: 16px !important;
   }
   #guruAbsSummary .stat, #absensiSummary .stat {
-    background: #0f2747 !important;
+    background: var(--card) !important;
     padding: 12px !important;
     border-radius: 14px !important;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.25) !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.05) !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    border: none !important;
+    border: 1px solid var(--border) !important;
     text-align: center !important;
   }
   #guruAbsSummary .stat-icon, #absensiSummary .stat-icon {
@@ -2265,13 +2270,13 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
   }
   #tbAbsensiGuru tr, #tbAbsensiSantri tr {
     display: table-row !important;
-    background: #0f2747 !important;
+    background: var(--card) !important;
     box-shadow: none !important;
     margin-bottom: 0 !important;
     transition: background 0.2s ease !important;
   }
   #tbAbsensiGuru tr:hover, #tbAbsensiSantri tr:hover {
-    background: #132f55 !important;
+    background: var(--glass) !important;
     transform: none !important; /* Hapus animasi naik */
   }
   #tbAbsensiGuru td, #tbAbsensiSantri td {
@@ -2350,10 +2355,10 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     letter-spacing: 0 !important;
     text-transform: capitalize !important; /* Hapus uppercase kasar */
   }
-  .b-hadir { background: #22c55e20 !important; color: #22c55e !important; border: none !important; }
-  .b-izin { background: #38bdf820 !important; color: #38bdf8 !important; border: none !important; }
-  .b-sakit { background: #fbbf2420 !important; color: #fbbf24 !important; border: none !important; }
-  .b-alpha { background: #ef444420 !important; color: #ef4444 !important; border: none !important; }
+  .b-hadir { background: rgba(34,197,94,0.15) !important; color: #22c55e !important; border: none !important; }
+  .b-izin { background: rgba(56,189,248,0.15) !important; color: #38bdf8 !important; border: none !important; }
+  .b-sakit { background: rgba(251,191,36,0.15) !important; color: #fbbf24 !important; border: none !important; }
+  .b-alpha { background: rgba(239,68,68,0.15) !important; color: #ef4444 !important; border: none !important; }
 
   /* 8. AKSI EDIT DAN DELETE (ICON BUTTON KECIL) */
   #tbAbsensiSantri td:last-child > div,
@@ -2381,13 +2386,13 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
   }
   #tbAbsensiSantri td .btn-s,
   #tbAbsensiGuru td .btn-s {
-    background: #132f55 !important;
+    background: var(--glass2) !important;
     color: var(--t1) !important;
-    border: none !important;
+    border: 1px solid var(--border) !important;
   }
   #tbAbsensiSantri td .btn-d,
   #tbAbsensiGuru td .btn-d {
-    background: #ef444420 !important;
+    background: rgba(239,68,68,0.15) !important;
     color: #ef4444 !important;
     border: none !important;
   }
@@ -2412,8 +2417,8 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     max-height: calc(100vh - 180px) !important;
   }
   .teacher-abs-card {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.06);
+    background: var(--card);
+    border: 1px solid var(--border);
     border-radius: 14px;
     padding: 16px;
     margin-bottom: 12px;
@@ -2449,9 +2454,9 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     justify-content: center;
     padding: 12px 4px;
     border-radius: 10px;
-    background: rgba(0,0,0,0.2);
-    border: 1px solid rgba(255,255,255,0.05);
-    color: var(--t2);
+    background: var(--glass);
+    border: 1px solid var(--border);
+    color: var(--t1);
     font-size: 13px;
     font-weight: 600;
     transition: all 0.2s ease;
@@ -2738,7 +2743,7 @@ TAMBAHAN OVERRIDE: MOBILE LIGHT MODE FIX
   html[data-theme="light"] .navbar,
   html[data-theme="light"] header,
   html[data-theme="light"] .topbar {
-    background:#1e3a5f !important;
+    background: var(--card) !important;
   }
   /* Filter bar */
   html[data-theme="light"] .filter-bar{
