@@ -3496,16 +3496,24 @@ background:transparent !important;
             <p style="color:var(--t2);font-size:12px;margin-bottom:14px;line-height:1.7">Kelola koleksi background wallpaper Anda (Maks 20). Klik "Gunakan" pada galeri untuk menerapkan tema secara instan.</p>
             
             <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px">
-              <div class="form2" style="margin-bottom:12px">
+              <div style="margin-bottom:12px">
+                <label>Nama Wallpaper</label>
+                <input type="text" class="inp" id="wpNameInput" placeholder="Contoh: Anime Red">
+              </div>
+              <div class="form2" style="margin-bottom:8px">
                 <div>
-                  <label>Nama Wallpaper</label>
-                  <input type="text" class="inp" id="wpNameInput" placeholder="Contoh: Anime Red">
-                </div>
-                <div>
-                  <label>URL Gambar</label>
+                  <label>URL Gambar *</label>
                   <input type="url" class="inp" id="wpUrlInput" placeholder="https://i.imghippo.com/...png">
                 </div>
+                <div>
+                  <label>Device Target *</label>
+                  <select class="inp" id="wpDeviceSelect">
+                    <option value="desktop">💻 Desktop (Landscape 16:9)</option>
+                    <option value="mobile">📱 Mobile (Portrait 9:16)</option>
+                  </select>
+                </div>
               </div>
+              <p style="color:var(--t2);font-size:11px;margin-bottom:12px;line-height:1.4">💡 Wallpaper Desktop hanya akan tampil di layar besar. Wallpaper Mobile hanya akan tampil di perangkat smartphone.</p>
               <button class="btn btn-p" onclick="addWallpaper()" style="width:100%;justify-content:center">➕ Simpan Wallpaper</button>
             </div>
 
@@ -3998,11 +4006,7 @@ function init() {
     DB.sobj('settings',{tahunAjaran:'2024/2025',semester:'Ganjil'});
   }
   
-  let settings = DB.obj('settings') || {};
-  if(settings.themeImage) {
-    applyTheme(settings.themeImage);
-    if(settings.themeColor) applyDynamicColor(settings.themeColor);
-  }
+  applyDeviceWallpaper();
 
   updateBadges();
   renderDashboard();
@@ -5291,12 +5295,46 @@ function saveSetting() {
 // ====================================================
 // CUSTOM BACKGROUND THEME
 // ====================================================
+let currentAppliedThemeUrl = ""; // Menyimpan track url agar tidak update DOM berlebihan
+
 function applyTheme(url){
+  if (currentAppliedThemeUrl === url) return;
   document.body.classList.add("theme-background");
   document.body.style.backgroundImage = `url('${url}')`;
   document.body.style.backgroundSize = "cover";
   document.body.style.backgroundPosition = "center";
   document.body.style.backgroundRepeat = "no-repeat";
+  currentAppliedThemeUrl = url;
+}
+
+function applyDeviceWallpaper() {
+  let settings = DB.obj("settings") || {};
+  const isMobile = window.innerWidth <= 768;
+  
+  // Backwards compatibility handling
+  let dUrl = settings.desktopWallpaper || settings.themeImageDesktop || settings.themeImage;
+  let mUrl = settings.mobileWallpaper || settings.themeImageMobile || settings.themeImage;
+
+  if (isMobile && mUrl) {
+    applyTheme(mUrl);
+  } else if (!isMobile && dUrl) {
+    applyTheme(dUrl);
+  }
+  
+  const activeUrl = isMobile ? mUrl : dUrl;
+  if(activeUrl) {
+    if(settings.themeColor) {
+      applyDynamicColor(settings.themeColor);
+    } else {
+      extractColorFromImage(activeUrl).then(color => {
+        if(color) {
+          settings.themeColor = color;
+          DB.sobj("settings", settings);
+          applyDynamicColor(color);
+        }
+      });
+    }
+  }
 }
 
 async function extractColorFromImage(url) {
@@ -5396,10 +5434,24 @@ function renderWallpapers() {
     return;
   }
   
-  const currentActiveUrl = settings.themeImage || '';
+  const activeDesktop = settings.desktopWallpaper || settings.themeImageDesktop || settings.themeImage || '';
+  const activeMobile = settings.mobileWallpaper || settings.themeImageMobile || settings.themeImage || '';
   
   gallery.innerHTML = wps.map((wp, i) => {
-    const isActive = currentActiveUrl === wp.url;
+    // Compatibility handling untuk data lama
+    const url = wp.url || wp.desktop || '';
+    const device = wp.device || 'desktop'; // Default ke desktop jika dari data lawas
+    
+    // Cek status aktif (Berdasarkan target device nya)
+    const isDesktopActive = device === 'desktop' && activeDesktop === url && url;
+    const isMobileActive = device === 'mobile' && activeMobile === url && url;
+    const isActive = isDesktopActive || isMobileActive;
+    
+    const deviceBadge = device === 'mobile' ? '📱 Mobile' : '💻 Desktop';
+    const deviceColor = device === 'mobile' ? 'rgba(52,211,153,0.15)' : 'rgba(56,189,248,0.15)';
+    const deviceBorder = device === 'mobile' ? 'rgba(52,211,153,0.3)' : 'rgba(56,189,248,0.3)';
+    const deviceTextColor = device === 'mobile' ? '#34d399' : '#38bdf8';
+    
     return `
     <div class="wallpaper-card ${isActive ? 'active' : ''}" 
          draggable="true" 
@@ -5413,14 +5465,18 @@ function renderWallpapers() {
       
       <div style="position: relative; width: 100%;">
         <div class="wallpaper-overlay"></div>
-        <img src="${wp.url}" class="wallpaper-preview" alt="${wp.name}" loading="lazy" draggable="false" 
+        <img src="${url}" class="wallpaper-preview" alt="${wp.name}" loading="lazy" draggable="false" 
              onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'300\\' height=\\'168\\'><rect width=\\'300\\' height=\\'168\\' fill=\\'%231e293b\\'/><text x=\\'150\\' y=\\'84\\' fill=\\'%2394a3b8\\' font-family=\\'Arial\\' font-size=\\'14\\' text-anchor=\\'middle\\' alignment-baseline=\\'middle\\'>Gambar Rusak/Tidak Valid</text></svg>'">
+        
+        <div style="position:absolute; bottom:8px; left:8px; z-index:3">
+          <span style="background:${deviceColor}; color:${deviceTextColor}; font-size:10px; font-weight:700; padding:4px 8px; border-radius:6px; border:1px solid ${deviceBorder}">${deviceBadge}</span>
+        </div>
       </div>
       
       <div class="wallpaper-name" title="${wp.name}" style="margin-top:2px">${wp.name}</div>
       <div class="wallpaper-actions">
         <button class="btn btn-p" onclick="useWallpaper('${wp.id}')" style="flex:1;padding:8px;font-size:12px;justify-content:center" title="Gunakan Wallpaper Ini">✨ Gunakan</button>
-        <button class="btn btn-s wallpaper-btn-download" onclick="downloadWallpaper('${wp.url}', '${wp.name}')" style="width:34px;height:34px;padding:0;display:flex;align-items:center;justify-content:center" title="Download Wallpaper">⬇️</button>
+        <button class="btn btn-s wallpaper-btn-download" onclick="downloadWallpaper('${url}', '${wp.name}')" style="width:34px;height:34px;padding:0;display:flex;align-items:center;justify-content:center" title="Download">⬇️</button>
         <button class="btn btn-d" onclick="deleteWallpaper('${wp.id}', '${wp.name}')" style="width:34px;height:34px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:10px" title="Hapus Wallpaper">🗑️</button>
       </div>
     </div>
@@ -5436,9 +5492,10 @@ function addWallpaper() {
   if(!isAdmin()) return;
   const name = document.getElementById('wpNameInput').value.trim();
   const url = document.getElementById('wpUrlInput').value.trim();
+  const device = document.getElementById('wpDeviceSelect').value;
 
   if(!name || !url) {
-    toast('⚠️', 'Nama dan URL wallpaper wajib diisi!');
+    toast('⚠️', 'Nama wallpaper dan URL gambar wajib diisi!');
     return;
   }
 
@@ -5450,21 +5507,25 @@ function addWallpaper() {
     return;
   }
 
-  toast('⏳', 'Memvalidasi URL gambar...', 2000);
+  toast('⏳', 'Memvalidasi gambar...', 1000);
   
-  // Pre-load validasi gambar sebelum menyimpan
   const img = new Image();
   img.onload = function() {
     settings.wallpapers.push({
       id: 'wp_' + Date.now(),
       name: name,
-      url: url
+      url: url,
+      device: device
     });
 
     DB.sobj("settings", settings);
 
     document.getElementById('wpNameInput').value = '';
     document.getElementById('wpUrlInput').value = '';
+    
+    // Clear unused legacy inputs if they exist somehow
+    if(document.getElementById('wpDesktopInput')) document.getElementById('wpDesktopInput').value = '';
+    if(document.getElementById('wpMobileInput')) document.getElementById('wpMobileInput').value = '';
 
     renderWallpapers();
     toast('✅', 'Wallpaper berhasil disimpan!');
@@ -5487,16 +5548,24 @@ async function useWallpaper(id) {
 
   toast("⏳", "Menerapkan tema...", 2000);
   
-  // Langsung simpan ke database pengaturan agar permanen
-  settings.themeImage = wp.url;
+  const url = wp.url || wp.desktop;
+  const device = wp.device || 'desktop';
+
+  if(device === "mobile") {
+    settings.mobileWallpaper = url;
+  } else if (device === "desktop") {
+    settings.desktopWallpaper = url;
+  }
+  
   DB.sobj("settings", settings);
   
-  // Terapkan tema ke body
-  applyTheme(wp.url);
+  // Terapkan tema sesuai ukuran layar aktif saat ini
+  applyDeviceWallpaper();
   
   renderWallpapers();
   
-  const dominantColor = await extractColorFromImage(wp.url);
+  // Ambil warna dinamis untuk target wallpaper
+  const dominantColor = await extractColorFromImage(url);
   if (dominantColor) {
     settings.themeColor = dominantColor;
     applyDynamicColor(dominantColor);
@@ -5505,9 +5574,8 @@ async function useWallpaper(id) {
     document.body.classList.remove("custom-theme");
   }
   
-  // Simpan ekstraksi warna
   DB.sobj("settings", settings);
-  toast("🎨", `Tema ${wp.name} diterapkan secara global!`);
+  toast("🎨", `Tema ${wp.name} diterapkan untuk ${device}!`);
 }
 
 function deleteWallpaper(id, name) {
@@ -5552,17 +5620,24 @@ function downloadWallpaper(url, name) {
 function removeThemeImage() {
   if(!isAdmin()) return;
   let settings = DB.obj("settings");
+  
   settings.themeImage = "";
+  settings.themeImageDesktop = "";
+  settings.themeImageMobile = "";
+  settings.desktopWallpaper = "";
+  settings.mobileWallpaper = "";
   settings.themeColor = "";
+  
   DB.sobj("settings", settings);
   
+  currentAppliedThemeUrl = ""; // Reset tracker
   document.body.classList.remove("theme-background", "custom-theme");
   document.body.style.backgroundImage = "";
   document.documentElement.style.removeProperty("--acc");
   document.documentElement.style.removeProperty("--cardTint");
   document.documentElement.style.removeProperty("--highlight");
   
-  renderWallpapers(); // Hilangkan badge aktif jika ada
+  renderWallpapers(); 
   toast("🧹", "Background dan Theme berhasil direset ke Default");
 }
 
@@ -5780,23 +5855,14 @@ document.addEventListener("contextmenu", function(e) {
   }
 });
 
+// Listener saat window resize: Otomatis Switch Mobile/Desktop Background
+window.addEventListener("resize", function(){
+  applyDeviceWallpaper();
+});
+
 // Otomatis terapkan background saat HTML dimuat
 document.addEventListener("DOMContentLoaded", function(){
-  let settings = DB.obj("settings") || {};
-  if(settings.themeImage){
-    applyTheme(settings.themeImage);
-    if(settings.themeColor) {
-      applyDynamicColor(settings.themeColor);
-    } else {
-      extractColorFromImage(settings.themeImage).then(color => {
-        if(color) {
-          settings.themeColor = color;
-          DB.sobj("settings", settings);
-          applyDynamicColor(color);
-        }
-      });
-    }
-  }
+  applyDeviceWallpaper();
 });
 
 // ====================================================
