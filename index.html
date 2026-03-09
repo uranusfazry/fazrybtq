@@ -413,7 +413,6 @@ body.custom-theme .stat-value {
   height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
-  -webkit-overflow-scrolling: touch; /* Smooth scroll untuk mobile */
   flex-shrink: 0;
   background: rgba(7, 14, 28, 0.96);
   backdrop-filter: blur(40px) saturate(200%);
@@ -1626,26 +1625,18 @@ SIDEBAR MOBILE
 @media (max-width:768px){
 
 .sidebar{
-  position: fixed;
-  left:0;
-  top:0;
-  height:100vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  width:260px;
-  transform: translateX(-100%);
-  transition: 0.3s;
-  z-index:300;
+position: fixed;
+left:0;
+top:0;
+height:100vh;
+width:260px;
+transform: translateX(-100%);
+transition: 0.3s;
+z-index:300;
 }
 
 .sidebar.open{
-  transform: translateX(0);
-}
-
-.sidebar-menu{
-  overflow-y: auto;
-  max-height: calc(100vh - 80px);
-  padding-bottom: 40px;
+transform: translateX(0);
 }
 
 }
@@ -1758,23 +1749,6 @@ font-size:14px;
 justify-content:center;
 }
 
-/* PERBAIKI SPACING FORM MOBILE */
-.form-group {
-  margin-bottom: 14px !important;
-}
-
-.form2 {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 14px !important;
-}
-
-.inp, select, input {
-  width: 100% !important;
-  padding: 12px !important;
-  border-radius: 10px !important;
-}
-
 }
 
 /* ===================================
@@ -1801,16 +1775,10 @@ MODAL MOBILE
 @media (max-width:768px){
 
 .modal{
-  width: 92% !important;
-  margin: auto !important;
-  max-height: 90vh !important;
-  overflow-y: auto !important;
-  padding: 16px !important;
-  border-radius: 16px !important;
-}
-
-.modal-content{
-  padding: 14px !important;
+width:95vw;
+max-height:90vh;
+overflow:auto;
+border-radius:16px;
 }
 
 }
@@ -2435,30 +2403,81 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     display: table-cell !important;
   }
 
-  /* 6. STYLE FORM ABSENSI GURU (GRID BUTTON BESAR) */
+  /* 6. STYLE FORM ABSENSI GURU (BOTTOM SHEET & GRID BUTTON) */
+  #modalAbsensiGuru.modal-overlay {
+    padding: 0 !important;
+    align-items: flex-end !important; /* Memposisikan modal di bawah layar */
+  }
   #modalAbsensiGuru .modal {
-    width: 92% !important;
-    height: auto !important;
-    max-height: 90vh !important;
-    border-radius: 16px !important;
-    margin: auto !important;
-    padding: 16px !important;
+    width: 100% !important;
+    height: 100% !important; /* Modal mengisi seluruh layar vertical */
+    max-height: 100vh !important;
+    border-radius: 16px 16px 0 0 !important;
+    margin: 0 !important;
+    padding: 0 !important; /* Padding dipindah ke header/body/footer */
+    display: flex !important;
+    flex-direction: column !important;
+    background: var(--bg) !important; /* Pakai background utama agar solid */
+  }
+  #modalAbsensiGuru .modal-header {
+    position: sticky !important;
+    top: 0 !important;
+    background: var(--card) !important;
+    z-index: 10 !important;
+    padding: 16px 16px 10px 16px !important;
+    margin-bottom: 0 !important;
+    border-bottom: 1px solid var(--border) !important;
+    border-radius: 16px 16px 0 0 !important;
+  }
+  #modalAbsensiGuru .modal-body {
+    padding: 14px !important;
+    overflow-y: auto !important;
+    flex: 1 !important; /* Otomatis mengisi tinggi yang tersisa dan memicu scroll */
+    -webkit-overflow-scrolling: touch !important;
+  }
+  #modalAbsensiGuru .modal-footer {
+    padding: 12px 14px !important;
+    background: var(--card) !important;
+    border-top: 1px solid var(--border) !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 10 !important;
+    gap: 8px !important;
+  }
+  #modalAbsensiGuru .form2 {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    margin-bottom: 12px !important;
+  }
+  #modalAbsensiGuru label {
+    font-size: 13px !important;
+    margin-bottom: 6px !important;
+  }
+  #modalAbsensiGuru .inp, 
+  #modalAbsensiGuru select {
+    height: 42px !important;
+    font-size: 14px !important;
+    padding: 8px 12px !important;
   }
   #absListGuru {
-    padding-bottom: 20px !important; 
+    padding-bottom: 0 !important; 
     max-height: none !important;
   }
+  
   .teacher-abs-card {
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: 14px;
-    padding: 16px;
+    padding: 14px;
     margin-bottom: 12px;
   }
   .teacher-abs-card .t-name {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
-    margin-bottom: 12px;
+    margin-bottom: 0;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -2466,7 +2485,8 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
   .t-radio-group {
     display: grid !important;
     grid-template-columns: 1fr 1fr 1fr !important;
-    gap: 10px !important;
+    gap: 8px !important;
+    margin-top: 10px !important;
     width: 100%;
   }
   .t-radio-wrap {
@@ -2485,12 +2505,12 @@ MOBILE ABSENSI FIX (SANTRI & GURU) - SAAS DASHBOARD STYLE
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 12px !important;
+    padding: 10px !important;
     border-radius: 10px !important;
     background: var(--glass);
     border: 1px solid var(--border);
     color: var(--t1);
-    font-size: 14px !important;
+    font-size: 13px !important;
     font-weight: 600;
     transition: all 0.2s ease;
     text-align: center;
@@ -3624,18 +3644,20 @@ background:transparent !important;
 
 <!-- Absensi Guru Modal -->
 <div class="modal-overlay" id="modalAbsensiGuru" style="display:none">
-  <div class="modal" style="max-width:680px">
-    <div class="modal-header">
+  <div class="modal" style="max-width:680px; padding:0; display:flex; flex-direction:column;">
+    <div class="modal-header" style="padding:24px 28px 16px;">
       <div class="modal-title" id="mAbsGuruTitle">Catat Absensi Guru</div>
       <button class="modal-close" onclick="closeM('modalAbsensiGuru')">✕</button>
     </div>
-    <div class="form2" style="margin-bottom:14px">
-      <div><label>Tanggal *</label><input type="date" class="inp" id="agTgl" onchange="loadAbsensiGuru()"></div>
-      <div><label>Jam Mengajar</label><input type="text" class="inp" id="agJam" placeholder="Opsional (mis. 12:30)"></div>
-      <div><label>Kelas</label><select class="inp" id="agKelas"><option value="">-</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+    <div class="modal-body" style="padding:0 28px; overflow-y:auto;">
+      <div class="form2" style="margin-bottom:14px">
+        <div><label>Tanggal *</label><input type="date" class="inp" id="agTgl" onchange="loadAbsensiGuru()"></div>
+        <div><label>Jam Mengajar</label><input type="text" class="inp" id="agJam" placeholder="Opsional (mis. 12:30)"></div>
+        <div><label>Kelas</label><select class="inp" id="agKelas"><option value="">-</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+      </div>
+      <div id="absListGuru"></div>
     </div>
-    <div id="absListGuru" style="max-height:360px;overflow-y:auto"></div>
-    <div style="display:flex;gap:8px;margin-top:20px;justify-content:flex-end">
+    <div class="modal-footer" style="padding:16px 28px 24px; display:flex; justify-content:flex-end; gap:8px;">
       <button class="btn btn-s" onclick="closeM('modalAbsensiGuru')">Batal</button>
       <button class="btn btn-p" onclick="saveAbsensiGuru()">💾 Simpan Absensi</button>
     </div>
