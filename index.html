@@ -232,11 +232,8 @@ body.custom-theme .stat-value {
   flex-direction: column;
   gap: 10px;
   position: relative;
+  overflow: hidden;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: grab;
-}
-.wallpaper-card:active {
-  cursor: grabbing;
 }
 .wallpaper-card:hover {
   border-color: var(--acc);
@@ -297,13 +294,14 @@ body.custom-theme .stat-value {
   border: 1px solid var(--border);
   transition: opacity 0.3s;
   
-  /* Anti Drag & Selection Protection */
-  pointer-events: none;
+  /* Anti Drag & Selection Protection Lengkap */
   user-select: none;
-  -webkit-user-drag: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+  -webkit-touch-callout: none;
 }
 .wallpaper-overlay {
   position: absolute;
@@ -312,8 +310,9 @@ body.custom-theme .stat-value {
   width: 100%;
   height: 100%;
   background: transparent;
-  z-index: 2;
+  z-index: 5;
   cursor: default;
+  -webkit-touch-callout: none;
 }
 .wallpaper-btn-download {
   background: rgba(255,255,255,0.08);
@@ -323,6 +322,22 @@ body.custom-theme .stat-value {
   transition: all 0.2s;
 }
 .wallpaper-btn-download:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.wallpaper-btn-copy {
+  background: rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 8px 10px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.wallpaper-btn-copy:hover {
   background: rgba(255,255,255,0.15);
   border-color: rgba(255,255,255,0.2);
 }
@@ -341,16 +356,8 @@ body.custom-theme .stat-value {
   display: flex;
   gap: 8px;
   align-items: center;
-}
-
-/* Saat di-drag */
-.wallpaper-card.dragging {
-  opacity: 0.5;
-  transform: scale(0.95);
-  box-shadow: none;
-}
-.wallpaper-card.drag-over {
-  border-top: 3px solid var(--acc);
+  position: relative;
+  z-index: 10; /* Memastikan tombol ada di atas overlay anti-drag */
 }
 
 .wallpaper-card.animate-in {
@@ -5584,54 +5591,6 @@ function applyDynamicColor(color) {
   document.body.classList.add("custom-theme");
 }
 
-// === WALLPAPER MANAGER DRAG & DROP ===
-let draggedWpId = null;
-function wpDragStart(e, id) {
-  if(!isAdmin()) return;
-  draggedWpId = id;
-  e.dataTransfer.effectAllowed = 'move';
-  setTimeout(() => e.target.classList.add('dragging'), 0);
-}
-function wpDragOver(e) {
-  e.preventDefault();
-  e.dataTransfer.dropEffect = 'move';
-  const card = e.target.closest('.wallpaper-card');
-  if(card) card.classList.add('drag-over');
-  return false;
-}
-function wpDragLeave(e) {
-  const card = e.target.closest('.wallpaper-card');
-  if(card) card.classList.remove('drag-over');
-}
-function wpDrop(e, targetId) {
-  e.stopPropagation();
-  const card = e.target.closest('.wallpaper-card');
-  if(card) card.classList.remove('drag-over');
-  
-  if (draggedWpId && draggedWpId !== targetId) {
-    let settings = DB.obj("settings");
-    let wps = settings.wallpapers || [];
-    let fromIdx = wps.findIndex(w => w.id === draggedWpId);
-    let toIdx = wps.findIndex(w => w.id === targetId);
-    
-    if (fromIdx > -1 && toIdx > -1) {
-      // Pastikan reorder hanya bekerja antar grid yg sama jenisnya agar tidak berantakan
-      if(wps[fromIdx].device === wps[toIdx].device || (!wps[fromIdx].device && !wps[toIdx].device)) {
-        const item = wps.splice(fromIdx, 1)[0];
-        wps.splice(toIdx, 0, item);
-        DB.sobj("settings", settings);
-        renderWallpapers();
-      }
-    }
-  }
-  return false;
-}
-function wpDragEnd(e) {
-  e.target.classList.remove('dragging');
-  document.querySelectorAll('.wallpaper-card').forEach(c => c.classList.remove('drag-over'));
-  draggedWpId = null;
-}
-
 function loadMoreWallpapers(type) {
   if (type === 'desktop') {
     wpLimitDesktop += 5;
@@ -5686,16 +5645,10 @@ function renderWallpapers(resetLimit = true) {
       const deviceBorder = type === 'mobile' ? 'rgba(52,211,153,0.3)' : 'rgba(56,189,248,0.3)';
       const deviceTextColor = type === 'mobile' ? '#34d399' : '#38bdf8';
       
-      // Tambahkan class animasi ringan
+      // Tambahkan class animasi ringan tanpa atribut drag HTML5
       return `
       <div class="wallpaper-card animate-in ${isActive ? 'active' : ''}" 
-           style="animation-delay: ${i * 0.05}s"
-           draggable="true" 
-           ondragstart="wpDragStart(event, '${wp.id}')" 
-           ondragover="wpDragOver(event)" 
-           ondragleave="wpDragLeave(event)"
-           ondrop="wpDrop(event, '${wp.id}')" 
-           ondragend="wpDragEnd(event)">
+           style="animation-delay: ${i * 0.05}s">
         
         ${isActive ? `<div class="wp-active-badge-container">${badges}</div>` : ''}
         
@@ -5704,7 +5657,7 @@ function renderWallpapers(resetLimit = true) {
           <img src="${url}" class="wallpaper-preview" alt="${wp.name}" loading="lazy" draggable="false" 
                onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'300\\' height=\\'168\\'><rect width=\\'300\\' height=\\'168\\' fill=\\'%231e293b\\'/><text x=\\'150\\' y=\\'84\\' fill=\\'%2394a3b8\\' font-family=\\'Arial\\' font-size=\\'14\\' text-anchor=\\'middle\\' alignment-baseline=\\'middle\\'>Gambar Rusak/Tidak Valid</text></svg>'">
           
-          <div style="position:absolute; bottom:8px; left:8px; z-index:3">
+          <div style="position:absolute; bottom:8px; left:8px; z-index:6">
             <span style="background:${deviceColor}; color:${deviceTextColor}; font-size:10px; font-weight:700; padding:4px 8px; border-radius:6px; border:1px solid ${deviceBorder}">${deviceBadge}</span>
           </div>
         </div>
@@ -5712,6 +5665,7 @@ function renderWallpapers(resetLimit = true) {
         <div class="wallpaper-name" title="${wp.name}" style="margin-top:2px">${wp.name}</div>
         <div class="wallpaper-actions">
           <button class="btn btn-p" onclick="useWallpaper('${wp.id}')" style="flex:1;padding:8px;font-size:12px;justify-content:center" title="Gunakan Wallpaper Ini">✨ Gunakan</button>
+          <button class="btn btn-s wallpaper-btn-copy" onclick="copyWallpaperURL('${url}')" style="width:34px;height:34px;padding:0;" title="Salin Link Gambar">🔗</button>
           <button class="btn btn-s wallpaper-btn-download" onclick="downloadWallpaper('${url}', '${wp.name}')" style="width:34px;height:34px;padding:0;display:flex;align-items:center;justify-content:center" title="Download">⬇️</button>
           <button class="btn btn-d" onclick="deleteWallpaper('${wp.id}', '${wp.name}')" style="width:34px;height:34px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:10px" title="Hapus Wallpaper">🗑️</button>
         </div>
@@ -5848,6 +5802,24 @@ function deleteWallpaperProcess(id) {
   DB.sobj("settings", settings);
   renderWallpapers();
   toast("🗑️", "Wallpaper dihapus!");
+}
+
+function copyWallpaperURL(url) {
+  // Menggunakan execCommand fallback untuk memastikan fungsi copy
+  // bekerja sempurna meskipun website berjalan di iframe / Canvas Preview
+  const tempInput = document.createElement("input");
+  tempInput.value = url;
+  document.body.appendChild(tempInput);
+  tempInput.select();
+  tempInput.setSelectionRange(0, 99999); // Untuk deteksi mobile
+  try {
+    document.execCommand("copy");
+    toast("🔗", "Link wallpaper berhasil disalin!");
+  } catch (err) {
+    console.error("Gagal menyalin teks", err);
+    toast("❌", "Browser tidak mendukung auto-copy");
+  }
+  document.body.removeChild(tempInput);
 }
 
 function downloadWallpaper(url, name) {
@@ -6110,19 +6082,32 @@ document.querySelectorAll('.modal-overlay').forEach(function(ov){
 // ====================================================
 // ANTI DRAG & ANTI RIGHT-CLICK PROTECTION (WALLPAPER)
 // ====================================================
+
+// 1. Blok event dragstart secara global untuk semua gambar
 document.addEventListener("dragstart", function(e) {
-  if (e.target.tagName === "IMG" || e.target.classList.contains("wallpaper-overlay")) {
+  if (e.target.tagName === "IMG") {
     e.preventDefault();
   }
 });
 
+// 2. Blok mousedown drag (Kecuali klik pada tombol aksi agar UI tidak macet)
 document.addEventListener("mousedown", function(e) {
-  // Hanya blokir pada overlay gambar agar fungsi drag-and-drop kartu (Reorder) tetap bekerja
-  if (e.target.classList.contains("wallpaper-overlay") || e.target.classList.contains("wallpaper-preview")) {
+  if (e.target.closest(".wallpaper-card") && !e.target.closest(".wallpaper-actions")) {
     e.preventDefault();
   }
 });
 
+// 3. Blok long press pada mobile via touchstart
+document.addEventListener("touchstart", function(e) {
+  // Hanya blokir default (tahan/seret) pada area gambar/overlay.
+  // Kami tidak memblokir keseluruhan card agar layar mobile tetap bisa di-scroll ke bawah/atas saat jari mengenai card.
+  if (e.target.classList.contains("wallpaper-overlay")) {
+    // Membiarkan CSS -webkit-touch-callout dan contextmenu menangani popup
+    // Tidak menggunakan e.preventDefault() brutal yang akan mematikan SCROLL
+  }
+}, {passive: true});
+
+// 4. Blok context menu pada wallpaper card (Klik Kanan / Hold di Mobile)
 document.addEventListener("contextmenu", function(e) {
   if (e.target.closest(".wallpaper-card")) {
     e.preventDefault();
