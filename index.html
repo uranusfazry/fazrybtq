@@ -1741,21 +1741,57 @@ SIDEBAR MOBILE
 
 @media (max-width:768px){
 
-.sidebar{
-position: fixed;
-left:0;
-top:0;
-height:100vh;
-width:260px;
-transform: translateX(-100%);
-transition: 0.3s;
-z-index:300;
+  .sidebar{
+    position: fixed;
+    left:0;
+    top:0;
+    height:100vh;
+    width:260px;
+    transform: translateX(-100%);
+    transition: 0.3s;
+    z-index:300;
+  }
+
+  .sidebar.open{
+    transform: translateX(0);
+  }
+
+  /* 1. Sembunyikan badge angka pada mobile agar lebih minimalis */
+  .nav-item .badge {
+    display: none !important;
+  }
+
+  /* 2. Beri jarak antar menu */
+  .sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px !important;
+  }
+
+  /* 3. Perbaiki layout menu item agar seimbang dan mudah di-tap */
+  .nav-item {
+    display: flex;
+    align-items: center;
+    height: 56px;
+    padding: 0 16px !important;
+    border-radius: 10px !important;
+  }
+
+  /* 4. Pastikan icon proporsional di tengah secara vertikal */
+  .nav-item .nicon {
+    font-size: 22px !important;
+    min-width: 32px !important; /* Memberi ruang konsisten untuk icon */
+  }
 }
 
-.sidebar.open{
-transform: translateX(0);
-}
-
+/* 5. Responsivitas ekstra untuk layar smartphone yang sangat kecil */
+@media (max-width:480px){
+  .nav-item {
+    height: 50px;
+  }
+  .nav-item .nicon {
+    font-size: 20px !important;
+  }
 }
 
 /* ===================================
